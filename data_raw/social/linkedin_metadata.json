@@ -1,0 +1,7 @@
+{
+  "platform": "linkedin",
+  "status": "google_blocked",
+  "fallback": "datos_verificados_manualmente",
+  "followers_aprox": 123206,
+  "tos_restriction": true
+}

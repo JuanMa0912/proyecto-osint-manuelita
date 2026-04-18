@@ -1,0 +1,106 @@
+{
+  "company": "Manuelita",
+  "base_url": "https://www.manuelita.com",
+  "discovered_at": "2026-04-18T21:22:58.649675+00:00",
+  "sitemap_urls": [
+    {
+      "url": "https://manuelitainnova.com/hello-world/",
+      "lastmod": "2024-06-29T00:50:15+00:00",
+      "priority": 0.5,
+      "source": "sitemap"
+    },
+    {
+      "url": "https://manuelitainnova.com/",
+      "lastmod": "2025-01-10T16:57:58+00:00",
+      "priority": 0.5,
+      "source": "sitemap"
+    },
+    {
+      "url": "https://manuelitainnova.com/postulacion/",
+      "lastmod": "2024-12-03T00:20:26+00:00",
+      "priority": 0.5,
+      "source": "sitemap"
+    },
+    {
+      "url": "https://manuelitainnova.com/gracias/",
+      "lastmod": "2024-07-25T17:32:02+00:00",
+      "priority": 0.5,
+      "source": "sitemap"
+    },
+    {
+      "url": "https://manuelitainnova.com/category/uncategorized/",
+      "lastmod": null,
+      "priority": 0.5,
+      "source": "sitemap"
+    },
+    {
+      "url": "https://manuelitainnova.com/author/infoestratek-com-co/",
+      "lastmod": null,
+      "priority": 0.5,
+      "source": "sitemap"
+    }
+  ],
+  "internal_links": [],
+  "pdf_links": [
+    "https://www.manuelita.com/wp-content/uploads/2025/06/Informe-de-Sostenibilidad-Manuelita-2023-2024.pdf",
+    "https://www.manuelita.com/wp-content/uploads/2023/06/Informe_Sostenibilidad_Manuelita-2021-2022.pdf",
+    "https://agroindustriallaredo.com/informes-de-sostenibilidad/"
+  ],
+  "social_accounts": [
+    {
+      "platform": "linkedin",
+      "url": "https://co.linkedin.com/company/manuelita",
+      "status": "accesible",
+      "scraping_method": "API oficial o extracción manual (ToS restringe scraping)",
+      "verified_at": "2026-04-18T21:23:08.129113+00:00"
+    },
+    {
+      "platform": "instagram",
+      "url": "https://www.instagram.com/manuelitaagroindustria/",
+      "status": "accesible",
+      "scraping_method": "Meta Graph API (requiere app aprobada)",
+      "verified_at": "2026-04-18T21:23:08.676403+00:00"
+    },
+    {
+      "platform": "facebook",
+      "url": "https://www.facebook.com/ManuelitaAgroindustria/",
+      "status": "accesible",
+      "scraping_method": "Meta Graph API (requiere app aprobada)",
+      "verified_at": "2026-04-18T21:23:09.126606+00:00"
+    },
+    {
+      "platform": "youtube",
+      "url": "https://www.youtube.com/channel/UCanNTjBY24t7fID3tj0WfTw",
+      "status": "accesible",
+      "scraping_method": "YouTube Data API v3 (gratuita, cuota 10K unidades/día)",
+      "verified_at": "2026-04-18T21:23:09.745431+00:00"
+    }
+  ],
+  "news_sources": [
+    "https://www.portafolio.co",
+    "https://www.semana.com",
+    "https://www.elpais.com.co",
+    "https://www.revistaialimentos.com",
+    "https://en.wikipedia.org/wiki/Manuelita",
+    "https://b2bmarketplaceplus.procolombia.co/en/agro-industry/agroindustrial/ingenio-manuelita-sa.aspx"
+  ],
+  "confirmed_pages": [
+    "https://www.manuelita.com/",
+    "https://www.manuelita.com/perfil-corporativo/",
+    "https://www.manuelita.com/historia/",
+    "https://www.manuelita.com/presencia-regional/",
+    "https://www.manuelita.com/plataformas-de-negocios/",
+    "https://www.manuelita.com/sostenibilidad/",
+    "https://www.manuelita.com/manuelita-noticias/",
+    "https://www.manuelita.com/economico/",
+    "https://manuelitainnova.com/",
+    "https://grupomanuelita.na.teamtailor.com/"
+  ],
+  "summary": {
+    "total_sitemap_urls": 6,
+    "total_internal_links": 0,
+    "total_pdf_links": 3,
+    "total_social_platforms": 4,
+    "total_news_sources": 6
+  }
+}

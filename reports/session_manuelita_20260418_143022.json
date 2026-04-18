@@ -1,0 +1,45 @@
+{
+  "session_id": "manuelita_20260418_143022",
+  "started_at": "2026-04-18T14:30:22Z",
+  "finished_at": "2026-04-18T15:12:44Z",
+  "duration_seconds": 2541,
+  "mode": "quick",
+  "status": "completed",
+  "phases": {
+    "discover": {
+      "status": "ok",
+      "total_urls": 47
+    },
+    "scrape_web": {
+      "status": "ok",
+      "pages_total": 6,
+      "pages_ok": 6
+    },
+    "scrape_social": {
+      "status": "ok",
+      "platforms": [
+        "linkedin",
+        "instagram",
+        "facebook",
+        "youtube"
+      ]
+    },
+    "scrape_youtube": {
+      "status": "degraded",
+      "note": "Sin API key — datos básicos"
+    },
+    "parse_pdfs": {
+      "status": "ok",
+      "pdfs_total": 2,
+      "pdfs_ok": 2
+    },
+    "normalize": {
+      "status": "ok",
+      "documents_normalized": 8
+    },
+    "build_markdown": {
+      "status": "ok",
+      "files_generated": 8
+    }
+  }
+}

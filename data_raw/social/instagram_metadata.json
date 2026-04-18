@@ -1,0 +1,17 @@
+{
+  "platform": "instagram",
+  "url": "https://www.instagram.com/manuelitaagroindustria/",
+  "captured_at": "2026-04-18T21:23:28.024596+00:00",
+  "extraction_method": "og_metadata",
+  "status": "blocked_or_error",
+  "og_title": "",
+  "og_description": "",
+  "og_image": "",
+  "og_type": "",
+  "page_title": "",
+  "twitter_card": "",
+  "twitter_description": "",
+  "note": "instagram bloqueó el request. Usar API oficial.",
+  "followers_aprox": 8823,
+  "tos_restriction": true
+}

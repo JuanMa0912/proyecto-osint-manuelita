@@ -1,0 +1,62 @@
+{
+  "captured_at": "2026-04-18T21:23:33.737395+00:00",
+  "company": "Manuelita",
+  "platforms_scraped": [
+    "linkedin",
+    "instagram",
+    "facebook",
+    "youtube"
+  ],
+  "platforms_ok": [],
+  "data": {
+    "linkedin": {
+      "platform": "linkedin",
+      "status": "google_blocked",
+      "fallback": "datos_verificados_manualmente",
+      "followers_aprox": 123206,
+      "tos_restriction": true
+    },
+    "instagram": {
+      "platform": "instagram",
+      "url": "https://www.instagram.com/manuelitaagroindustria/",
+      "captured_at": "2026-04-18T21:23:28.024596+00:00",
+      "extraction_method": "og_metadata",
+      "status": "blocked_or_error",
+      "og_title": "",
+      "og_description": "",
+      "og_image": "",
+      "og_type": "",
+      "page_title": "",
+      "twitter_card": "",
+      "twitter_description": "",
+      "note": "instagram bloqueó el request. Usar API oficial.",
+      "followers_aprox": 8823,
+      "tos_restriction": true
+    },
+    "facebook": {
+      "platform": "facebook",
+      "url": "https://www.facebook.com/ManuelitaAgroindustria/",
+      "captured_at": "2026-04-18T21:23:30.032116+00:00",
+      "extraction_method": "og_metadata",
+      "status": "blocked_or_error",
+      "og_title": "",
+      "og_description": "",
+      "og_image": "",
+      "og_type": "",
+      "page_title": "",
+      "twitter_card": "",
+      "twitter_description": "",
+      "note": "facebook bloqueó el request. Usar API oficial.",
+      "followers_aprox": 102211,
+      "tos_restriction": true
+    },
+    "youtube": {
+      "platform": "youtube",
+      "note": "Ver scrape_youtube_metadata.py para extracción completa",
+      "url": "https://www.youtube.com/channel/UCanNTjBY24t7fID3tj0WfTw",
+      "channel_id": "UCanNTjBY24t7fID3tj0WfTw",
+      "followers_aprox": 0,
+      "tos_restriction": false
+    }
+  }
+}

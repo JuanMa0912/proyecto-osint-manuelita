@@ -1,0 +1,10 @@
+{
+  "channel_url": "https://www.youtube.com/channel/UCanNTjBY24t7fID3tj0WfTw",
+  "channel_id": "UCanNTjBY24t7fID3tj0WfTw",
+  "captured_at": "2026-04-18T21:23:35.519282+00:00",
+  "extraction_method": "html_fallback_sin_api",
+  "status": "degraded",
+  "note": "Sin API key de YouTube, los datos disponibles son muy limitados. Configura YOUTUBE_API_KEY en .env para extracción completa.",
+  "title": "Manuelita",
+  "description": "Somos una Organización diversificada en el sector agroindustrial en las Américas, que transforma los recursos naturales en alimentos y energía. Ofrecemos a nuestros clientes productos naturales elaborados a partir de fuentes renovables, cultivamos relaciones a largo plazo con nuestros aliados estratégicos y promovemos la conservación y el cuidado del medio ambiente. Estamos comprometidos con el bienestar y progreso de nuestros colaboradores y comunidades vecinas.\n\nTrabajamos con conciencia para cosechar los frutos de un mejor mañana, a través de cuatro plataformas agroindustriales:\n\nCaña de azúcar: \n- Manuelita Azúcar y Energía – Valle del Cauca, Colombia\n- Agroindustrial Laredo – Trujillo, Perú\n\nPalma de Aceite: \n- Manuelita Aceites y Energía - Meta, Colombia\n- Palmar de Altamira - Casanare, Colombia\n\nAcuicultura: \n- Mejillones América - Puerto Montt, Chile\n- Océanos - Cartagena, Colombia\n\nFrutas y Hortalizas en Ica, Perú.\n"
+}

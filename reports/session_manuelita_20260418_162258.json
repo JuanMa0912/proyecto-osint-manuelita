@@ -1,0 +1,40 @@
+{
+  "session_id": "manuelita_20260418_162258",
+  "started_at": "2026-04-18T21:22:58.624253+00:00",
+  "mode": "quick",
+  "phases": {
+    "discover": {
+      "status": "ok",
+      "total_urls": 6
+    },
+    "scrape_web": {
+      "status": "ok",
+      "pages_total": 6,
+      "pages_ok": 0
+    },
+    "scrape_social": {
+      "status": "ok",
+      "platforms": []
+    },
+    "scrape_youtube": {
+      "status": "ok",
+      "videos": 0
+    },
+    "parse_pdfs": {
+      "status": "ok",
+      "pdfs_total": 2,
+      "pdfs_ok": 0
+    },
+    "normalize": {
+      "status": "error",
+      "error": "[Errno 22] Invalid argument: 'C:\\\\Users\\\\PROYECTOS\\\\Desktop\\\\Claude_Multi_Agents_Projects\\\\proyecto_manuelita\\\\data_processed\\\\json\\\\normalized_doc_2026-04-18T21:23:47.154859+00:00.json'"
+    },
+    "build_markdown": {
+      "status": "ok",
+      "files_generated": 3
+    }
+  },
+  "status": "completed",
+  "finished_at": "2026-04-18T21:23:47.292710+00:00",
+  "duration_seconds": 48.7
+}

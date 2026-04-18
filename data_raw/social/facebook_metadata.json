@@ -1,0 +1,17 @@
+{
+  "platform": "facebook",
+  "url": "https://www.facebook.com/ManuelitaAgroindustria/",
+  "captured_at": "2026-04-18T21:23:30.032116+00:00",
+  "extraction_method": "og_metadata",
+  "status": "blocked_or_error",
+  "og_title": "",
+  "og_description": "",
+  "og_image": "",
+  "og_type": "",
+  "page_title": "",
+  "twitter_card": "",
+  "twitter_description": "",
+  "note": "facebook bloqueó el request. Usar API oficial.",
+  "followers_aprox": 102211,
+  "tos_restriction": true
+}

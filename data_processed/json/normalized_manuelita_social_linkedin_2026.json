@@ -1,0 +1,32 @@
+{
+  "id": "manuelita_social_linkedin_20260418",
+  "platform": "linkedin",
+  "source_type": "red_social",
+  "company_url": "https://co.linkedin.com/company/manuelita",
+  "company_name": "Manuelita",
+  "followers_verified": 123206,
+  "industry": "Agroindustria / Alimentos y Bebidas",
+  "headquarters": "Cali, Valle del Cauca, Colombia",
+  "company_size": "1001-5000 empleados",
+  "founded": 1864,
+  "specialties": [
+    "Azúcar y bioetanol",
+    "Aceite de palma y biodiesel",
+    "Acuicultura",
+    "Frutas y hortalizas",
+    "Sostenibilidad agroindustrial"
+  ],
+  "captured_at": "2026-04-18T14:50:00Z",
+  "status": "manual_verificado",
+  "confidence_score": 0.65,
+  "topics": [
+    {
+      "topic": "talento_humano",
+      "score": 0.8
+    },
+    {
+      "topic": "gobernanza",
+      "score": 0.6
+    }
+  ]
+}

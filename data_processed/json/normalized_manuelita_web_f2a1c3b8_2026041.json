@@ -1,0 +1,168 @@
+{
+  "id": "manuelita_web_f2a1c3b8_20260418",
+  "company": "Manuelita S.A.",
+  "source_type": "oficial",
+  "source_name": "manuelita.com",
+  "source_url": "https://www.manuelita.com/perfil-corporativo/",
+  "page_key": "perfil",
+  "captured_at": "2026-04-18T14:30:22Z",
+  "language": "es",
+  "country": "CO",
+  "confidence_score": 0.95,
+  "status": "ok",
+  "extraction_method": "requests+beautifulsoup",
+  "word_count": 2840,
+  "content_hash": "a3f2c1b9",
+  "metadata": {
+    "title": "Perfil Corporativo | Manuelita Agroindustrial",
+    "description": "Manuelita es una organización agroindustrial internacional con 161 años de historia. Opera en los sectores de alimentos y energías renovables con presencia en Colombia, Perú y Chile."
+  },
+  "headings": [
+    {
+      "level": 1,
+      "text": "Manuelita: Cultivamos cosas buenas que generan progreso y bienestar"
+    },
+    {
+      "level": 2,
+      "text": "¿Quiénes somos?"
+    },
+    {
+      "level": 2,
+      "text": "Nuestras plataformas de negocio"
+    },
+    {
+      "level": 3,
+      "text": "Caña de Azúcar y Energía"
+    },
+    {
+      "level": 3,
+      "text": "Aceite de Palma y Energía"
+    },
+    {
+      "level": 3,
+      "text": "Acuicultura"
+    },
+    {
+      "level": 3,
+      "text": "Frutas y Hortalizas"
+    },
+    {
+      "level": 2,
+      "text": "Presencia regional"
+    },
+    {
+      "level": 2,
+      "text": "Nuestra historia"
+    }
+  ],
+  "paragraphs": [
+    "Manuelita es una organización agroindustrial internacional diversificada en los sectores de alimentos y energías renovables, con presencia en varias zonas productivas de las Américas.",
+    "Iniciamos operaciones en Colombia en 1864 con la fundación de Manuelita Azúcar y Energía, una de las agroindustriales más importantes del país, dedicada a la producción de azúcar refinada de alta calidad y bioetanol combustible.",
+    "Contamos con una capacidad instalada para procesar 6.9 millones de toneladas de caña por año y una capacidad de producción de azúcar de 487.000 toneladas por año, 275 millones de litros de bioetanol combustible y 6.8 millones de litros de bioetanol industrial.",
+    "En palma de aceite, Manuelita Aceites y Energía produce 144.000 toneladas de aceite de palma y 14.000 toneladas de aceite de palmiste por año, con capacidad para producir 137 millones de litros de biodiesel por año.",
+    "Nuestras operaciones de acuicultura incluyen Mejillones América en Puerto Montt, Chile, y Océanos en Cartagena, Colombia, dedicadas a la producción de mejillones y camarón para mercados de Europa y Latinoamérica.",
+    "Desde 2006 producimos bioetanol a partir de caña de azúcar y en 2009 iniciamos la producción de biodiesel a partir de palma de aceite, siendo el primer productor de biocombustibles avanzados en Colombia a partir de dos fuentes de biomasa."
+  ],
+  "entities": {
+    "organizations": [
+      "Manuelita S.A.",
+      "Manuelita Azúcar y Energía",
+      "Manuelita Aceites y Energía",
+      "Agroindustrial Laredo S.A.",
+      "Mejillones América",
+      "Océanos (Acuicultura Colombia)",
+      "Manuelita Innova"
+    ],
+    "people": [
+      "Harold Eder (Presidente — Manuelita S.A.)"
+    ],
+    "locations": [
+      "Cali, Valle del Cauca (Colombia)",
+      "Meta (Colombia)",
+      "Casanare (Colombia)",
+      "Trujillo (Perú)",
+      "Puerto Montt (Chile)",
+      "Cartagena de Indias (Colombia)"
+    ],
+    "products": [
+      "Azúcar refinada",
+      "Bioetanol combustible",
+      "Aceite de palma crudo",
+      "Biodiesel",
+      "Mejillones IQF",
+      "Camarón de exportación"
+    ],
+    "business_units": [
+      "Plataforma Azúcar y Energía",
+      "Plataforma Aceites y Energía",
+      "Plataforma Acuicultura",
+      "Plataforma Frutas y Hortalizas"
+    ]
+  },
+  "topics": [
+    {
+      "topic": "azucar_bioetanol",
+      "score": 0.92,
+      "matched_keywords": [
+        "azúcar",
+        "caña de azúcar",
+        "bioetanol"
+      ]
+    },
+    {
+      "topic": "palma_biodiesel",
+      "score": 0.85,
+      "matched_keywords": [
+        "palma de aceite",
+        "biodiesel",
+        "aceite de palma"
+      ]
+    },
+    {
+      "topic": "acuicultura",
+      "score": 0.7,
+      "matched_keywords": [
+        "mejillón",
+        "camarón",
+        "acuicultura"
+      ]
+    },
+    {
+      "topic": "mercados_internacionales",
+      "score": 0.65,
+      "matched_keywords": [
+        "exportación",
+        "colombia",
+        "perú",
+        "chile"
+      ]
+    },
+    {
+      "topic": "sostenibilidad_economica",
+      "score": 0.55,
+      "matched_keywords": [
+        "producción",
+        "capacidad instalada"
+      ]
+    }
+  ],
+  "key_figures": {
+    "produccion_azucar_ton": "487000",
+    "produccion_bioetanol_litros": "275000000",
+    "años_historia": "161",
+    "paises_exportacion": "65"
+  },
+  "relevant_dates": [
+    "1864",
+    "2006",
+    "2009",
+    "2007"
+  ],
+  "key_quotes": [
+    "Manuelita es una organización agroindustrial internacional diversificada en los sectores de alimentos y energías renovables, con presencia en varias zonas productivas de las Américas.",
+    "Iniciamos operaciones en Colombia en 1864 con la fundación de Manuelita Azúcar y Energía, una de las agroindustriales más importantes del país.",
+    "Desde 2006 producimos bioetanol a partir de caña de azúcar y en 2009 iniciamos la producción de biodiesel, siendo el primer productor de biocombustibles avanzados en Colombia."
+  ],
+  "normalization_status": "completed",
+  "normalized_at": "2026-04-18T14:31:05Z"
+}

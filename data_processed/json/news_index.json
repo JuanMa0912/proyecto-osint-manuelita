@@ -1,0 +1,33 @@
+{
+  "captured_at": "2026-04-18T14:55Z",
+  "total_news_items": 3,
+  "news_listing": [
+    {
+      "title": "Empresa Manuelita revela su Informe de Sostenibilidad 2023-2024",
+      "url": "https://www.portafolio.co/sostenibilidad/empresa-manuelita-revela-su-informe-de-sostenibilidad-2023-2024-633227",
+      "published": "2025-07-15",
+      "source_name": "Portafolio.co",
+      "source_type": "prensa",
+      "summary": "Manuelita publicó su Informe de Sostenibilidad bienal 2023-2024 donde destaca la reducción del 6% en emisiones Scope 1 y 2, el beneficio a más de 4.000 familias y el aumento del 40% en mujeres empleadas en operaciones.",
+      "confidence_score": 0.55
+    },
+    {
+      "title": "Los productos de Manuelita llegan a más de 65 países en el mundo",
+      "url": "https://www.elpais.com.co/valle/los-productos-de-manuelita-llegan-a-mas-de-65-paises-en-el-mundo-1211.html",
+      "published": "2024-12-11",
+      "source_name": "El País Cali",
+      "source_type": "prensa",
+      "summary": "La empresa caleña exporta sus productos agroindustriales —azúcar, bioetanol, aceite de palma, biodiesel, mejillones y camarón— a más de 65 países alrededor del mundo.",
+      "confidence_score": 0.58
+    },
+    {
+      "title": "Manuelita: los planes de una de las empresas más antiguas de Colombia",
+      "url": "https://www.semana.com/economia/empresas/articulo/manuelita-los-planes-de-una-de-las-empresas-mas-antiguas-de-colombia/202401/",
+      "published": "2024-01-20",
+      "source_name": "Semana.com",
+      "source_type": "prensa",
+      "summary": "Con 161 años de historia, Manuelita apuesta por los biocombustibles avanzados, la economía circular y los productos orgánicos como ejes de crecimiento futuro.",
+      "confidence_score": 0.56
+    }
+  ]
+}
