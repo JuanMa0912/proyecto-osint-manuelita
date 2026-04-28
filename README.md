@@ -16,47 +16,6 @@
 </div>
 
 ---
-##Actividad del Módulo 1: Creación de la Base de Conocimiento Semántico y Sistema Q&A
-Estudiantes:
-JUAN MANUEL VELAZQUEZ TERREROS - Cod: 
-JULIAN ANDRES HERRERA SANCHEZ - Cod:22500247
-JUAN SEBASTIAN PLAZAS GALLO - Cod:
-JULIANA MARIA LOZANO SANTA - Cod:22500696
-
-
-##DESCRIPCIÓN DEL PROBLEMA
-En la actualidad, la gestión de la información dentro del Ingenio Manuelita enfrenta el desafío de optimizar sus flujos de comunicación interna y externa. Existe una dependencia de canales manuales o semi-automatizados que, ante el gran volumen de datos generados en la cadena de valor, incrementan el riesgo de asimetrías informativas, tiempos de respuesta prolongados y posibles errores humanos en la interpretación de reportes críticos. Esta ausencia de un canal de comunicación centralizado y automatizado limita la capacidad de los colaboradores para tomar decisiones basadas en datos en tiempo real, lo que genera una necesidad de implementar una solución tecnológica que garantice la precisión, trazabilidad y entrega oportuna de la información para mantener la competitividad y sostenibilidad operativa de la organización.
-
-##PLANTEAMIENTO DE LA SOLUCIÓN
-Para mitigar las brechas de comunicación identificadas, se propone el diseño e implementación de un sistema de Question & Answering (Q&A) fundamentado en la arquitectura de Generación Aumentada por Recuperación (RAG). Esta solución trasciende los chatbots convencionales basados en reglas, al integrar modelos de lenguaje de gran escala (LLM) con una base de datos vectorial que contiene la documentación técnica, manuales operativos y protocolos específicos de la empresa.
-
-El núcleo del sistema operará mediante la transformación de documentos no estructurados en embeddings semánticos, permitiendo que, ante cualquier consulta, el sistema recupere el contexto exacto y genere respuestas precisas, verificables y libres de alucinaciones. Esta arquitectura RAG se establece como el pilar fundamental para el despliegue de un asistente inteligente multiplataforma, el cual no solo automatizará la resolución de dudas en tiempo real, sino que garantizará que la información entregada esté estrictamente alineada con el repositorio de conocimiento corporativo, facilitando así una democratización eficiente de la información y una mejora en la agilidad operativa.
-
-## LINKS PARA REVISAR/DISCUTIR Y AGREGAR 
-Historia de la empresa: https://www.manuelita.com/historia/
-Ubicación espacial: https://www.google.com/maps/place/Ingenio+Manuelita/@3.5866869,-76.3348015,7868m/data=!3m1!1e3!4m10!1m2!2m1!1sfundaci%C3%B3n+manuelita+cali!3m6!1s0x8e3a031047e59b9d:0x9cb27379c1be0d59!8m2!3d3.5866877!4d-76.3053523!15sChlmdW5kYWNpw7NuIG1hbnVlbGl0YSBjYWxpIgOIAQGSAR1pbmR1c3RyaWFsX2VxdWlwbWVudF9zdXBwbGllcuABAA!16s%2Fg%2F11c0qyq237?hl=es&entry=ttu&g_ep=EgoyMDI2MDQyMi4wIKXMDSoASAFQAw%3D%3D
-Prioridades de Sostenibilidad: https://www.manuelita.com/wp-content/uploads/2025/09/Informe-Manuelita-gobierno-corporativo.pdf
-Sostenibilidad ambiental: https://www.manuelita.com/manuelita-sostenib/ambiental/
-Prioridades de Sostenibilidad Económica: https://www.manuelita.com/economico/
-Gestión social: https://www.manuelita.com/manuelita-sostenib/ambiental/
-Estructura del gobierno corporativo: https://www.manuelita.com/gobierno-corporativo/
-Linea ética: https://www.manuelita.com/linea-etica/
-Fundación Manuelita: https://fundacionmanuelita.org/
-Donaciones fundación: https://fundacionmanuelita.org/donaciones/
-Noticias ingenio: https://www.manuelita.com/manuelita-noticias/
-Publicaciones/Libros: https://www.valleonline.org/
-Vacantes disponibles: https://www.manuelita.com/talento/
-Link ingreso proveedores de caña del ingenio: https://proveedores-cana.manuelita.com/static/index.html#/
-Productos:
-Azucar: https://www.manuelita.com/azucar/
-Azucar industrial: https://www.manuelitaindustria.com/
-Energias renovables: https://www.manuelita.com/manuelita-productos/energias-renovables/
-Derivados de la caña: https://www.manuelita.com/manuelita-productos/derivados-de-la-cana/
-Derivados de la palma: https://www.manuelita.com/manuelita-productos/derivados-de-palma/
-Frutas y hortalizas: https://www.manuelita.com/manuelita-productos/frutas-y-hortalizas/
-Mejillones: https://www.manuelita.com/manuelita-productos/mejillones/
-
-
 
 ## Actividad Módulo 1 — Creación de la Base de Conocimiento Semántico y Sistema Q&A
 
@@ -358,6 +317,7 @@ proyecto_manuelita/
 - [Noticias Ingenio](https://www.manuelita.com/manuelita-noticias/)
 
 ### 🛒 Productos
+- [Azúcar](https://www.manuelita.com/azucar/)
 - [Azúcar Industrial](https://www.manuelitaindustria.com/)
 - [Energías Renovables](https://www.manuelita.com/manuelita-productos/energias-renovables/)
 - [Derivados de la Caña](https://www.manuelita.com/manuelita-productos/derivados-de-la-cana/)
