@@ -3,13 +3,13 @@
 # 🌱 Proyecto OSINT Manuelita
 
 ### Pipeline de recolección, estructuración y almacenamiento de información pública  
-### para análisis semántico y RAG sobre Manuelita Agroindustrial S.A.
+### para el Sistema Q&A del chatbot de Manuelita Agroindustrial S.A.
 
-[\![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[\![spaCy](https://img.shields.io/badge/NLP-spaCy%20es__core__news__lg-09A3D5?style=for-the-badge&logo=spacy&logoColor=white)](https://spacy.io)
-[\![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[\![Estado](https://img.shields.io/badge/Estado-Activo-brightgreen?style=for-the-badge)]()
-[\![RAG Ready](https://img.shields.io/badge/RAG-Ready-FF6B35?style=for-the-badge)]()
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![spaCy](https://img.shields.io/badge/NLP-spaCy%20es__core__news__lg-09A3D5?style=for-the-badge&logo=spacy&logoColor=white)](https://spacy.io)
+[![LangChain](https://img.shields.io/badge/LangChain-Framework-1C3C3C?style=for-the-badge)](https://langchain.com)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Estado](https://img.shields.io/badge/Estado-Activo-brightgreen?style=for-the-badge)]()
 
 [📋 Ver Corpus](#corpus-generado) · [🚀 Inicio rápido](#instalación) · [📊 Resultados](#resultados) · [🗂️ Estructura](#estructura-del-proyecto)
 
@@ -58,14 +58,43 @@ Mejillones: https://www.manuelita.com/manuelita-productos/mejillones/
 
 
 
+## Actividad Módulo 1 — Creación de la Base de Conocimiento Semántico y Sistema Q&A
+
+**Universidad Autónoma de Occidente — Ingeniería de Sistemas**
+
+| Estudiante | Código |
+|-----------|--------|
+| Juan Manuel Velázquez Terreros | — |
+| Julián Andrés Herrera Sánchez | 22500247 |
+| Juan Sebastián Plazas Gallo | — |
+| Juliana María Lozano Santa | 22500696 |
+
+---
+
+## Descripción del problema
+
+La gestión de la información dentro del Ingenio Manuelita enfrenta el desafío de optimizar sus flujos de comunicación interna y externa. Existe una dependencia de canales manuales o semi-automatizados que, ante el gran volumen de datos generados en la cadena de valor, incrementan el riesgo de asimetrías informativas, tiempos de respuesta prolongados y posibles errores humanos en la interpretación de reportes críticos.
+
+Esta ausencia de un canal de comunicación centralizado y automatizado limita la capacidad de los colaboradores para tomar decisiones basadas en datos en tiempo real, generando la necesidad de implementar una solución tecnológica que garantice la precisión, trazabilidad y entrega oportuna de la información.
+
+## Planteamiento de la solución
+
+Se propone el diseño e implementación de un **Sistema de Preguntas y Respuestas (Q&A)** que actúa como núcleo de conocimiento para un futuro chatbot corporativo. El sistema consolida toda la información pública de Manuelita S.A. en un corpus semántico estructurado, y utiliza un LLM con **Prompt Engineering** para responder preguntas basándose únicamente en ese contexto.
+
+> **Nota técnica:** Este sistema **NO es un RAG** (Retrieval-Augmented Generation). Todo el texto limpio del corpus se consolida directamente en el system prompt del LLM, siguiendo las instrucciones del Módulo 1.
+
+La arquitectura opera en dos capas: (1) un **pipeline OSINT** que extrae, limpia y estructura información pública de múltiples fuentes, y (2) una **aplicación LangChain** con interfaz Streamlit que expone tres funcionalidades: Resumen ejecutivo, Generación de FAQ y Q&A libre.
+
+---
+
 ## ¿Qué es este proyecto?
 
 Pipeline completo de **OSINT corporativo** que captura información pública de **Manuelita S.A.** — una de las organizaciones agroindustriales más grandes e históricas de América Latina — y la convierte en una **base documental semántica** lista para:
 
-- 🤖 **RAG** (Retrieval-Augmented Generation) con LangChain / LlamaIndex
-- 🔍 **Búsqueda semántica** con embeddings vectoriales
+- 💬 **Sistema Q&A** con LangChain — texto del corpus en el system prompt del LLM
+- 📝 **Resumen ejecutivo** automático de la empresa
+- ❓ **Generación de FAQs** sobre productos, historia y operaciones
 - 📊 **Análisis empresarial** y minería de texto
-- 🎓 **Investigación académica** sobre el sector agroindustrial latinoamericano
 
 ### ¿Por qué Manuelita?
 
@@ -84,17 +113,17 @@ GRUPO MANUELITA S.A.
 
 ## Resultados
 
-El corpus generado en la primera ejecución:
+El corpus generado:
 
 | Métrica | Valor |
 |---------|-------|
-| 📄 Documentos SMART MARKDOWN | **5** |
-| 📝 Palabras totales | **~55,600** |
+| 📄 Documentos SMART MARKDOWN | **6** |
+| 📝 Palabras totales | **~56,800** |
 | 📊 Tablas extraídas (PDFs) | **139** |
 | 🏢 Organizaciones detectadas | **7** |
 | 📍 Geografías mapeadas | **6** |
 | 🌱 Temas clasificados | **11** |
-| ⏱️ Tiempo de ejecución | **~48 segundos** |
+| ⏱️ Tiempo de ejecución pipeline | **~48 segundos** |
 
 ### Corpus generado
 
@@ -103,27 +132,34 @@ El corpus generado en la primera ejecución:
 | [Perfil Corporativo](data_processed/markdown/oficial_perfil_manuelit.md) | manuelita.com | 2,840 | — | 0.95 |
 | [Informe Sostenibilidad 2023-2024](data_processed/markdown/oficial_doc_manuelit.md) | PDF oficial | 17,687 | 21 | 0.97 |
 | [Informe Sostenibilidad 2021-2022](data_processed/markdown/oficial_pdf_sostenibilidad_manuelit.md) | PDF oficial | 17,078 | 118 | 0.97 |
+| [Datos Financieros Supersociedades](data_processed/markdown/financiero_supersociedades_manuelit.md) | Supersociedades 2019–2024 | 1,200 | 6 | 0.98 |
 | [LinkedIn Empresa](data_processed/markdown/red_social_linkedin_manuelit.md) | LinkedIn | — | — | 0.65 |
 | [Canal YouTube](data_processed/markdown/red_social_youtube_manuelit.md) | YouTube API v3 | — | — | 0.75 |
 
 ---
 
-## Arquitectura del pipeline
+## Arquitectura del sistema
 
 ```
-EXTRACT                    TRANSFORM                    LOAD
-─────────────────────────────────────────────────────────────
-                                                            
-  manuelita.com  ──┐                                        
-  PDFs públicos ──┤                                        
-  LinkedIn      ──┤  →  NLP (spaCy)    →  SMART MARKDOWN  
-  YouTube API   ──┤     Entidades         YAML frontmatter  
-  Google RSS    ──┘     Temas             Índice maestro    
-                        Cifras            JSON normalizado  
-                        Deduplicación                       
+MÓDULO 1 — BASE DE CONOCIMIENTO + SISTEMA Q&A
+══════════════════════════════════════════════════════════════════
+
+  CAPA 1: PIPELINE OSINT (Knowledge Base)
+  ─────────────────────────────────────────
+  manuelita.com  ──┐
+  PDFs públicos ──┤                        ┌─ SMART MARKDOWN
+  Supersocied.  ──┤ → NLP (spaCy) ──────→ ├─ YAML frontmatter
+  LinkedIn      ──┤   Entidades           └─ Índice maestro
+  YouTube API   ──┘   Temas · Cifras
+
+  CAPA 2: APLICACIÓN Q&A (LangChain + Streamlit)
+  ──────────────────────────────────────────────
+  Corpus texto  ──→ System Prompt ──→ LLM ──→ [ Resumen ]
+                                          ──→ [ FAQ     ]
+                                          ──→ [ Q&A     ]
 ```
 
-### Flujo ETL en 8 fases
+### Flujo ETL del pipeline — 8 fases
 
 ```
 1. DISCOVER    → sitemap.xml + crawl + detección de PDFs
@@ -142,76 +178,72 @@ EXTRACT                    TRANSFORM                    LOAD
 
 ### Prerrequisitos
 
-- Python **3.10+**
-- pip
+- Python **3.11+**
+- `uv` (recomendado) o `pip`
 - (Opcional) YouTube Data API Key — [obtener gratis en Google Cloud](https://console.cloud.google.com)
 - (Opcional) Tesseract OCR — para PDFs escaneados
 
-### Pasos
+### Con uv (recomendado)
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/proyecto-osint-manuelita.git
+git clone https://github.com/JuanMa0912/proyecto-osint-manuelita.git
 cd proyecto-osint-manuelita
 
-# 2. Crear entorno virtual
+# 2. Instalar dependencias con uv
+uv sync
+
+# 3. Instalar modelo NLP en español
+uv run python -m spacy download es_core_news_lg
+
+# 4. Configurar credenciales
+cp .env.example .env
+# Editar .env con tu YOUTUBE_API_KEY (opcional)
+```
+
+### Con pip (alternativa)
+
+```bash
 python -m venv venv
 source venv/bin/activate      # Linux/Mac
 # venv\Scripts\activate       # Windows
 
-# 3. Instalar dependencias
 pip install -r requirements.txt
-
-# 4. Instalar modelo NLP en español
 python -m spacy download es_core_news_lg
-
-# 5. Configurar credenciales
-cp .env.example .env
-# Editar .env con tu YOUTUBE_API_KEY (opcional)
 ```
 
 ---
 
 ## Uso
 
-### Pipeline completo (recomendado para primera ejecución)
+### Pipeline de Knowledge Base
 
 ```bash
-python src/main.py --quick      # ~10-15 min · fuentes prioritarias
-python src/main.py --full       # ~30-60 min · todas las fuentes
+uv run python src/main.py --quick      # ~10-15 min · fuentes prioritarias
+uv run python src/main.py --full       # ~30-60 min · todas las fuentes
+```
+
+### Aplicación Q&A (Streamlit)
+
+```bash
+uv run streamlit run app.py
 ```
 
 ### Por fase individual
 
 ```bash
-python src/main.py --phase discover    # Mapeo de fuentes
-python src/main.py --phase scrape      # Sitio web oficial
-python src/main.py --phase news        # Prensa y RSS
-python src/main.py --phase youtube     # Canal YouTube (requiere API key)
-python src/main.py --phase social      # Redes sociales
-python src/main.py --phase pdfs        # Informes PDF
-python src/main.py --phase normalize   # NLP y entidades
-python src/main.py --phase markdown    # Generar SMART MARKDOWN
-```
-
-### Por módulo directo
-
-```bash
-# Scrapear solo una página específica
-python -m src.scrapers.scrape_website --page perfil historia sostenibilidad
-
-# Procesar un PDF local
-python -m src.parsers.parse_pdfs --local ruta/al/informe.pdf
-
-# YouTube con límite de cuota conservador
-python -m src.scrapers.scrape_youtube_metadata --max-videos 50
+uv run python src/main.py --phase discover    # Mapeo de fuentes
+uv run python src/main.py --phase scrape      # Sitio web oficial
+uv run python src/main.py --phase pdfs        # Informes PDF
+uv run python src/main.py --phase normalize   # NLP y entidades
+uv run python src/main.py --phase markdown    # Generar SMART MARKDOWN
 ```
 
 ---
 
 ## Formato SMART MARKDOWN
 
-Cada documento generado incluye **YAML frontmatter semántico** optimizado para RAG:
+Cada documento del corpus incluye **YAML frontmatter semántico** que estructura la información para el sistema Q&A:
 
 ```yaml
 ---
@@ -226,28 +258,12 @@ entities:
   people: [Harold Eder (Presidente — Manuelita S.A.)]
   locations: [Cali, Valle del Cauca (Colombia), Trujillo (Perú), Puerto Montt (Chile)]
   products: [Azúcar refinada, Bioetanol combustible, Aceite de palma crudo, Biodiesel]
-  business_units: [Plataforma Azúcar y Energía, Plataforma Aceites y Energía]
-topics: [azucar_bioetanol, palma_biodiesel, acuicultura, mercados_internacionales]
 key_figures:
+  ingresos_2023_cop_millones: '1043562'
+  ebitda_2023_cop_millones: '369380'
   produccion_azucar_ton: '487000'
-  produccion_bioetanol_litros: '275000000'
-  años_historia: '161'
   paises_exportacion: '65'
 ---
-```
-
-El corpus es compatible con:
-
-```python
-# LangChain + ChromaDB
-from langchain.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
-from langchain.vectorstores import Chroma
-
-loader = DirectoryLoader("data_processed/markdown/", glob="*.md",
-                         loader_cls=UnstructuredMarkdownLoader)
-docs = loader.load()
-vectordb = Chroma.from_documents(docs, embeddings)
-respuesta = vectordb.similarity_search("¿Cuál es la meta de carbono de Manuelita para 2030?")
 ```
 
 ---
@@ -258,46 +274,36 @@ respuesta = vectordb.similarity_search("¿Cuál es la meta de carbono de Manueli
 proyecto_manuelita/
 │
 ├── 📋 README.md                      ← Este archivo
-├── 📦 requirements.txt               ← Dependencias Python
+├── 📦 pyproject.toml                 ← Dependencias (uv)
 ├── 🔑 .env.example                   ← Plantilla de configuración
+├── 🌐 app.py                         ← Interfaz Streamlit Q&A
 │
-├── src/                              ← Código fuente
+├── src/                              ← Código fuente pipeline
 │   ├── main.py                       ← Orquestador del pipeline
+│   ├── langchain_app/                ← Aplicación Q&A LangChain
+│   │   ├── qa_system.py              ← Motor Q&A (Resumen, FAQ, Q&A)
+│   │   └── prompts.py                ← Prompt Engineering documentado
 │   ├── utils/
-│   │   ├── config.py                 ← Configuración central tipada
-│   │   └── utils.py                  ← Funciones reutilizables (15+)
 │   ├── discover/
-│   │   └── discover_sources.py       ← Reconocimiento de fuentes
 │   ├── scrapers/
-│   │   ├── scrape_website.py         ← Sitio oficial WordPress
-│   │   ├── scrape_news.py            ← RSS + newspaper3k
-│   │   ├── scrape_social_links.py    ← Redes sociales (ético)
-│   │   └── scrape_youtube_metadata.py← YouTube Data API v3
 │   ├── parsers/
-│   │   └── parse_pdfs.py             ← pdfplumber → PyMuPDF → OCR
 │   ├── cleaners/
-│   │   └── normalize_entities.py     ← NLP, NER, deduplicación
 │   └── markdown_builders/
-│       └── build_smart_markdown.py   ← Generador SMART MARKDOWN
 │
-├── data_processed/                   ← 📤 Salidas del pipeline (en repo)
+├── data_processed/                   ← 📤 Corpus (en repo)
 │   └── markdown/
-│       ├── _INDICE_MAESTRO.md        ← Índice de todo el corpus
+│       ├── _INDICE_MAESTRO.md
 │       ├── oficial_perfil_manuelit.md
 │       ├── oficial_doc_manuelit.md
 │       ├── oficial_pdf_sostenibilidad_manuelit.md
+│       ├── financiero_supersociedades_manuelit.md
 │       ├── red_social_linkedin_manuelit.md
 │       └── red_social_youtube_manuelit.md
 │
-├── data_raw/                         ← 📥 Datos crudos (en .gitignore)
-│   ├── web/  social/  youtube/
-│   ├── news/  reviews/
-│   └── pdfs/  ← PDFs descargados (no versionados)
-│
-├── reports/                          ← Reportes de sesión
+├── data_raw/                         ← 📥 Datos crudos (.gitignore)
+├── reports/                          ← Reportes de sesión y Q&A tests
 ├── templates/
-│   └── smart_markdown_template.md    ← Plantilla base
-└── logs/                             ← Logs de ejecución (en .gitignore)
+└── logs/                             ← Logs de ejecución (.gitignore)
 ```
 
 ---
@@ -308,7 +314,7 @@ proyecto_manuelita/
 - Solo accede a información pública y abierta
 - Respeta `robots.txt` de cada sitio automáticamente
 - Implementa delays corteses (2-4s) entre requests
-- Usa APIs oficiales (YouTube Data API v3, Wikipedia API)
+- Usa APIs oficiales (YouTube Data API v3)
 - No almacena datos personales de individuos
 
 ❌ **Lo que NO hace:**
@@ -319,48 +325,37 @@ proyecto_manuelita/
 
 ---
 
-## Taxonomía de temas
-
-El corpus usa una taxonomía de **11 temas** específica para Manuelita:
-
-`azucar_bioetanol` · `palma_biodiesel` · `acuicultura` · `frutas_hortalizas`  
-`sostenibilidad_ambiental` · `sostenibilidad_social` · `sostenibilidad_economica`  
-`innovacion` · `gobernanza` · `talento_humano` · `mercados_internacionales`
-
----
-
-## Mejoras futuras
-
-- [ ] Sistema RAG completo con LangChain + ChromaDB
-- [ ] Scheduler para actualizaciones incrementales automáticas
-- [ ] Dashboard Streamlit para explorar el corpus
-- [ ] Expansión a subsidiarias: Agroindustrial Laredo, Mejillones América
-- [ ] Knowledge Graph con NetworkX / Neo4j
-- [ ] Análisis de sentimiento de noticias
-- [ ] Embeddings automáticos en cada pipeline run
-
----
-
 ## Stack tecnológico
 
 | Componente | Tecnología |
 |------------|-----------|
-| Scraping web | `requests` + `BeautifulSoup4` + `Playwright` |
+| Scraping web | `requests` + `BeautifulSoup4` |
 | Extracción PDF | `pdfplumber` → `PyMuPDF` → `pytesseract` |
 | NLP / NER | `spaCy` (es_core_news_lg) |
 | Noticias | `newspaper3k` + `feedparser` |
 | YouTube | YouTube Data API v3 |
 | Deduplicación | SHA256 + `MinHash LSH` (datasketch) |
-| Markdown | `python-frontmatter` + `jinja2` |
-| Configuración | `python-dotenv` |
+| Framework LLM | `LangChain` |
+| Interfaz | `Streamlit` |
+| Gestor paquetes | `uv` |
 | Logging | `loguru` |
-| Retries | `tenacity` |
+
+---
+
+## Fuentes de información
+
+- [Perfil Corporativo Manuelita](https://www.manuelita.com/perfil-corporativo/)
+- [Historia de la empresa](https://www.manuelita.com/historia/)
+- [Datos financieros Supersociedades](https://www.estrategiaenaccion.com/es/reportes)
+- Informes de Sostenibilidad 2021-2022 y 2023-2024 (PDFs oficiales)
+- Canal YouTube oficial Manuelita
+- Perfil LinkedIn corporativo
 
 ---
 
 <div align="center">
 
-**Construido para análisis corporativo serio sobre información pública**  
-Python · spaCy · pdfplumber · YouTube API · SMART MARKDOWN
+**Módulo 1 — Base de Conocimiento Semántico y Sistema Q&A**  
+Universidad Autónoma de Occidente · 2026
 
 </div>
