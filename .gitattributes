@@ -1,0 +1,30 @@
+# ============================================================
+# .gitattributes — Proyecto OSINT Manuelita
+# Normalización de line endings para equipos mixtos (Windows/Mac/Linux)
+# ============================================================
+
+# Por defecto: normalizar todo a LF en el repo, checkout según OS
+* text=auto
+
+# Archivos de texto → siempre LF en el repo
+*.py    text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.json  text eol=lf
+*.html  text eol=lf
+*.css   text eol=lf
+*.js    text eol=lf
+*.env   text eol=lf
+*.sh    text eol=lf
+
+# Archivos binarios → nunca modificar
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.zip   binary
+*.pkl   binary

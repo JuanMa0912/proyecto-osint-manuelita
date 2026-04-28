@@ -58,6 +58,16 @@ key_figures:
   produccion_bioetanol_litros: '275000000'
   años_historia: '161'
   paises_exportacion: '65'
+  ingresos_2023_cop_millones: '1043562'
+  ebitda_2023_cop_millones: '369380'
+  margen_ebitda_2023: '35.4%'
+  utilidad_neta_2023_cop_millones: '78153'
+  deuda_2023_cop_millones: '476917'
+  deuda_ebitda_2023: '1.3x'
+  nit: '891300241'
+  ciiu: C1071
+  ciudad_sede: Palmira, Valle del Cauca
+  fecha_constitucion: '1947-11-25'
 document_type: perfil
 word_count: 2840
 ---

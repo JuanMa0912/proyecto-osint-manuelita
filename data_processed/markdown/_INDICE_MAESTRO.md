@@ -1,18 +1,18 @@
 ---
 title: "Índice Maestro — Corpus OSINT Manuelita Agroindustrial"
-generated_at: "2026-04-18"
+generated_at: "2026-04-27"
 company: "Manuelita S.A."
-total_documents: 5
-total_words: 55605
+total_documents: 6
+total_words: 56805
 total_tables: 139
-sources_covered: ["oficial_web", "oficial_pdf", "red_social_linkedin", "red_social_youtube"]
-pipeline_version: "1.0.0"
+sources_covered: ["oficial_web", "oficial_pdf", "red_social_linkedin", "red_social_youtube", "oficial_financiero_supersociedades"]
+pipeline_version: "1.1.0"
 ---
 
 # 📚 Índice Maestro — Corpus OSINT Manuelita Agroindustrial
 
-> Corpus generado el `2026-04-18` · Pipeline OSINT v1.0.0  
-> **5 documentos** · **~55,605 palabras** · **139 tablas extraídas** · **4 tipos de fuente**
+> Corpus actualizado el `2026-04-27` · Pipeline OSINT v1.1.0  
+> **6 documentos** · **~56,805 palabras** · **139 tablas extraídas** · **5 tipos de fuente**
 
 ---
 
@@ -22,17 +22,20 @@ pipeline_version: "1.0.0"
 CORPUS MANUELITA S.A.
 │
 ├── 🌐 FUENTE OFICIAL — manuelita.com
-│   └── oficial_perfil_manuelit.md              (2,840 palabras · confianza 0.95)
+│   └── oficial_perfil_manuelit.md                    (2,840 palabras · confianza 0.95)
 │
 ├── 📄 FUENTE OFICIAL — PDFs Sostenibilidad
-│   ├── oficial_doc_manuelit.md                 (17,687 palabras · 146 págs · 21 tablas · confianza 0.97)
-│   └── oficial_pdf_sostenibilidad_manuelit.md  (17,078 palabras · 113 págs · 118 tablas · confianza 0.97)
+│   ├── oficial_doc_manuelit.md                       (17,687 palabras · 146 págs · 21 tablas · confianza 0.97)
+│   └── oficial_pdf_sostenibilidad_manuelit.md        (17,078 palabras · 113 págs · 118 tablas · confianza 0.97)
+│
+├── 💰 FUENTE OFICIAL — Supersociedades (financiero)
+│   └── financiero_supersociedades_manuelit.md        (1,200 palabras · serie 2019-2024 · confianza 0.98)
 │
 ├── 💼 RED SOCIAL — LinkedIn
-│   └── red_social_linkedin_manuelit.md         (datos verificados · 123K seguidores · confianza 0.65)
+│   └── red_social_linkedin_manuelit.md               (datos verificados · 123K seguidores · confianza 0.65)
 │
 └── 🎬 RED SOCIAL — YouTube
-    └── red_social_youtube_manuelit.md          (canal oficial · YouTube Data API v3 · confianza 0.75)
+    └── red_social_youtube_manuelit.md                (canal oficial · YouTube Data API v3 · confianza 0.75)
 ```
 
 ---
@@ -46,7 +49,19 @@ CORPUS MANUELITA S.A.
 | [oficial_perfil_manuelit.md](./oficial_perfil_manuelit.md) | 2,840 | requests + BS4 | `0.95` | [perfil-corporativo](https://www.manuelita.com/perfil-corporativo/) |
 
 **Entidades:** Manuelita S.A. · Manuelita Azúcar y Energía · Manuelita Aceites y Energía · Agroindustrial Laredo S.A. · Mejillones América · Harold Eder  
-**Cifras:** 487,000 ton/año azúcar · 275M litros bioetanol · 161 años · 65 países de exportación
+**Cifras operativas:** 487,000 ton/año azúcar · 275M litros bioetanol · 161 años · 65 países de exportación  
+**Cifras financieras:** Ingresos 2023: $1.043.562M COP · EBITDA: $369.380M (35,4%) · Utilidad neta: $78.153M · NIT: 891.300.241
+
+---
+
+### 💰 Financiero Supersociedades (1 documento)
+
+| Archivo | Período | Fuente | Confianza |
+|---------|---------|--------|-----------|
+| [financiero_supersociedades_manuelit.md](./financiero_supersociedades_manuelit.md) | 2019–2024 | Supersociedades vía Estrategia en Acción | `0.98` |
+
+**KPIs 2023:** Ingresos $1.043.562M · EBITDA $369.380M (35,4%) · Deuda/EBITDA 1,3x · Utilidad neta $78.153M  
+**Tendencia:** Ingresos superaron el billón COP en 2022 y se mantienen en 2024 · EBITDA máximo histórico en 2024 ($388.760M · 37,1%)
 
 ---
 
@@ -94,7 +109,7 @@ CORPUS MANUELITA S.A.
 | `sostenibilidad_social` | 2 | `█████████░░░` Alta |
 | `acuicultura` | 2 | `███████░░░░░` Media |
 | `mercados_internacionales` | 2 | `██████░░░░░░` Media |
-| `sostenibilidad_economica` | 2 | `██████░░░░░░` Media |
+| `sostenibilidad_economica` | 3 | `████████████` Alta |
 | `gobernanza` | 1 | `███░░░░░░░░░` Baja |
 | `innovacion` | 1 | `███░░░░░░░░░` Baja |
 
@@ -110,4 +125,5 @@ CORPUS MANUELITA S.A.
 
 ---
 
-*Generado con [proyecto-osint-manuelita](https://github.com/tu-usuario/proyecto-osint-manuelita) · v1.0.0 · 2026-04-18*
+*Generado con [proyecto-osint-manuelita](https://github.com/tu-usuario/proyecto-osint-manuelita) · v1.1.0 · 2026-04-27*  
+*v1.1.0: Adición de datos financieros oficiales Supersociedades 2019–2024*
