@@ -67,6 +67,7 @@ def run_full_pipeline(quick: bool = False) -> dict:
     logger.info("\n📡 FASE 1/6: DESCUBRIMIENTO DE FUENTES")
     try:
         from src.discover.discover_sources import run_discovery
+
         sources = run_discovery()
         session_summary["phases"]["discover"] = {
             "status": "ok",
@@ -84,7 +85,14 @@ def run_full_pipeline(quick: bool = False) -> dict:
     try:
         from src.scrapers.scrape_website import run_website_scraper
 
-        priority_pages = ["home", "perfil", "historia", "presencia", "plataformas", "sostenibilidad"]
+        priority_pages = [
+            "home",
+            "perfil",
+            "historia",
+            "presencia",
+            "plataformas",
+            "sostenibilidad",
+        ]
         pages = priority_pages if quick else None
         results = run_website_scraper(pages=pages, scrape_all=not quick)
 
@@ -94,7 +102,9 @@ def run_full_pipeline(quick: bool = False) -> dict:
             "pages_total": len(results),
             "pages_ok": len(successful),
         }
-        logger.success(f"✅ Fase 2 completada: {len(successful)}/{len(results)} páginas")
+        logger.success(
+            f"✅ Fase 2 completada: {len(successful)}/{len(results)} páginas"
+        )
     except Exception as e:
         logger.error(f"❌ Fase 2 falló: {e}")
         session_summary["phases"]["scrape_web"] = {"status": "error", "error": str(e)}
@@ -106,6 +116,7 @@ def run_full_pipeline(quick: bool = False) -> dict:
         logger.info("\n📰 FASE 3A/6: SCRAPING DE NOTICIAS Y PRENSA")
         try:
             from src.scrapers.scrape_news import run_news_scraper
+
             news = run_news_scraper(max_full_articles=30)
             session_summary["phases"]["scrape_news"] = {
                 "status": "ok",
@@ -115,7 +126,10 @@ def run_full_pipeline(quick: bool = False) -> dict:
             logger.success("✅ Fase 3A completada")
         except Exception as e:
             logger.error(f"❌ Fase 3A falló: {e}")
-            session_summary["phases"]["scrape_news"] = {"status": "error", "error": str(e)}
+            session_summary["phases"]["scrape_news"] = {
+                "status": "error",
+                "error": str(e),
+            }
 
     # ==========================================
     # FASE 3B: REDES SOCIALES
@@ -123,6 +137,7 @@ def run_full_pipeline(quick: bool = False) -> dict:
     logger.info("\n📱 FASE 3B/6: EXTRACCIÓN REDES SOCIALES")
     try:
         from src.scrapers.scrape_social_links import run_social_scraper
+
         social = run_social_scraper()
         session_summary["phases"]["scrape_social"] = {
             "status": "ok",
@@ -131,7 +146,10 @@ def run_full_pipeline(quick: bool = False) -> dict:
         logger.success("✅ Fase 3B completada")
     except Exception as e:
         logger.error(f"❌ Fase 3B falló: {e}")
-        session_summary["phases"]["scrape_social"] = {"status": "error", "error": str(e)}
+        session_summary["phases"]["scrape_social"] = {
+            "status": "error",
+            "error": str(e),
+        }
 
     # ==========================================
     # FASE 3C: YOUTUBE
@@ -139,6 +157,7 @@ def run_full_pipeline(quick: bool = False) -> dict:
     logger.info("\n🎬 FASE 3C/6: METADATOS YOUTUBE")
     try:
         from src.scrapers.scrape_youtube_metadata import run_youtube_scraper
+
         yt = run_youtube_scraper(max_videos=50 if quick else 200)
         session_summary["phases"]["scrape_youtube"] = {
             "status": "ok",
@@ -147,7 +166,10 @@ def run_full_pipeline(quick: bool = False) -> dict:
         logger.success("✅ Fase 3C completada")
     except Exception as e:
         logger.error(f"❌ Fase 3C falló: {e}")
-        session_summary["phases"]["scrape_youtube"] = {"status": "error", "error": str(e)}
+        session_summary["phases"]["scrape_youtube"] = {
+            "status": "error",
+            "error": str(e),
+        }
 
     # ==========================================
     # FASE 3D: PDFs
@@ -155,6 +177,7 @@ def run_full_pipeline(quick: bool = False) -> dict:
     logger.info("\n📄 FASE 3D/6: EXTRACCIÓN DE PDFs")
     try:
         from src.parsers.parse_pdfs import run_pdf_parser
+
         pdfs = run_pdf_parser()
         ok_pdfs = [p for p in pdfs if p.get("status") == "ok"]
         session_summary["phases"]["parse_pdfs"] = {
@@ -173,12 +196,15 @@ def run_full_pipeline(quick: bool = False) -> dict:
     logger.info("\n🧠 FASE 4/6: NORMALIZACIÓN Y EXTRACCIÓN DE ENTIDADES")
     try:
         from src.cleaners.normalize_entities import run_normalization
+
         normalized = run_normalization()
         session_summary["phases"]["normalize"] = {
             "status": "ok",
             "documents_normalized": len(normalized),
         }
-        logger.success(f"✅ Fase 4 completada: {len(normalized)} documentos normalizados")
+        logger.success(
+            f"✅ Fase 4 completada: {len(normalized)} documentos normalizados"
+        )
     except Exception as e:
         logger.error(f"❌ Fase 4 falló: {e}")
         session_summary["phases"]["normalize"] = {"status": "error", "error": str(e)}
@@ -189,6 +215,7 @@ def run_full_pipeline(quick: bool = False) -> dict:
     logger.info("\n✍️  FASE 5/6: GENERACIÓN DE SMART MARKDOWN")
     try:
         from src.markdown_builders.build_smart_markdown import run_markdown_builder
+
         md_files = run_markdown_builder()
         session_summary["phases"]["build_markdown"] = {
             "status": "ok",
@@ -197,17 +224,22 @@ def run_full_pipeline(quick: bool = False) -> dict:
         logger.success(f"✅ Fase 5 completada: {len(md_files)} archivos Markdown")
     except Exception as e:
         logger.error(f"❌ Fase 5 falló: {e}")
-        session_summary["phases"]["build_markdown"] = {"status": "error", "error": str(e)}
+        session_summary["phases"]["build_markdown"] = {
+            "status": "error",
+            "error": str(e),
+        }
 
     # ==========================================
     # FASE 6: REPORTE FINAL
     # ==========================================
     session_duration = round(time.time() - session_start, 1)
-    session_summary.update({
-        "finished_at": now_iso(),
-        "duration_seconds": session_duration,
-        "status": "completed",
-    })
+    session_summary.update(
+        {
+            "finished_at": now_iso(),
+            "duration_seconds": session_duration,
+            "status": "completed",
+        }
+    )
 
     # Guardar resumen de sesión
     session_path = paths_cfg.reports / f"session_{session_summary['session_id']}.json"
@@ -218,9 +250,11 @@ def run_full_pipeline(quick: bool = False) -> dict:
     logger.info("  📊 RESUMEN FINAL DEL PIPELINE")
     logger.info("=" * 70)
     logger.info(f"  Duración total: {session_duration}s")
-    logger.info(f"  Fases completadas: "
-                f"{sum(1 for p in session_summary['phases'].values() if p.get('status') == 'ok')}"
-                f"/{len(session_summary['phases'])}")
+    logger.info(
+        f"  Fases completadas: "
+        f"{sum(1 for p in session_summary['phases'].values() if p.get('status') == 'ok')}"
+        f"/{len(session_summary['phases'])}"
+    )
     logger.info(f"  Reporte guardado: {session_path}")
     logger.info("=" * 70)
 
@@ -236,25 +270,37 @@ if __name__ == "__main__":
         description="Pipeline OSINT Manuelita Agroindustrial",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Ejemplos de uso:
-  python src/main.py --full              # Pipeline completo
-  python src/main.py --quick             # Solo fuentes prioritarias
-  python src/main.py --phase discover    # Solo descubrimiento
-  python src/main.py --phase scrape      # Solo scraping web
-  python src/main.py --phase pdfs        # Solo PDFs
-  python src/main.py --phase normalize   # Solo normalización
-  python src/main.py --phase markdown    # Solo generación Markdown
+            Ejemplos de uso:
+            python src/main.py --full              # Pipeline completo
+            python src/main.py --quick             # Solo fuentes prioritarias
+            python src/main.py --phase discover    # Solo descubrimiento
+            python src/main.py --phase scrape      # Solo scraping web
+            python src/main.py --phase pdfs        # Solo PDFs
+            python src/main.py --phase normalize   # Solo normalización
+            python src/main.py --phase markdown    # Solo generación Markdown
         """,
     )
 
-    parser.add_argument("--full", action="store_true",
-                        help="Ejecutar pipeline completo")
-    parser.add_argument("--quick", action="store_true",
-                        help="Solo fuentes de alta prioridad")
-    parser.add_argument("--phase",
-                        choices=["discover", "scrape", "news", "youtube",
-                                 "social", "pdfs", "normalize", "markdown"],
-                        help="Ejecutar una fase específica")
+    parser.add_argument(
+        "--full", action="store_true", help="Ejecutar pipeline completo"
+    )
+    parser.add_argument(
+        "--quick", action="store_true", help="Solo fuentes de alta prioridad"
+    )
+    parser.add_argument(
+        "--phase",
+        choices=[
+            "discover",
+            "scrape",
+            "news",
+            "youtube",
+            "social",
+            "pdfs",
+            "normalize",
+            "markdown",
+        ],
+        help="Ejecutar una fase específica",
+    )
 
     args = parser.parse_args()
 
@@ -263,34 +309,42 @@ Ejemplos de uso:
 
     elif args.phase == "discover":
         from src.discover.discover_sources import run_discovery
+
         run_discovery()
 
     elif args.phase == "scrape":
         from src.scrapers.scrape_website import run_website_scraper
+
         run_website_scraper(scrape_all=True)
 
     elif args.phase == "news":
         from src.scrapers.scrape_news import run_news_scraper
+
         run_news_scraper()
 
     elif args.phase == "youtube":
         from src.scrapers.scrape_youtube_metadata import run_youtube_scraper
+
         run_youtube_scraper()
 
     elif args.phase == "social":
         from src.scrapers.scrape_social_links import run_social_scraper
+
         run_social_scraper()
 
     elif args.phase == "pdfs":
         from src.parsers.parse_pdfs import run_pdf_parser
+
         run_pdf_parser()
 
     elif args.phase == "normalize":
         from src.cleaners.normalize_entities import run_normalization
+
         run_normalization()
 
     elif args.phase == "markdown":
         from src.markdown_builders.build_smart_markdown import run_markdown_builder
+
         run_markdown_builder()
 
     else:
