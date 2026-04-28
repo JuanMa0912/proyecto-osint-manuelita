@@ -303,12 +303,36 @@ proyecto_manuelita/
 
 ## Fuentes de información
 
-- [Perfil Corporativo Manuelita](https://www.manuelita.com/perfil-corporativo/)
+### 🏢 Corporativo
+- [Perfil Corporativo](https://www.manuelita.com/perfil-corporativo/)
 - [Historia de la empresa](https://www.manuelita.com/historia/)
-- [Datos financieros Supersociedades](https://www.estrategiaenaccion.com/es/reportes)
-- Informes de Sostenibilidad 2021-2022 y 2023-2024 (PDFs oficiales)
-- Canal YouTube oficial Manuelita
-- Perfil LinkedIn corporativo
+- [Gobierno Corporativo](https://www.manuelita.com/gobierno-corporativo/)
+- [Línea Ética](https://www.manuelita.com/linea-etica/)
+- [Ubicación espacial — Google Maps](https://www.google.com/maps/place/Ingenio+Manuelita/@3.5866869,-76.3348015,7868m/data=!3m1!1e3!4m10!1m2!2m1!1sfundaci%C3%B3n+manuelita+cali!3m6!1s0x8e3a031047e59b9d:0x9cb27379c1be0d59!8m2!3d3.5866877!4d-76.3053523!15sChlmdW5kYWNpw7NuIG1hbnVlbGl0YSBjYWxpgOIAQGSAR1pbmR1c3RyaWFsX2VxdWlwbWVudF9zdXBwbGllcuABAA!16s%2Fg%2F11c0qyq237?hl=es&entry=ttu&g_ep=EgoyMDI2MDQyMi4wIKXMDSoASAFQAw%3D%3D)
+
+### 🌱 Sostenibilidad
+- [Informe Sostenibilidad 2023-2024 (PDF)](https://www.manuelita.com/wp-content/uploads/2025/09/Informe-Manuelita-gobierno-corporativo.pdf)
+- [Sostenibilidad Ambiental](https://www.manuelita.com/sostenib/ambiental/)
+- [Sostenibilidad Económica](https://www.manuelita.com/economico/)
+- [Noticias Ingenio](https://www.manuelita.com/manuelita-noticias/)
+
+### 🛒 Productos
+- [Azúcar Industrial](https://www.manuelitaindustria.com/)
+- [Energías Renovables](https://www.manuelita.com/manuelita-productos/energias-renovables/)
+- [Derivados de la Caña](https://www.manuelita.com/manuelita-productos/derivados-de-la-cana/)
+- [Derivados de la Palma](https://www.manuelita.com/manuelita-productos/derivados-de-la-palma/)
+- [Frutas y Hortalizas](https://www.manuelita.com/manuelita-productos/frutas-y-hortalizas/)
+- [Mejillones](https://www.manuelita.com/manuelita-productos/mejillones/)
+
+### 🤝 Comunidad y Talento
+- [Fundación Manuelita](https://fundacionmanuelita.org/)
+- [Donaciones Fundación](https://fundacionmanuelita.org/donaciones/)
+- [Vacantes disponibles](https://www.manuelita.com/talento/)
+- [Portal Proveedores Caña](https://proveedores-cana.manuelita.com/static/index.html#/)
+
+### 💰 Financiero
+- [Datos Financieros Supersociedades](https://www.estrategiaenaccion.com/es/reportes)
+- [Publicaciones / Valle Online](https://www.valleonline.org/)
 
 ---
 
