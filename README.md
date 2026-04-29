@@ -25,7 +25,7 @@
 |-----------|--------|
 | Juan Manuel Velázquez Terreros | 22501347 |
 | Julián Andrés Herrera Sánchez | 22500247 |
-| Juan Sebastián Plazas Gallo | — |
+| Juan Sebastián Plazas Gallo | 22501580 |
 | Juliana María Lozano Santa | 22500696 |
 
 ---
