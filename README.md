@@ -19,7 +19,7 @@
 
 ## Actividad Módulo 1 — Creación de la Base de Conocimiento Semántico y Sistema Q&A
 
-**Universidad Autónoma de Occidente — Ingeniería de Sistemas**
+**Universidad Autónoma de Occidente — Maestria En IA y Ciencia de Datos**
 
 | Estudiante | Código |
 |-----------|--------|
