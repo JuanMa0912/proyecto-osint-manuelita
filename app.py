@@ -289,11 +289,11 @@ def render_sidebar() -> tuple[float, int, str, str]:
 
         st.divider()
         if selected_provider == "gemini":
-            st.markdown(f"**Modelo** `{GEMINI_MODEL}`")
+            st.markdown(f"**Modelo** {GEMINI_MODEL}")
             st.markdown("**Motor** Google Gemini API")
             st.markdown("**Tier** Free — AI Studio")
         else:
-            st.markdown(f"**Modelo** `{MODEL_NAME}`")
+            st.markdown(f"**Modelo** {MODEL_NAME}")
             st.markdown("**Motor** Ollama local")
         st.markdown("**Framework** LangChain")
 
