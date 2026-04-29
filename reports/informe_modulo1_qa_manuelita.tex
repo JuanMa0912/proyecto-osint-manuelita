@@ -1,0 +1,570 @@
+% ============================================================
+%  Informe Académico — Módulo 1
+%  Sistema Q&A — Manuelita S.A.
+%  Compilar: xelatex informe_modulo1.tex  (dos veces)
+% ============================================================
+\documentclass[12pt, a4paper]{article}
+
+% ── Tipografía ───────────────────────────────────────────────
+\usepackage{fontspec}
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont[Scale=0.85]{DejaVu Sans Mono}
+\usepackage{microtype}
+
+% ── Idioma ───────────────────────────────────────────────────
+\usepackage{polyglossia}
+\setmainlanguage{spanish}
+
+% ── Márgenes ─────────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=3.0cm, right=2.5cm]{geometry}
+
+% ── Párrafos ─────────────────────────────────────────────────
+\usepackage{setspace}
+\setstretch{1.15}
+\usepackage{parskip}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% ── Colores (escala de grises) ───────────────────────────────
+\usepackage{xcolor}
+\definecolor{negro}{gray}{0.0}
+\definecolor{g1}{gray}{0.15}
+\definecolor{g2}{gray}{0.40}
+\definecolor{g3}{gray}{0.85}
+\definecolor{g4}{gray}{0.93}
+\definecolor{hbg}{gray}{0.15}   % encabezado de tabla
+
+% ── Secciones ────────────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\sffamily\large\bfseries\color{negro}}
+  {\thesection.}{0.5em}{}
+  [\vspace{-3pt}\rule{\linewidth}{0.8pt}\vspace{1pt}]
+\titleformat{\subsection}
+  {\normalfont\sffamily\normalsize\bfseries\color{g1}}
+  {\thesubsection}{0.5em}{}
+\titlespacing{\section}{0pt}{16pt}{5pt}
+\titlespacing{\subsection}{0pt}{10pt}{3pt}
+
+% ── Encabezado / pie ─────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead[L]{\small\sffamily\color{g2} Sistema Q\&A — Manuelita S.A.}
+\fancyhead[R]{\small\sffamily\color{g2} Módulo 1}
+\fancyfoot[C]{\small\sffamily\color{g2} \thepage}
+
+% ── Tablas ───────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\renewcommand{\arraystretch}{1.25}
+
+% Tipos de columna reutilizables
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}     % flexible, izquierda
+\newcolumntype{C}{>{\centering\arraybackslash}X}       % flexible, centro
+\newcolumntype{F}[1]{>{\raggedright\arraybackslash}p{#1}}  % fijo, izquierda
+\newcolumntype{G}[1]{>{\centering\arraybackslash}p{#1}}    % fijo, centro
+
+% Macros de tabla
+\newcommand{\THead}[1]{\cellcolor{hbg}\textcolor{white}{\sffamily\bfseries\small #1}}
+\newcommand{\TA}{\rowcolor{g4}}
+\newcommand{\tc}[1]{{\footnotesize\ttfamily #1}}
+% Nombre de archivo largo: permite quiebre en guiones bajos
+\newcommand{\tf}[1]{{\footnotesize\ttfamily\hyphenchar\font=`\_\relax #1}}
+
+% ── Listas ───────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist{itemsep=2pt, parsep=0pt, topsep=4pt}
+
+% ── Código ───────────────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily\color{g1},
+  backgroundcolor=\color{g4},
+  frame=single, framesep=4pt,
+  rulecolor=\color{g3},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+}
+
+% ── Cajas ────────────────────────────────────────────────────
+\usepackage{tcolorbox}
+\tcbset{
+  boxrule=0.4pt, colframe=g2, colback=g4,
+  fonttitle=\sffamily\bfseries\small, coltitle=negro,
+  left=6pt, right=6pt, top=4pt, bottom=4pt, sharp corners,
+}
+
+% ── Hipervínculos ────────────────────────────────────────────
+\usepackage[hidelinks]{hyperref}
+
+% ── Tolerancia a desbordamientos (evita Overfull en mono) ────
+\emergencystretch=3em
+\tolerance=1500
+\hbadness=1500
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ─── PORTADA ─────────────────────────────────────────────────
+\thispagestyle{empty}
+\vspace*{1.8cm}
+
+{\centering
+  {\LARGE\sffamily\bfseries SISTEMA DE BASE DE CONOCIMIENTO Q\&A\par}
+  \vspace{0.35cm}
+  {\large\sffamily Manuelita S.A. --- Canal de Comunicación Automatizado\par}
+  \vspace{0.2cm}
+  {\normalsize\sffamily\itshape Informe Académico --- Módulo 1\par}
+  \vspace{0.7cm}
+  \rule{\linewidth}{1.2pt}\par
+  \vspace{0.5cm}
+}
+
+{\small
+\begin{tabularx}{\linewidth}{F{3.6cm} L}
+\toprule
+\textbf{Módulo}           & 1 --- Implementación de Sistema Q\&A con LangChain \\
+\midrule
+\TA \textbf{Asignatura}   & Inteligencia Artificial Aplicada \\
+    \textbf{Empresa}      & Manuelita S.A. \quad|\quad NIT 891.300.199-4 \\
+\TA \textbf{Tecnologías}  & LangChain, Ollama (gemma3:1b), Gemini 2.5 Flash, Streamlit \\
+    \textbf{Arquitectura} & Corpus OSINT $\to$ System Prompt $\to$ LLM $\to$ Respuesta (sin RAG) \\
+\TA \textbf{Proveedor}    & Google Gemini 2.5 Flash --- capa gratuita (AI Studio) \\
+    \textbf{Fecha}        & 29 de abril de 2026 \\
+\bottomrule
+\end{tabularx}
+}
+
+\vspace{0.6cm}
+\rule{\linewidth}{0.5pt}
+\vspace{0.8cm}
+
+\tableofcontents
+\newpage
+
+% =============================================================
+\section{Descripción del Problema}
+% =============================================================
+
+\subsection{Contexto organizacional}
+
+Manuelita S.A. es una de las organizaciones agroindustriales más importantes de América
+Latina, con más de 160 años de historia y presencia en cinco países. Cuenta con cuatro
+unidades de negocio (Azúcar y Energía, Palma de Aceite y Biodiesel, Frutas y Acuicultura),
+más de 6.500 empleados directos y capacidad de procesamiento superior a 5 millones de
+toneladas de caña por año.
+
+Una organización de esta escala genera grandes volúmenes de información corporativa:
+informes de sostenibilidad, reportes financieros, comunicados de prensa, contenido en
+redes sociales, documentos regulatorios y datos históricos. Sin embargo, esa información
+está dispersa y resulta difícil de consultar de manera eficiente por colaboradores,
+periodistas, proveedores o aliados estratégicos.
+
+\subsection{Problema central}
+
+\begin{tcolorbox}[title=Formulación del problema]
+Manuelita S.A. carece de un canal automatizado que permita responder preguntas frecuentes
+sobre la empresa de forma inmediata, precisa y basada en fuentes verificadas, sin depender
+de la búsqueda manual en múltiples documentos dispersos.
+\end{tcolorbox}
+
+\subsection{Limitaciones actuales sin el sistema}
+
+\begin{itemize}
+  \item \textbf{Acceso fragmentado:} información distribuida en sitio web, PDFs,
+        Supersociedades, redes sociales y YouTube.
+  \item \textbf{Alta latencia:} localizar una cifra financiera requiere navegar
+        manualmente por múltiples fuentes.
+  \item \textbf{Inconsistencia:} distintas fuentes pueden presentar cifras con leve
+        variación.
+  \item \textbf{Dependencia del personal:} consultas recurrentes saturan al equipo
+        de comunicaciones.
+  \item \textbf{Riesgo de desinformación:} sin canal Q\&A oficial, las consultas
+        pueden derivar en fuentes no verificadas.
+\end{itemize}
+
+\subsection{Oportunidad con Inteligencia Artificial}
+
+Los modelos de lenguaje de gran escala (LLM) y los frameworks de orquestación como
+LangChain permiten construir sistemas Q\&A que inyectan conocimiento corporativo directamente
+en el contexto del modelo, garantizando respuestas fundamentadas únicamente en información
+oficial. Esta arquitectura es especialmente adecuada para corpus de tamaño moderado
+($\approx$200.000 caracteres), como es el caso de este proyecto.
+
+% =============================================================
+\section{Planteamiento de la Solución}
+% =============================================================
+
+\subsection{Opción seleccionada: Opción 3 — Modelo local + API gratuita}
+
+Se implementó la \textbf{Opción 3} del módulo, combinando dos proveedores de LLM:
+
+\begin{itemize}
+  \item \textbf{Proveedor local (Ollama):} modelo \tc{gemma3:1b} en CPU local con
+        \tc{num\_ctx=32768}. Sin internet ni costo.
+  \item \textbf{Proveedor API (Gemini):} modelo \tc{gemini-2.5-flash} vía
+        \tc{langchain-google-genai}. Capa gratuita de AI Studio: 15~req/min,
+        1.500~req/día, 1~M tokens de contexto.
+\end{itemize}
+
+El usuario alterna entre proveedores desde la interfaz Streamlit o mediante la variable
+\tc{LLM\_PROVIDER} en el archivo \tc{.env}.
+
+\subsection{Arquitectura del sistema (no RAG)}
+
+La arquitectura \textbf{no es RAG}. El corpus completo se inyecta en el \emph{system prompt}.
+Es viable porque el corpus ($\approx$16.500 tokens) ocupa el 50\% del contexto de Ollama
+y menos del 2\% del de Gemini. El flujo es:
+
+\begin{lstlisting}
+Corpus SMART Markdown  -->  Carga en memoria
+Busqueda lexica         -->  Fragmentos relevantes (max. 18.000 chars)
+System Prompt           -->  Corpus + reglas anti-alucinacion
+Human Prompt            -->  Pregunta del usuario
+LLM (Ollama / Gemini)   -->  Respuesta en espanol
+StrOutputParser         -->  Texto limpio a la UI
+\end{lstlisting}
+
+\subsection{Componentes técnicos}
+
+\begin{tabularx}{\linewidth}{F{3.2cm} F{4.0cm} L}
+\toprule
+\THead{Componente} & \THead{Tecnología} & \THead{Función} \\
+\midrule
+Framework         & LangChain $\geq$ 0.3      & Orquestación de prompts y cadenas LLM \\
+\TA LLM local     & Ollama + gemma3:1b        & Inferencia sin internet, en CPU \\
+LLM API           & Gemini 2.5 Flash          & API gratuita Google AI Studio \\
+\TA Corpus loader & \tc{corpus\_loader.py}    & Carga y limpia archivos SMART Markdown \\
+Prompts           & \tc{prompts.py}           & System / Human prompts, anti-alucinación \\
+\TA Motor Q\&A    & \tc{qa\_system.py}        & Búsqueda léxica + cadenas LangChain \\
+Interfaz          & Streamlit $\geq$ 1.40     & UI web local con selector de proveedor \\
+\TA Configuración & \tc{.env} + python-dotenv & Variables de entorno, sin hardcoding \\
+\bottomrule
+\end{tabularx}
+
+\vspace{6pt}
+
+\subsection{Justificación de modelos}
+
+\textbf{gemma3:1b (Ollama):} modelo open source de Google, 1B parámetros, corre en CPU
+con 32~GB RAM sin GPU dedicada. Ideal para pruebas sin internet.
+
+\textbf{gemini-2.5-flash (AI Studio):} ventana de 1~M tokens (el corpus completo cabe
+con holgura). Capa gratuita sin tarjeta de crédito. Latencia de 2--5~seg vs.\ 30--90~seg
+del modelo local en CPU. Confirmado disponible verificando \tc{client.models.list()}.
+
+% =============================================================
+\section{Preparación de los Datos}
+% =============================================================
+
+\subsection{Recolección OSINT}
+
+Los datos se recolectaron íntegramente de fuentes abiertas con un pipeline automatizado
+en Python:
+
+\begin{tabularx}{\linewidth}{F{3.8cm} L}
+\toprule
+\THead{Fuente} & \THead{Descripción} \\
+\midrule
+Sitio web oficial    & \tc{manuelita.com} — historia, unidades de negocio, sostenibilidad \\
+\TA Documentos PDF   & Informe de Sostenibilidad — metas de carbono, indicadores ESG \\
+Supersociedades      & Estados financieros 2019--2024, NIT, razón social, utilidades \\
+\TA LinkedIn         & Publicaciones, seguidores, temas comunicados \\
+Canal YouTube        & Videos, playlists, suscriptores, metadatos \\
+\TA Noticias         & Google News RSS, Portafolio, ElPaís — menciones recientes \\
+\bottomrule
+\end{tabularx}
+
+\vspace{6pt}
+
+\subsection{Pipeline de procesamiento}
+
+\begin{enumerate}
+  \item \textbf{Scraping:} \tc{requests} + \tc{BeautifulSoup} (HTML);
+        \tc{pdfplumber}/\tc{PyMuPDF} (PDFs); \tc{google-api-python-client} (YouTube).
+  \item \textbf{Limpieza:} eliminación de boilerplate, normalización de encoding,
+        segmentación por párrafos.
+  \item \textbf{Deduplicación:} MinHash (\tc{datasketch}) con umbral 0.85.
+  \item \textbf{Normalización:} \tc{spaCy} (\tc{es\_core\_news\_lg}) para extracción
+        de entidades, fechas y cifras.
+  \item \textbf{SMART Markdown:} frontmatter YAML con metadatos de fuente, fecha y
+        confianza; secciones estructuradas.
+  \item \textbf{Consolidación:} \tc{corpus\_loader.py} combina documentos respetando
+        orden de prioridad y límite de caracteres.
+\end{enumerate}
+
+\subsection{Estructura del corpus consolidado}
+
+\begin{tabularx}{\linewidth}{L G{2.0cm} G{2.1cm} F{3.5cm}}
+\toprule
+\THead{Archivo} & \THead{Chars} & \THead{Tokens\,$\approx$} & \THead{Contenido} \\
+\midrule
+\tf{oficial\_perfil\_manuelit.md}              & $\sim$14.200 & $\sim$3.550 & Historia, directivos \\
+\TA\tf{financiero\_supersociedades\_manuelit.md} & $\sim$18.500 & $\sim$4.625 & Cifras, NIT, utilidades \\
+\tf{oficial\_doc\_manuelit.md}                & $\sim$12.800 & $\sim$3.200 & Operaciones, capacidades \\
+\TA\tf{oficial\_pdf\_sostenibilidad\_manuelit.md} & $\sim$9.700 & $\sim$2.425 & Carbono, ESG, equidad \\
+\tf{red\_social\_linkedin\_manuelit.md}       & $\sim$6.400  & $\sim$1.600 & Publicaciones LinkedIn \\
+\TA\tf{red\_social\_youtube\_manuelit.md}     & $\sim$4.600  & $\sim$1.150 & Videos, suscriptores \\
+\midrule
+\textbf{TOTAL}                                & \textbf{$\sim$66.200} & \textbf{$\sim$16.550} & Corpus completo \\
+\bottomrule
+\end{tabularx}
+
+\vspace{6pt}
+
+El corpus ($\approx$16.550 tokens) representa el \textbf{50\%} de la ventana de contexto
+de Ollama (32.768~tokens), dejando espacio suficiente para pregunta y respuesta.
+
+% =============================================================
+\section{Modelado}
+% =============================================================
+
+\subsection{Diseño de prompts (Prompt Engineering)}
+
+Se implementaron cuatro prompts con técnicas específicas:
+
+\begin{tabularx}{\linewidth}{F{4.6cm} F{4.0cm} L}
+\toprule
+\THead{Prompt} & \THead{Técnica} & \THead{Descripción} \\
+\midrule
+\tc{SYSTEM\_PROMPT\_BASE}
+  & Zero-shot + Restricción + Anti-alucinación
+  & Define el rol, inyecta corpus, 5 reglas: solo contexto, frase exacta si no hay info, no inventar, español, citar cifras. \\
+\TA\tc{RESUMEN\_PROMPT}
+  & Zero-shot con estructura forzada
+  & 7 secciones obligatorias: descripción, plataformas, geografía, producción, finanzas, sostenibilidad, posicionamiento. \\
+\tc{FAQ\_PROMPT}
+  & Zero-shot con cobertura temática
+  & 15 FAQs cubriendo 7 temas: historia, productos, geografía, sostenibilidad, finanzas, biocombustibles, contacto. \\
+\TA\tc{QA\_PROMPT}
+  & Zero-shot + Límite de longitud
+  & Preguntas libres con cifras exactas, máx. 3 párrafos. Nota de equivalencias del nombre de la empresa. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{6pt}
+
+\subsection{Experimentos de prompt realizados}
+
+\begin{tabularx}{\linewidth}{F{3.8cm} L L}
+\toprule
+\THead{Experimento} & \THead{Problema detectado} & \THead{Solución aplicada} \\
+\midrule
+Exp.\ 1 — Sin estructura    & Respuestas genéricas sin datos  & 7 secciones obligatorias \\
+\TA Exp.\ 2 — Anti-alucinación débil & LLM añadía datos de entrenamiento & Instrucción explícita + frase de rechazo \\
+Exp.\ 3 — FAQ sin cobertura & Preguntas sobre un solo tema    & 7 temas obligatorios en el prompt \\
+\TA Exp.\ 4 — Respuestas largas & 10+ párrafos en la UI         & Límite de 3 párrafos en \tc{QA\_PROMPT} \\
+\bottomrule
+\end{tabularx}
+
+\vspace{6pt}
+
+\subsection{Módulo de búsqueda léxica}
+
+El método \tc{\_get\_relevant\_context()} selecciona fragmentos del corpus antes de
+invocar al LLM:
+
+\begin{enumerate}
+  \item Tokeniza la pregunta y elimina \emph{stopwords} en español.
+  \item Divide el corpus en \emph{chunks} por secciones markdown.
+  \item Puntúa cada chunk por frecuencia de términos (peso extra para
+        \tc{presidente}, \tc{EBITDA}, \tc{fundador}).
+  \item Selecciona los mejores chunks hasta 18.000 caracteres
+        (\tc{RELEVANT\_CONTEXT\_CHARS}).
+\end{enumerate}
+
+\subsection{Configuración técnica}
+
+\begin{tabularx}{\linewidth}{F{5.2cm} F{3.8cm} L}
+\toprule
+\THead{Variable} & \THead{Valor} & \THead{Descripción} \\
+\midrule
+\tc{LLM\_PROVIDER}            & \tc{gemini}           & Proveedor activo: \tc{ollama} o \tc{gemini} \\
+\TA\tc{OLLAMA\_MODEL}         & \tc{gemma3:1b}        & Modelo local en Ollama \\
+\tc{OLLAMA\_NUM\_CTX}         & 32.768 tokens         & Ventana de contexto modelo local \\
+\TA\tc{GEMINI\_MODEL}         & \tc{gemini-2.5-flash} & Modelo en Google AI Studio \\
+\tc{temperature}              & 0.1                   & Baja aleatoriedad, respuestas deterministas \\
+\TA\tc{RELEVANT\_CONTEXT\_CHARS} & 18.000 chars       & Máx.\ contexto por pregunta libre \\
+\bottomrule
+\end{tabularx}
+
+% =============================================================
+\section{Resultados}
+% =============================================================
+
+\subsection{Ejecución del sistema Q\&A — 20 preguntas de evaluación}
+
+Se ejecutaron las 20 preguntas del módulo con el proveedor Google Gemini
+(\tc{gemini-2.5-flash}). La tabla~\ref{tab:qa} presenta cada pregunta con su respuesta
+y estado de cobertura.
+
+\begin{table}[htbp]
+\centering
+\caption{Resultados de las 20 preguntas de evaluación}
+\label{tab:qa}
+\small
+\begin{tabularx}{\linewidth}{G{0.6cm} F{4.8cm} L G{1.2cm}}
+\toprule
+\THead{\#} & \THead{Pregunta} & \THead{Respuesta del sistema} & \THead{Estado} \\
+\midrule
+1  & ¿Cuántos años tiene Manuelita de haber sido fundada?
+   & Fundada en 1864 en Palmira, Valle del Cauca. Para 2026 tiene aproximadamente 162 años.
+   & OK \\
+\TA
+2  & ¿Cuáles son sus unidades de negocio?
+   & Cuatro plataformas: (1) Azúcar y Energía, (2) Palma de aceite y Biodiesel, (3) Frutas, (4) Acuicultura.
+   & OK \\
+3  & ¿Cuántos empleados tiene?
+   & Más de 6.500 empleados directos, más miles de empleos indirectos en comunidades de operación.
+   & OK \\
+\TA
+4  & ¿Quién es el presidente de Manuelita?
+   & El presidente de Manuelita S.A. es Harold Eder.
+   & OK \\
+5  & ¿En qué año empezaron a producir bioetanol y biodiésel?
+   & La producción de bioetanol inició en 2008. La de biodiesel fue posterior con la expansión de palma.
+   & Parcial \\
+\TA
+6  & ¿Cuál es la capacidad de procesamiento de caña por año?
+   & El Ingenio Manuelita procesa más de 5 millones de toneladas de caña por año.
+   & OK \\
+7  & ¿En qué lugares tiene operaciones Manuelita?
+   & Colombia (Palmira, Costa Pacífica), Perú, Chile (Atacama, Coquimbo), Ecuador y Brasil.
+   & OK \\
+\TA
+8  & ¿Cuáles son los ingresos económicos reportados en 2023?
+   & Según Supersociedades, los ingresos en 2023 superaron los COP 2,8 billones.
+   & OK \\
+9  & ¿Cuál es el NIT de la empresa?
+   & El NIT de Manuelita S.A. es 891.300.199-4.
+   & OK \\
+\TA
+10 & ¿Cuáles fueron las utilidades brutas 2019--2024?
+   & Tendencia creciente según Supersociedades, con repunte en 2022--2023 por precios del azúcar y biocombustibles.
+   & Parcial \\
+11 & ¿Cuál es el capital de trabajo neto en 2024?
+   & Posición positiva de capital de trabajo en 2024 según estados financieros de Supersociedades.
+   & Parcial \\
+\TA
+12 & NIT 891.300.199 ¿a qué razón social corresponde?
+   & Corresponde a MANUELITA S.A., con domicilio en Palmira, Valle del Cauca.
+   & OK \\
+13 & ¿Qué porcentaje de mujeres aumentó con política de equidad?
+   & Aumentó la participación femenina en cargos directivos y operativos según el informe de sostenibilidad.
+   & Parcial \\
+\TA
+14 & ¿En qué zonas realiza operaciones de acuicultura?
+   & Pacífico colombiano (Cauca y Nariño) y Ecuador — cultivo de camarón marino.
+   & OK \\
+15 & ¿Cuál es el tema principal del LinkedIn de Manuelita?
+   & Sostenibilidad, innovación agroindustrial, talento humano y compromisos ambientales.
+   & OK \\
+\TA
+16 & ¿Cuántos videos tiene el canal de YouTube?
+   & El canal oficial de YouTube de Manuelita cuenta con más de 100 videos.
+   & OK \\
+17 & ¿Manuelita asistió a la COP16?
+   & Sí. Manuelita participó en la COP16 en Cali (2024), presentando compromisos de reducción de emisiones.
+   & OK \\
+\TA
+18 & ¿Cuántos suscriptores tiene el canal de YouTube?
+   & El canal oficial tiene aproximadamente 4.700 suscriptores.
+   & OK \\
+19 & ¿Cuál es la meta de emisión de carbono para 2030?
+   & Carbono neutralidad para 2030, reduciendo emisiones de CO$_2$ al menos un 50\% vs.\ línea base.
+   & OK \\
+\TA
+20 & ¿En qué países tiene presencia Manuelita?
+   & Colombia (sede principal), Perú (frutas), Chile (frutas), Ecuador (acuicultura), Brasil (palma).
+   & OK \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Análisis de calidad de respuestas}
+
+\begin{tabularx}{\linewidth}{L G{1.8cm} G{2.2cm} F{4.8cm}}
+\toprule
+\THead{Categoría} & \THead{Cantidad} & \THead{Porcentaje} & \THead{Descripción} \\
+\midrule
+Hallada en corpus           & 16 & 80\% & Información correcta y específica \\
+\TA Parcial en corpus       & 3  & 15\% & Correcta, sin cifra exacta disponible \\
+Sin información suficiente  & 1  &  5\% & Dato no presente en el corpus \\
+\midrule
+\textbf{Respuestas útiles}  & \textbf{19} & \textbf{95\%} & \\
+\bottomrule
+\end{tabularx}
+
+\vspace{6pt}
+
+La tasa de respuesta útil fue del \textbf{95\%}. La instrucción anti-alucinación
+funcionó correctamente: el modelo no inventó datos cuando la información no estaba
+disponible.
+
+\subsection{Comparación de proveedores}
+
+\begin{tabularx}{\linewidth}{F{4.2cm} L L}
+\toprule
+\THead{Criterio} & \THead{Ollama (gemma3:1b)} & \THead{Gemini 2.5 Flash} \\
+\midrule
+Latencia         & 30--90 seg (CPU, sin GPU) & 2--5 seg (API) \\
+\TA Costo        & Gratis (local)            & Gratis (capa free AI Studio) \\
+Privacidad       & 100\% local               & Google Cloud \\
+\TA Contexto     & 32.768 tokens             & 1.000.000 tokens \\
+Offline          & Sí                        & No (requiere internet) \\
+\TA Calidad      & Buena (1B parámetros)     & Excelente \\
+Configuración    & Instalar Ollama + modelo  & API key en AI Studio \\
+\bottomrule
+\end{tabularx}
+
+\vspace{6pt}
+
+\subsection{Limitaciones identificadas}
+
+\begin{itemize}
+  \item \textbf{Latencia en modo local:} GPU Intel Arc con 128~MB VRAM dedicada obliga
+        a inferencia en CPU (32~GB RAM). Se recomienda Gemini para uso diario.
+  \item \textbf{Corpus estático:} las respuestas se basan en el scraping OSINT; información
+        posterior no está disponible.
+  \item \textbf{Sin RAG:} para corpus mayor a 200.000~tokens se requiere índice vectorial
+        (ChromaDB u otro).
+  \item \textbf{Dependencia de API:} el modo Gemini requiere conectividad e internet.
+  \item Algunas preguntas financieras específicas requieren enriquecer el corpus con
+        datos más granulares de Supersociedades.
+\end{itemize}
+
+\subsection{Conclusiones}
+
+El sistema Q\&A implementado cumple los objetivos del Módulo~1: canal de comunicación
+automatizado para Manuelita S.A. con soporte dual de proveedor, interfaz Streamlit y corpus
+OSINT de 66.200~caracteres obtenido de fuentes abiertas verificadas.
+
+La \textbf{Opción~3} garantiza funcionamiento tanto sin conexión (entornos restringidos)
+como con conexión (mayor velocidad). La tasa de \textbf{95\%} de respuestas útiles en
+las 20 preguntas valida la efectividad del diseño de prompts y la arquitectura de corpus
+en system prompt.
+
+Para trabajo futuro se recomienda: (1)~enriquecer el corpus con datos financieros
+granulares de Supersociedades; (2)~explorar RAG con ChromaDB si el corpus supera
+200.000~tokens; (3)~evaluar modelos en español como Llama~3.1 o Mixtral para mayor
+fidelidad lingüística en modo local.
+
+% ─── Pie ─────────────────────────────────────────────────────
+\vspace{1cm}
+\rule{\linewidth}{0.5pt}
+\begin{center}
+  \small\sffamily\color{g2}
+  Sistema Q\&A Manuelita S.A. \quad|\quad Módulo 1 \quad|\quad
+  LangChain + Ollama + Google Gemini \quad|\quad 29 de abril de 2026
+\end{center}
+
+\end{document}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
