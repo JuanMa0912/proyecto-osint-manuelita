@@ -1,0 +1,191 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "fuente": "Supersociedades, Informe de Sostenibilidad 2021-2022, perfil corporativo",
+    "ultima_actualizacion": "2024-12",
+    "descripcion": "Datos estructurados de Manuelita S.A. para consulta directa por el agente conversacional"
+  },
+
+  "identificacion": {
+    "razon_social": "Manuelita S.A.",
+    "nit": "891.300.241",
+    "nit_sin_puntos": "891300241",
+    "codigo_ciiu": "C1071",
+    "actividad": "Elaboración y refinación de azúcar",
+    "ciudad_sede": "Palmira",
+    "departamento_sede": "Valle del Cauca",
+    "pais_sede": "Colombia",
+    "centro_corporativo": "Cali, Colombia",
+    "año_fundacion": 1864,
+    "años_historia": 160,
+    "sitio_web": "https://www.manuelita.com"
+  },
+
+  "directivos": {
+    "presidente": "Harold Eder",
+    "cargo_presidente": "Presidente de Manuelita S.A."
+  },
+
+  "geografia": {
+    "paises_operacion": ["Colombia", "Perú", "Chile"],
+    "numero_paises": 3,
+    "paises_exportacion": 49,
+    "sedes": {
+      "Colombia": ["Palmira (Valle del Cauca)", "San Carlos de Guaroa (Meta)", "Orocué (Casanare)", "Cartagena (Bolívar)", "Cali (corporativo)"],
+      "Perú": ["Trujillo (La Libertad)", "Ica (Departamento de Ica)"],
+      "Chile": ["Puerto Montt (Provincia de Llanquihue)"]
+    }
+  },
+
+  "unidades_negocio": [
+    {
+      "nombre": "Manuelita Azúcar y Energía",
+      "plataforma": "Caña de azúcar",
+      "pais": "Colombia",
+      "participacion_pct": 100,
+      "productos": ["azúcar", "bioetanol carburante", "bioenergía eléctrica", "biofertilizantes"]
+    },
+    {
+      "nombre": "Agroindustrial Laredo",
+      "plataforma": "Caña de azúcar",
+      "pais": "Perú",
+      "participacion_pct": 78.7,
+      "productos": ["azúcar", "bioetanol industrial", "bioenergía eléctrica"]
+    },
+    {
+      "nombre": "Manuelita Aceites y Energía",
+      "plataforma": "Palma de aceite",
+      "pais": "Colombia",
+      "participacion_pct": 99.9,
+      "productos": ["aceite de palma", "biodiesel", "glicerina"]
+    },
+    {
+      "nombre": "Palmar de Altamira",
+      "plataforma": "Palma de aceite",
+      "pais": "Colombia",
+      "participacion_pct": 60.0,
+      "productos": ["aceite crudo de palma"]
+    },
+    {
+      "nombre": "Manuelita Acuicultura",
+      "plataforma": "Acuicultura",
+      "pais": "Chile",
+      "participacion_pct": 96.8,
+      "productos": ["mejillones"]
+    },
+    {
+      "nombre": "Océanos",
+      "plataforma": "Acuicultura",
+      "pais": "Colombia",
+      "participacion_pct": 34.9,
+      "productos": ["camarón"]
+    },
+    {
+      "nombre": "Manuelita Frutas y Hortalizas",
+      "plataforma": "Frutas y hortalizas",
+      "pais": "Perú",
+      "participacion_pct": 100,
+      "productos": ["uva de mesa", "espárragos", "mandarinas"]
+    }
+  ],
+
+  "plataformas": ["Caña de azúcar", "Palma de aceite", "Acuicultura", "Frutas y hortalizas"],
+
+  "financiero": {
+    "moneda": "COP (pesos colombianos)",
+    "unidad": "millones COP",
+    "historico": {
+      "2019": {
+        "ingresos": 1313792,
+        "ebitda": 225494,
+        "ebitda_margen_pct": 17.2,
+        "utilidad_neta": 13800
+      },
+      "2020": {
+        "ingresos": 1343465,
+        "ebitda": 251837,
+        "ebitda_margen_pct": 18.7,
+        "utilidad_neta": 2361
+      },
+      "2021": {
+        "ingresos": 1819755,
+        "ebitda": 383285,
+        "ebitda_margen_pct": 21.1,
+        "utilidad_neta": 84527
+      },
+      "2022": {
+        "ingresos": 2507235,
+        "ebitda": 720532,
+        "ebitda_margen_pct": 28.7,
+        "utilidad_neta": 503190
+      },
+      "2023": {
+        "ingresos": 1043562,
+        "ebitda": 369380,
+        "ebitda_margen_pct": 35.4,
+        "utilidad_neta": 78153,
+        "deuda_financiera": null,
+        "ratio_deuda_ebitda": 1.3
+      },
+      "2024": {
+        "ingresos": null,
+        "ebitda": null,
+        "nota": "Datos parciales — crecimiento ~0.3% vs 2023"
+      }
+    },
+    "año_mas_reciente": 2023
+  },
+
+  "operacional": {
+    "colaboradores_2022": 7971,
+    "colaboradores_2021": 7971,
+    "proveedores_agricolas_2022": 1501,
+    "proveedores_agricolas_2021": 1481,
+    "clientes_2022": 1505,
+    "familias_beneficiadas": 4000,
+    "produccion_azucar_ton_anio": 487000,
+    "litros_bioetanol_MM": 275,
+    "mwh_bioenergia_electrica": {"2021": 41.1, "2022": 41.5},
+    "litros_biocombustible_menor_impacto_MM": {"2021": 41.1, "2022": 41.5}
+  },
+
+  "sostenibilidad": {
+    "metas_carbono": {
+      "meta_2030": "Reducción del 70% en emisiones de carbono Alcances 1 y 2 (Scope 1 y Scope 2)",
+      "reduccion_pct_2030": 70,
+      "meta_neutralidad": "Neutralidad de carbono para el año 2040",
+      "año_neutralidad": 2040,
+      "reduccion_2024_vs_2023_pct": 6
+    },
+    "certificaciones": ["RSPO", "HACCP", "ASC", "GRI"],
+    "bonos_carbono_certificados_2022": 330000,
+    "bonos_carbono_potencial_2037": 1800000,
+    "inversion_ambiental_anual_COP_MM": 20886,
+    "inversion_social_anual_COP_MM": 31341,
+    "reputacion": {
+      "merco_empresas_categoria_agroindustria": "1er lugar (9 años consecutivos)",
+      "merco_empresas_ranking_general_2022": 57,
+      "merco_talento_ranking_general_2022": 51,
+      "merco_esg_ranking_general_2022": 51
+    },
+    "marco_reporte": ["GRI (Global Reporting Initiative)", "ODS (Objetivos de Desarrollo Sostenible)"],
+    "num_prioridades_sostenibilidad": 16
+  },
+
+  "filiales_relacionadas": [
+    {"nombre": "Urbanizaciones y Parcelaciones Manuelita Ltda.", "nit": "891.300.199"},
+    {"nombre": "Inversiones Manuelita", "rol": "holding accionario"}
+  ],
+
+  "keywords": {
+    "nit": ["nit", "número de identificación", "identificacion tributaria", "891.300.241"],
+    "presidente": ["presidente", "ceo", "director", "quien dirige", "harold eder"],
+    "fundacion": ["fundada", "fundacion", "año", "1864", "historia", "origen"],
+    "paises": ["paises", "países", "operaciones", "presencia", "colombia", "peru", "chile"],
+    "empleados": ["empleados", "colaboradores", "trabajadores", "personal", "equipo"],
+    "ingresos": ["ingresos", "ventas", "revenue", "facturacion"],
+    "ebitda": ["ebitda", "utilidad operativa", "ganancia operativa"],
+    "unidades": ["unidades de negocio", "divisiones", "empresas", "subsidiarias"],
+    "carbono": ["carbono", "emisiones", "sostenibilidad", "meta", "2030", "neutralidad", "scope"]
+  }
+}
