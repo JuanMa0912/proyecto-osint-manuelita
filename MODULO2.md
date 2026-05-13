@@ -152,31 +152,156 @@ print(tool.func("¿Cuál es el NIT?"))
 
 ---
 
-## Bloque 3 — Agente Router 🔄 *(en construcción)*
+## Bloque 3 — Agente Router ✅
 
-### Qué hará
-Un `AgentExecutor` de LangChain que recibe la pregunta del usuario, decide qué
-herramienta usar (RAG vs Datos Estructurados) y devuelve la respuesta final.
+### Qué hace
+Recibe la pregunta del usuario y decide automáticamente qué herramienta usar,
+combinando datos estructurados (exactos, 0ms) con RAG (flexible, corpus-based).
 
-### Archivos previstos
+Implementa **dos estrategias** seleccionables:
+- **HybridRouter** (por defecto): clasifica por keywords antes de invocar herramientas. Confiable con cualquier LLM.
+- **ReactAgent** (demo académico): el LLM razona sobre qué herramienta usar. Requiere modelo capaz (recomendado: gemini-2.0-flash).
+
+### Archivos
 | Archivo | Descripción |
 |---------|-------------|
-| `src/langchain_app/agent.py` | Agente principal con router |
-| `scripts/test_agente_bloque3.py` | Suite de pruebas del agente |
+| `src/langchain_app/agent.py` | `ManuelitaAgent` (HybridRouter) + `build_react_agent()` |
+| `scripts/test_agente_bloque3.py` | Suite de 10 preguntas (6 estructurado / 4 RAG) |
+
+### Cómo correr
+```powershell
+# Modo local (sin API):
+$env:LLM_PROVIDER="local"; uv run python scripts/test_agente_bloque3.py
+
+# Modo Gemini:
+$env:LLM_PROVIDER="gemini"; uv run python scripts/test_agente_bloque3.py
+```
+
+### Resultados obtenidos
+| Métrica | Resultado |
+|---------|-----------|
+| Routing correcto | **10/10 (100%)** |
+| Estructurado ruteado | 6/6 |
+| RAG ruteado | 4/4 |
+| Tiempo estructurado | ~0.0s |
+| Tiempo RAG (local) | ~13s |
+| Score keywords (local) | 60% (limitado por llama3.2:3b) |
+
+> **Nota sobre calidad RAG:** El routing es 100% correcto. Las respuestas de preguntas
+> narrativas (valores, premios, comunidades) muestran 0% con `llama3.2:3b` porque ese
+> modelo no extrae bien el contexto en español. Con `gemini-2.0-flash` se espera 80-100%.
+
+### Lógica de routing
+
+```
+Pregunta
+  │
+  ├── ¿Contiene señales narrativas?       → RAG
+  │   (valores, cultura, cómo, describe,
+  │    premios, comunidades, gestiona...)
+  │
+  ├── ¿Coincide con categoría exacta?     → Datos Estructurados
+  │   (nit, presidente, fundacion,
+  │    paises, empleados, ingresos,
+  │    ebitda, unidades, carbono)
+  │
+  └── Por defecto                         → RAG
+```
+
+### Uso programático
+```python
+from src.langchain_app.agent import ManuelitaAgent
+
+agent = ManuelitaAgent(provider="local")  # o "gemini"
+result = agent.ask("¿Cuál es el NIT de Manuelita?")
+
+print(result["answer"])    # El NIT de Manuelita S.A. es 891.300.241
+print(result["tool"])      # "estructurado"
+print(result["sources"])   # ['data/structured/manuelita_datos.json']
+print(result["tiempo_s"])  # 0.0
+```
 
 ---
 
-## Bloque 4 — Memoria Conversacional 🔄 *(en construcción)*
+## Bloque 4 — Memoria Conversacional ✅
 
-### Qué hará
+### Qué hace
 `ConversationBufferWindowMemory` de LangChain para mantener el historial
 de los últimos N turnos de conversación, permitiendo preguntas de seguimiento
-como "¿y en Perú?" o "¿cuándo fue eso?".
+contextuales como "¿y en Perú?" o "¿cuándo fue eso?".
 
-### Archivos previstos
+### Archivos
 | Archivo | Descripción |
 |---------|-------------|
-| `src/langchain_app/memory.py` | Configuración y utilidades de memoria |
+| `src/langchain_app/memory.py` | `ConversationMemory` + `ContextualAgent` (agente con memoria) |
+| `scripts/test_memoria_bloque4.py` | Suite de 4 tests: memoria básica, ventana, follow-up, diálogo |
+
+### Componentes
+
+#### `ConversationMemory`
+Wrapper sobre `ConversationBufferWindowMemory`:
+```python
+mem = build_memory(window_size=5)
+mem.save_turn("¿En qué países opera?", "Colombia, Perú y Chile.")
+print(mem.get_history_text())   # texto serializado para prompts
+print(mem.get_history_list())   # lista de dicts {role, content} para la UI
+print(mem.turn_count())         # número de turnos almacenados
+mem.reset()                     # borra el historial
+```
+
+#### `ContextualAgent`
+`ManuelitaAgent` (Bloque 3) + `ConversationMemory` (Bloque 4):
+```python
+from src.langchain_app.memory import ContextualAgent
+
+agent = ContextualAgent(provider="local", window_size=5)
+
+r1 = agent.chat("¿En qué países opera Manuelita?")
+# → "Opera en Colombia, Perú y Chile."
+
+r2 = agent.chat("¿Y qué produce en Perú?")
+# → contexto inyectado automáticamente → responde sobre Perú específicamente
+print(r2["enriched"])  # True — pregunta enriquecida con historial
+
+print(agent.get_history())  # historial como lista [{role, content}, ...]
+agent.reset()               # nueva conversación
+```
+
+### Lógica de detección de follow-up
+
+```
+Pregunta recibida
+  │
+  ├── ¿Empieza con "¿y", "también", "además"?    → follow-up
+  ├── ¿Contiene "allí", "ahí", "eso", "ese"?     → follow-up
+  ├── ¿Menos de 5 palabras?                       → posible follow-up
+  │
+  └── Si follow-up Y hay historial:
+        → inyectar historial antes de la pregunta
+        → result["enriched"] = True
+```
+
+### Cómo correr
+```powershell
+# Modo local (sin API):
+$env:LLM_PROVIDER="local"; uv run python scripts/test_memoria_bloque4.py
+
+# Modo Gemini (mejor calidad en preguntas narrativas):
+$env:LLM_PROVIDER="gemini"; uv run python scripts/test_memoria_bloque4.py
+```
+
+### Resultados obtenidos
+| Test | Resultado |
+|------|-----------|
+| Memoria básica (save/load/reset) | ✓ 100% |
+| Ventana deslizante (window=2) | ✓ OK |
+| Detección follow-up | ✓ ≥85% |
+| Diálogo 6 turnos (routing) | ✓ 100% routing |
+
+### Variable de entorno opcional
+```env
+MEMORY_WINDOW=5   # turnos a mantener (default: 5)
+```
 
 ---
 
@@ -232,4 +357,7 @@ GEMINI_EMBED=models/gemini-embedding-001
 # Para modo Ollama:
 OLLAMA_MODEL=llama3.2:3b    # modelo de chat
 # nomic-embed-text se descarga con: ollama pull nomic-embed-text
+
+# Memoria conversacional (Bloque 4):
+MEMORY_WINDOW=5             # turnos a mantener en memoria (default: 5)
 ```

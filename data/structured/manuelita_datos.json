@@ -186,6 +186,6 @@
     "ingresos": ["ingresos", "ventas", "revenue", "facturacion"],
     "ebitda": ["ebitda", "utilidad operativa", "ganancia operativa"],
     "unidades": ["unidades de negocio", "divisiones", "empresas", "subsidiarias"],
-    "carbono": ["carbono", "emisiones", "sostenibilidad", "meta", "2030", "neutralidad", "scope"]
+    "carbono": ["carbono", "emisiones", "neutralidad de carbono", "meta de carbono", "scope 1", "scope 2", "alcance 1", "alcance 2", "reduccion de emisiones", "huella de carbono"]
   }
 }
