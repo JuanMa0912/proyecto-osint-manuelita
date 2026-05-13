@@ -305,21 +305,98 @@ MEMORY_WINDOW=5   # turnos a mantener (default: 5)
 
 ---
 
-## Bloque 5 — Interfaz Streamlit Chat 🔄 *(en construcción)*
+## Bloque 5 — Interfaz Streamlit Chat ✅
 
-### Qué hará
-Actualizar `app.py` de una interfaz Q&A simple a un chat con historial,
-burbujas de mensaje, indicador de fuente (RAG vs Estructurado) y selector
-de proveedor (gemini / local / ollama).
+### Qué hace
+`app.py` actualizado de Q&A simple (Módulo 1) a chat conversacional completo
+con `ContextualAgent` (Bloques 3 + 4) como motor.
+
+### Archivos
+| Archivo | Descripción |
+|---------|-------------|
+| `app.py` | Interfaz Streamlit — chat conversacional con memoria y selector de proveedor |
+
+### Características nuevas vs Módulo 1
+| Característica | Módulo 1 | Módulo 2 |
+|----------------|----------|----------|
+| Historial visible | Solo últimas 5 preguntas (expanders) | Burbujas de chat acumulativas |
+| Motor | `ManuelitaQASystem` (RAG simple) | `ContextualAgent` (HybridRouter + Memoria) |
+| Indicador de fuente | ❌ | ✅ Badge RAG / Datos Estructurados / Contexto inyectado |
+| Memoria conversacional | ❌ | ✅ ConversationBufferWindowMemory |
+| Selector de proveedor | Ollama / Gemini | Local / Ollama / Gemini |
+| Nueva conversación | ❌ | ✅ Botón reset en sidebar |
+| Métricas de sesión | ❌ | ✅ Turnos / RAG / Estructurado / Con contexto |
+| Tabs legacy | Resumen + FAQ | ✅ Conservados + nuevo tab Chat |
+
+### Cómo correr
+```powershell
+# Modo local (sin API):
+$env:LLM_PROVIDER="local"; uv run streamlit run app.py
+
+# Modo Gemini:
+$env:LLM_PROVIDER="gemini"; uv run streamlit run app.py
+```
+Luego abrir: http://localhost:8501
+
+### Componentes de la UI
+```
+app.py
+├── Sidebar
+│   ├── Selector de proveedor (local / ollama / gemini)
+│   ├── Botón "🔄 Nueva conversación" (reset memoria)
+│   └── Info técnica (modelo, router, memoria, framework)
+│
+├── Header  → modelo activo + contador de turnos
+├── Info cards → proveedor / modelo / router / ventana
+│
+└── Tabs
+    ├── 💬 Chat Conversacional   ← NUEVO (Módulo 2)
+    │   ├── Chips de preguntas de ejemplo (8 preguntas)
+    │   ├── Historial de chat (burbujas usuario 🟢 / agente 🌱)
+    │   ├── Badge por mensaje: RAG | Estructurado | 🔗 contexto inyectado
+    │   ├── Input + botón Enviar
+    │   └── Métricas de sesión: turnos / RAG / estructurado / con contexto
+    ├── 📝 Resumen Ejecutivo     ← conservado del Módulo 1
+    └── ❓ Preguntas Frecuentes  ← conservado del Módulo 1
+```
 
 ---
 
-## Bloque 6 — Tests finales e Informe 🔄 *(en construcción)*
+## Bloque 6 — Tests Integrados e Informe ✅
 
-### Qué incluirá
-- Suite de tests integrada (agente completo con memoria)
-- Informe académico del Módulo 2 en LaTeX/PDF
-- Métricas de evaluación comparativa entre modos
+### Archivos
+| Archivo | Descripción |
+|---------|-------------|
+| `scripts/test_modulo2_completo.py` | Suite integrada: Bloques 2, 3 y 4 en secuencia |
+| `reports/informe_modulo2.pdf` | Informe académico del Módulo 2 (11 páginas, ReportLab) |
+
+### Cómo correr la suite completa
+```powershell
+# Modo local (sin API):
+$env:LLM_PROVIDER="local"; uv run python scripts/test_modulo2_completo.py
+
+# Modo Gemini (recomendado para mejor score en RAG):
+$env:LLM_PROVIDER="gemini"; uv run python scripts/test_modulo2_completo.py
+```
+
+El script genera automáticamente un reporte JSON en `reports/modulo2_test_{proveedor}_{timestamp}.json`.
+
+### Métricas de evaluación global
+
+| Bloque | Métrica | gemini | local |
+|--------|---------|--------|-------|
+| 2 — Estructurado | Score keywords | 100% | 100% |
+| 2 — Estructurado | Tiempo | ~0ms | ~0ms |
+| 3 — Router | Routing correcto | 100% | 100% |
+| 3 — Router | Score keywords | ~95% | 60% |
+| 4 — Memoria | Routing correcto | 100% | 100% |
+| 4 — Memoria | Ventana deslizante | ✓ | ✓ |
+| 4 — Memoria | Detección follow-up | ✓ ≥85% | ✓ ≥85% |
+
+### Informe académico
+- **Documento:** `reports/informe_modulo2.pdf`
+- **Páginas:** 11 páginas
+- **Secciones:** Introducción · Arquitectura · Bloques 1–5 · Evaluación comparativa · Estructura de archivos · Conclusiones
 
 ---
 
