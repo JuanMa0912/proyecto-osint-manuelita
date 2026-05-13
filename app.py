@@ -29,7 +29,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ── Configuración de proveedores ──────────────────────────────
 PROVIDER       = os.getenv("LLM_PROVIDER", "local")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL   = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
@@ -136,6 +135,7 @@ st.markdown("""
         padding: 1.3rem 1.6rem; border-radius: 8px; margin-top: 0.6rem;
         box-shadow: 0 4px 20px rgba(18,53,31,0.07); line-height: 1.7;
     }
+    .stTabs [data-baseweb="tab-list"] { gap: 0.4rem; }
     .stTabs [data-baseweb="tab"] {
         background: var(--green-800); color: #fff !important; border: 1px solid var(--green-800);
         border-radius: 8px; font-size: 0.95rem; font-weight: 600; padding: 0.5rem 1.4rem;
@@ -143,11 +143,46 @@ st.markdown("""
     .stTabs [data-baseweb="tab"] p { color: inherit !important; }
     .stTabs [data-baseweb="tab"]:hover { background: #fff; color: var(--green-800) !important; }
     .stTabs [aria-selected="true"] { background: var(--green-700) !important; border-color: var(--green-700) !important; }
+
+    /* Boton primario */
     div.stButton > button[kind="primary"] {
         background: var(--green-800); border: none; border-radius: 8px;
         font-weight: 700; font-size: 1rem; padding: 0.6rem 1.2rem;
+        color: #fff !important;
     }
     div.stButton > button[kind="primary"]:hover { background: var(--green-700); }
+
+    /* Botones secundarios — chips de ejemplo */
+    div.stButton > button[kind="secondary"],
+    div.stButton > button:not([kind="primary"]) {
+        background: #ffffff !important;
+        color: var(--green-800) !important;
+        border: 1.5px solid var(--green-700) !important;
+        border-radius: 8px !important;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        padding: 0.3rem 0.7rem !important;
+        transition: all 0.15s ease !important;
+    }
+    div.stButton > button[kind="secondary"]:hover,
+    div.stButton > button:not([kind="primary"]):hover {
+        background: var(--green-700) !important;
+        color: #ffffff !important;
+        border-color: var(--green-700) !important;
+    }
+
+    /* Boton sidebar — nueva conversacion */
+    [data-testid="stSidebar"] div.stButton > button {
+        background: rgba(255,255,255,0.12) !important;
+        color: #f0f8f2 !important;
+        border: 1px solid rgba(255,255,255,0.3) !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+    }
+    [data-testid="stSidebar"] div.stButton > button:hover {
+        background: rgba(255,255,255,0.22) !important;
+    }
+
     .stExpander { border: 1px solid var(--line) !important; border-radius: 8px !important; }
     .empty-chat {
         text-align: center; color: #5f6f63; padding: 2.5rem 1rem;
@@ -162,7 +197,7 @@ st.markdown("""
 # Cache
 # ─────────────────────────────────────────────────────────────
 
-@st.cache_resource(show_spinner="🌱 Inicializando agente conversacional de Manuelita S.A. ...")
+@st.cache_resource(show_spinner="Inicializando agente conversacional de Manuelita S.A. ...")
 def get_contextual_agent(provider: str, _gemini_key: str = ""):
     if _gemini_key:
         os.environ["GEMINI_API_KEY"] = _gemini_key
@@ -170,7 +205,7 @@ def get_contextual_agent(provider: str, _gemini_key: str = ""):
     return ContextualAgent(provider=provider, window_size=MEMORY_WINDOW, verbose=False)
 
 
-@st.cache_resource(show_spinner="🌱 Cargando corpus de Manuelita S.A. ...")
+@st.cache_resource(show_spinner="Cargando corpus de Manuelita S.A. ...")
 def get_qa_legacy(provider: str, _gemini_key: str = ""):
     if _gemini_key:
         os.environ["GEMINI_API_KEY"] = _gemini_key
@@ -182,7 +217,7 @@ def get_qa_legacy(provider: str, _gemini_key: str = ""):
 # Sidebar
 # ─────────────────────────────────────────────────────────────
 
-def render_sidebar() -> tuple[str, str]:
+def render_sidebar() -> tuple:
     with st.sidebar:
         st.markdown("## 🌱 Manuelita S.A.")
         st.markdown("**Agente Conversacional IA**")
@@ -205,22 +240,22 @@ def render_sidebar() -> tuple[str, str]:
                 gemini_key = st.text_input("API Key de Gemini", type="password",
                                            placeholder="Obtén tu key en aistudio.google.com")
             else:
-                st.success(f"✅ `{GEMINI_MODEL}`")
+                st.success("✅ `" + GEMINI_MODEL + "`")
                 st.caption("Capa gratuita · AI Studio")
         elif provider == "local":
-            st.info(f"Embeddings: `paraphrase-multilingual-MiniLM-L12-v2`\nLLM: `{OLLAMA_MODEL}`")
+            st.info("Embeddings: `paraphrase-multilingual-MiniLM-L12-v2`\nLLM: `" + OLLAMA_MODEL + "`")
             st.caption("Requiere `ollama serve`")
         else:
-            st.info(f"Embeddings: `nomic-embed-text`\nLLM: `{OLLAMA_MODEL}`")
+            st.info("Embeddings: `nomic-embed-text`\nLLM: `" + OLLAMA_MODEL + "`")
             st.caption("Requiere `ollama serve`")
 
         st.divider()
         st.markdown("#### Memoria de conversación")
-        st.caption(f"Ventana: últimos **{MEMORY_WINDOW} turnos**")
+        st.caption("Ventana: últimos **" + str(MEMORY_WINDOW) + " turnos**")
         if st.button("🔄 Nueva conversación", use_container_width=True):
             st.session_state["chat_messages"] = []
             st.session_state["turn_count"] = 0
-            key = f"_agent_{provider}"
+            key = "_agent_" + provider
             if key in st.session_state:
                 st.session_state[key].reset()
             st.rerun()
@@ -233,7 +268,7 @@ def render_sidebar() -> tuple[str, str]:
         st.caption("🔗 LinkedIn · YouTube · OSINT")
         st.divider()
         model_lbl = GEMINI_MODEL if provider == "gemini" else OLLAMA_MODEL
-        st.markdown(f"**Modelo** `{model_lbl}`")
+        st.markdown("**Modelo** `" + model_lbl + "`")
         st.markdown("**Router** HybridRouter")
         st.markdown("**Memoria** ConversationBufferWindowMemory")
         st.markdown("**Framework** LangChain")
@@ -249,23 +284,23 @@ def render_sidebar() -> tuple[str, str]:
 # ─────────────────────────────────────────────────────────────
 
 def render_header(provider: str, turn_count: int) -> None:
-    model_lbl  = GEMINI_MODEL if provider == "gemini" else OLLAMA_MODEL
-    motor_lbl  = "Google Gemini API" if provider == "gemini" else "Ollama local"
-    st.markdown(f"""
-<div class="main-header">
-    <div class="header-logo">🌱</div>
-    <div class="header-text">
-        <h1>Manuelita S.A. — Agente Conversacional</h1>
-        <p>Pregunta sobre la empresa en lenguaje natural — el agente elige la herramienta más adecuada</p>
-        <div class="header-chips">
-            <span class="chip chip-gold">🤖 {model_lbl}</span>
-            <span class="chip">{motor_lbl}</span>
-            <span class="chip">HybridRouter</span>
-            <span class="chip chip-mem">💬 {turn_count} turno{"s" if turn_count != 1 else ""}</span>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+    model_lbl = GEMINI_MODEL if provider == "gemini" else OLLAMA_MODEL
+    motor_lbl = "Google Gemini API" if provider == "gemini" else "Ollama local"
+    turnos_txt = str(turn_count) + " turno" + ("s" if turn_count != 1 else "")
+    st.markdown(
+        '<div class="main-header">'
+        '<div class="header-logo">🌱</div>'
+        '<div class="header-text">'
+        '<h1>Manuelita S.A. — Agente Conversacional</h1>'
+        '<p>Pregunta sobre la empresa en lenguaje natural — el agente elige la herramienta más adecuada</p>'
+        '<div class="header-chips">'
+        '<span class="chip chip-gold">🤖 ' + model_lbl + '</span>'
+        '<span class="chip">' + motor_lbl + '</span>'
+        '<span class="chip">HybridRouter</span>'
+        '<span class="chip chip-mem">💬 ' + turnos_txt + '</span>'
+        '</div></div></div>',
+        unsafe_allow_html=True,
+    )
 
 
 # ─────────────────────────────────────────────────────────────
@@ -283,7 +318,7 @@ def _badge(tool: str, enriched: bool) -> str:
     return " ".join(parts)
 
 
-def render_chat_history(messages: list[dict]) -> None:
+def render_chat_history(messages: list) -> None:
     if not messages:
         st.markdown(
             '<div class="empty-chat">👋 ¡Hola! Escribe una pregunta o elige un ejemplo para comenzar.</div>',
@@ -294,25 +329,28 @@ def render_chat_history(messages: list[dict]) -> None:
     html = []
     for msg in messages:
         if msg["role"] == "user":
-            html.append(f'<div class="msg-row-user"><div class="bubble-user">{msg["content"]}</div></div>')
+            html.append(
+                '<div class="msg-row-user">'
+                '<div class="bubble-user">' + msg["content"] + '</div>'
+                '</div>'
+            )
         else:
             badge  = _badge(msg.get("tool", "rag"), msg.get("enriched", False))
             tiempo = msg.get("tiempo_s", 0)
-            t_str  = f'<span style="font-size:0.65rem;color:#9aa8a0;margin-left:0.5rem">{tiempo}s</span>'
-            html.append(f"""
-<div class="msg-row-assistant">
-    <div class="avatar">🌱</div>
-    <div>
-        <div class="bubble-bot">{msg["content"]}</div>
-        <div style="margin-top:0.25rem">{badge}{t_str}</div>
-    </div>
-</div>""")
+            t_str  = '<span style="font-size:0.65rem;color:#9aa8a0;margin-left:0.5rem">' + str(tiempo) + 's</span>'
+            html.append(
+                '<div class="msg-row-assistant">'
+                '<div class="avatar">🌱</div>'
+                '<div>'
+                '<div class="bubble-bot">' + msg["content"] + '</div>'
+                '<div style="margin-top:0.25rem">' + badge + t_str + '</div>'
+                '</div></div>'
+            )
 
     st.markdown("\n".join(html), unsafe_allow_html=True)
 
 
 def render_chat_tab(agent, provider: str) -> None:
-    # Session state
     if "chat_messages" not in st.session_state:
         st.session_state["chat_messages"] = []
     if "turn_count" not in st.session_state:
@@ -320,7 +358,6 @@ def render_chat_tab(agent, provider: str) -> None:
     if "pending_q" not in st.session_state:
         st.session_state["pending_q"] = ""
 
-    # Reset si cambia el proveedor
     if st.session_state.get("_prov") != provider:
         st.session_state["_prov"] = provider
         st.session_state["chat_messages"] = []
@@ -328,19 +365,19 @@ def render_chat_tab(agent, provider: str) -> None:
 
     msgs = st.session_state["chat_messages"]
 
-    # ── Ejemplos ──────────────────────────────────────────────
+    # Chips de ejemplos
     st.markdown("**Prueba con alguna de estas preguntas:**")
     cols = st.columns(4)
     for i, q in enumerate(EXAMPLE_QUESTIONS):
-        if cols[i % 4].button(q, key=f"ex_{i}", use_container_width=True):
+        if cols[i % 4].button(q, key="ex_" + str(i), use_container_width=True):
             st.session_state["pending_q"] = q
 
     st.divider()
 
-    # ── Historial ─────────────────────────────────────────────
+    # Historial
     render_chat_history(msgs)
 
-    # ── Input ─────────────────────────────────────────────────
+    # Input
     st.markdown("")
     with st.form("chat_form", clear_on_submit=True):
         c1, c2 = st.columns([5, 1])
@@ -364,28 +401,28 @@ def render_chat_tab(agent, provider: str) -> None:
                 enriched = res.get("enriched", False)
                 tiempo   = res.get("tiempo_s", 0)
             except Exception as exc:
-                answer, tool, enriched, tiempo = f"⚠️ Error: {exc}", "rag", False, 0
+                answer, tool, enriched, tiempo = "Error: " + str(exc), "rag", False, 0
 
         msgs.append({"role": "assistant", "content": answer,
                      "tool": tool, "enriched": enriched, "tiempo_s": tiempo})
         st.session_state["turn_count"] = agent.memory.turn_count()
         st.rerun()
 
-    # ── Métricas ──────────────────────────────────────────────
+    # Metricas
     if msgs:
         n_rag    = sum(1 for m in msgs if m.get("role") == "assistant" and m.get("tool") == "rag")
         n_struct = sum(1 for m in msgs if m.get("role") == "assistant" and m.get("tool") == "estructurado")
         n_enrich = sum(1 for m in msgs if m.get("role") == "assistant" and m.get("enriched"))
         st.divider()
         m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Turnos",         st.session_state.get("turn_count", 0))
-        m2.metric("RAG",            n_rag)
-        m3.metric("Estructurado",   n_struct)
+        m1.metric("Turnos",          st.session_state.get("turn_count", 0))
+        m2.metric("RAG",             n_rag)
+        m3.metric("Estructurado",    n_struct)
         m4.metric("Con contexto 🔗", n_enrich)
 
 
 # ─────────────────────────────────────────────────────────────
-# Tabs Módulo 1 (conservados)
+# Tabs Modulo 1
 # ─────────────────────────────────────────────────────────────
 
 def render_summary_tab(qa) -> None:
@@ -428,7 +465,7 @@ def main() -> None:
     try:
         agent = get_contextual_agent(provider=provider, _gemini_key=gemini_key)
     except Exception as exc:
-        st.error(f"❌ Error al iniciar el agente: {exc}")
+        st.error("❌ Error al iniciar el agente: " + str(exc))
         if "ollama" in str(exc).lower() or "connection" in str(exc).lower():
             st.info("Verifica que Ollama esté corriendo: `ollama serve`")
         elif "gemini" in str(exc).lower() or "api" in str(exc).lower():
@@ -437,14 +474,15 @@ def main() -> None:
 
     # Info cards
     model_lbl = GEMINI_MODEL if provider == "gemini" else OLLAMA_MODEL
-    st.markdown(f"""
-<div class="info-grid">
-    <div class="info-card"><div class="info-label">Proveedor</div><div class="info-value">{provider.upper()}</div></div>
-    <div class="info-card"><div class="info-label">Modelo</div><div class="info-value">{model_lbl}</div></div>
-    <div class="info-card"><div class="info-label">Router</div><div class="info-value">HybridRouter</div></div>
-    <div class="info-card"><div class="info-label">Memoria</div><div class="info-value">{MEMORY_WINDOW} turnos</div></div>
-</div>
-""", unsafe_allow_html=True)
+    st.markdown(
+        '<div class="info-grid">'
+        '<div class="info-card"><div class="info-label">Proveedor</div><div class="info-value">' + provider.upper() + '</div></div>'
+        '<div class="info-card"><div class="info-label">Modelo</div><div class="info-value">' + model_lbl + '</div></div>'
+        '<div class="info-card"><div class="info-label">Router</div><div class="info-value">HybridRouter</div></div>'
+        '<div class="info-card"><div class="info-label">Memoria</div><div class="info-value">' + str(MEMORY_WINDOW) + ' turnos</div></div>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
 
     # Tabs
     tab_chat, tab_resumen, tab_faq = st.tabs([
