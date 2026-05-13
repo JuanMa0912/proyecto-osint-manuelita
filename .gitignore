@@ -26,7 +26,6 @@ build/
 .eggs/
 
 # ----- PDFs descargados (binarios grandes) -----
-# Los PDFs originales no se versionan — se regeneran con el pipeline
 data_raw/pdfs/*.pdf
 
 # ----- Datos crudos generados (reproducibles con el pipeline) -----
@@ -34,7 +33,6 @@ data_raw/web/*.html
 data_raw/web/*.json
 
 # ----- JSONs grandes procesados -----
-# Solo excluir los JSONs de texto completo (>100KB)
 data_processed/json/pdf_*.json
 data_processed/json/normalized_manuelita_pdf_*.json
 data_processed/json/normalized_manuelita_youtube_*.json
@@ -42,18 +40,16 @@ data_processed/json/youtube_canal_manuelita.json
 data_processed/json/normalized_doc_*.json
 
 # MANTENER en el repo:
-# data_processed/json/normalized_manuelita_web_*.json  ← perfiles web
-# data_processed/json/normalized_manuelita_social_*.json ← redes sociales
-# data_processed/json/news_index.json ← índice de noticias
+# data_processed/json/normalized_manuelita_web_*.json
+# data_processed/json/normalized_manuelita_social_*.json
+# data_processed/json/news_index.json
 
-# ----- Logs de ejecución -----
+# ----- Logs de ejecucion -----
 logs/*.log
 logs/**/*.log
 
-# ----- Herramientas de Claude Code -----
+# ----- Herramientas de desarrollo -----
 .claude/
-
-# ----- IDEs y editores -----
 .vscode/
 .idea/
 *.swp
@@ -62,8 +58,9 @@ logs/**/*.log
 .DS_Store
 Thumbs.db
 
-# ----- Archivos temporales -----
+# ----- Archivos temporales y de prueba (borrar del disco tambien) -----
 demo_output_generator.py
+hello.py
 *.tmp
 *.bak
 
@@ -76,3 +73,33 @@ demo_output_generator.py
 htmlcov/
 .coverage
 coverage.xml
+
+# ============================================================
+# MODULO 2 — Indices vectoriales ChromaDB
+# ============================================================
+# Son binarios grandes (~10MB) que se regeneran con --reindex
+# No tiene sentido versionar archivos SQLite binarios
+data/vectorstore/
+data/chroma/
+**/*.sqlite3
+
+# ============================================================
+# REPORTS — solo artefactos generados automaticamente
+# ============================================================
+# Archivos de sesion y exploracion (obsoletos)
+reports/session_*.json
+reports/sources_map_*.json
+
+# Resultados de tests — se regeneran ejecutando los scripts
+# PowerShell: uv run python scripts/test_rag_bloque1.py
+reports/resultados_rag_*.json
+reports/resultados_rag_*.txt
+reports/resultados_20_preguntas_*.json
+reports/resultados_20_preguntas_*.txt
+
+# MANTENER en el repo (entregables academicos):
+# reports/informe_modulo1_qa_manuelita.pdf
+# reports/informe_modulo1_qa_manuelita.docx
+# reports/informe_modulo1_qa_manuelita.tex
+# reports/informe_tecnico_proyecto_ia_agroindustrial.md
+# reports/fase1_mapa_fuentes.md

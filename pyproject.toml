@@ -31,11 +31,17 @@ dependencies = [
     "python-slugify==8.0.4",
     "dateparser==1.2.0",
     "datasketch==1.6.4",
-    # --- App Q&A ---
+    # --- App Q&A (Módulo 1) ---
     "langchain>=0.3.0",
     "langchain-ollama>=0.2.0",
     "langchain-core>=0.3.0",
     "langchain-google-genai>=2.0.0",
+    "langchain-text-splitters>=0.3.0",
     "streamlit>=1.40.0",
+    # --- RAG + Agente (Módulo 2) ---
+    "chromadb>=0.5.0",
+    "langchain-chroma>=0.1.0",
+    "langchain-community>=0.3.0",
+    "sentence-transformers>=3.0.0",
 ]
 
