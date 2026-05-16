@@ -32,7 +32,7 @@ load_dotenv()
 PROVIDER       = os.getenv("LLM_PROVIDER", "local")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL   = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
-OLLAMA_MODEL   = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+OLLAMA_MODEL   = os.getenv("OLLAMA_MODEL", "gemma3:1b")
 
 try:
     from src.langchain_app.qa_system import MODEL_NAME

@@ -299,20 +299,32 @@ def build_llm(provider: str = PROVIDER):
 # ──────────────────────────────────────────────────────────────────────────────
 
 RAG_PROMPT_TEMPLATE = """\
-Eres un asistente experto en Manuelita S.A.
-Responde la pregunta basándote ÚNICAMENTE en los fragmentos de contexto que se \
-proporcionan a continuación. Si la respuesta no se encuentra en el contexto, \
-responde exactamente: "No encontré información suficiente sobre ese tema."
+Eres un asistente experto en Manuelita S.A., empresa agroindustrial colombiana \
+fundada en 1864, con operaciones en Colombia, Perú y Chile en las plataformas \
+de caña de azúcar, palma de aceite, acuicultura y frutas y hortalizas. \
+También eres amable y conversacional.
 
-No inventes datos ni uses conocimiento externo. Responde en español. \
-Sé preciso e incluye cifras exactas cuando estén disponibles.
+### INSTRUCCIONES:
+1. PREGUNTAS SOBRE LA EMPRESA: Responde basándote ÚNICAMENTE en el contexto recuperado.
+   - Incluye cifras exactas y usa negritas (**dato**) para resaltar datos clave.
+   - Si la respuesta NO está en el contexto, di exactamente: \
+"No encontré información suficiente sobre ese tema."
+   - No inventes datos, cifras ni hechos.
+2. PREGUNTAS CONVERSACIONALES: Si el usuario te saluda, se despide, o pregunta \
+por información personal que él mismo compartió (como su nombre), responde de \
+forma natural y cordial usando el historial de conversación.
+3. Si la pregunta incluye un historial de conversación previo, úsalo para \
+resolver referencias como "allí", "eso", "ese país", etc.
+4. Responde en español, de forma clara y estructurada. Máximo 3 párrafos \
+salvo que la pregunta requiera una lista detallada.
 
-CONTEXTO RECUPERADO:
+### CONTEXTO RECUPERADO:
 {context}
 
-PREGUNTA: {question}
+### PREGUNTA DEL USUARIO (puede incluir historial de conversación):
+{question}
 
-RESPUESTA:"""
+### RESPUESTA:"""
 
 RAG_PROMPT = ChatPromptTemplate.from_template(RAG_PROMPT_TEMPLATE)
 
@@ -374,19 +386,33 @@ class ManuelitaRAG:
         """
         Recupera los k chunks más relevantes para la pregunta.
 
+        Si la pregunta viene enriquecida con historial conversacional,
+        extrae solo la pregunta actual para la búsqueda vectorial.
+
         Returns:
             Lista de Documents ordenados por relevancia.
         """
-        return self.vectorstore.similarity_search(question, k=k)
+        search_query = question
+        if "[Pregunta actual]" in question:
+            search_query = question.split("[Pregunta actual]")[-1].strip()
+
+        return self.vectorstore.similarity_search(search_query, k=k)
 
     def retrieve_with_scores(self, question: str, k: int = DEFAULT_K):
         """
         Recupera chunks con su puntaje de similitud.
 
+        Si la pregunta viene enriquecida con historial conversacional,
+        extrae solo la pregunta actual para la búsqueda vectorial.
+
         Returns:
             Lista de tuplas (Document, score).  Score más bajo = más similar.
         """
-        return self.vectorstore.similarity_search_with_score(question, k=k)
+        search_query = question
+        if "[Pregunta actual]" in question:
+            search_query = question.split("[Pregunta actual]")[-1].strip()
+
+        return self.vectorstore.similarity_search_with_score(search_query, k=k)
 
     def get_retriever(self, k: int = DEFAULT_K):
         """

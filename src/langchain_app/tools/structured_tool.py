@@ -67,13 +67,25 @@ class ManuelitaStructuredTool:
     # ── Detección de intención ─────────────────────────────────
 
     def _detect_category(self, question: str) -> str:
-        """Detecta la categoría temática de la pregunta por keywords."""
+        """Detecta la categoría temática de la pregunta por keywords.
+
+        Usa word boundaries (\\b) para evitar falsos positivos por substring.
+        Ejemplo: 'nit' no debe matchear 'unidades' ni 'comunitar'.
+        """
         q = question.lower()
         q = re.sub(r"[¿?¡!.,;:]", "", q)
 
         for category, kws in self.keywords.items():
-            if any(kw.lower() in q for kw in kws):
-                return category
+            for kw in kws:
+                kw_lower = kw.lower()
+                # Usar word boundaries para keywords cortas (<=4 chars)
+                # para evitar matches parciales como "nit" en "unidades"
+                if len(kw_lower) <= 4:
+                    if re.search(r"\b" + re.escape(kw_lower) + r"\b", q):
+                        return category
+                else:
+                    if kw_lower in q:
+                        return category
         return "general"
 
     # ── Constructores de respuesta por categoría ───────────────
