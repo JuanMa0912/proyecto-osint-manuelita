@@ -16,6 +16,12 @@ Implementa DOS estrategias de routing:
    Requiere un LLM capaz de seguir el formato Pensamiento/Acción/Observación.
    Recomendado con gemini-2.0-flash; puede fallar con modelos <7B.
 
+Observabilidad (LangSmith — Bloque 5):
+   Cuando LANGCHAIN_TRACING_V2=true y LANGCHAIN_API_KEY están en .env,
+   LangSmith registra automáticamente TODAS las llamadas LangChain:
+   embeddings, retrievers, LLM calls, cadenas y herramientas.
+   El método ask() también usa @traceable para nombrar cada corrida.
+
 Uso rápido:
     from src.langchain_app.agent import ManuelitaAgent
     agent = ManuelitaAgent(provider="local")
@@ -37,6 +43,15 @@ load_dotenv()
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
+
+# ── Observabilidad con LangSmith ──────────────────────────────
+# Se inicializa una sola vez al importar el módulo.
+# Si LANGCHAIN_TRACING_V2=true en .env, todas las llamadas
+# LangChain quedan automáticamente registradas en LangSmith.
+from src.langchain_app.langsmith_setup import init_langsmith, get_traceable  # noqa: E402
+
+_langsmith_status = init_langsmith()
+_traceable = get_traceable()   # @traceable o no-op si no está instalado
 
 
 # ─────────────────────────────────────────────────────────────
@@ -118,9 +133,14 @@ class ManuelitaAgent:
 
     # ── API pública ───────────────────────────────────────────
 
+    @_traceable(name="manuelita_ask", tags=["modulo2", "hybrid_router"])
     def ask(self, question: str) -> dict[str, Any]:
         """
         Responde una pregunta eligiendo la herramienta más adecuada.
+
+        LangSmith traza esta llamada automáticamente cuando
+        LANGCHAIN_TRACING_V2=true — incluyendo el routing,
+        la llamada al LLM o al JSON estructurado, y las fuentes.
 
         Args:
             question: pregunta en lenguaje natural

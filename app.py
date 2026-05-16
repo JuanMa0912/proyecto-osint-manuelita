@@ -260,6 +260,25 @@ def render_sidebar() -> tuple:
         st.markdown("**Router** HybridRouter")
         st.markdown("**Memoria** ConversationBufferWindowMemory")
         st.markdown("**Framework** LangChain")
+
+        # ── LangSmith badge ───────────────────────────────────
+        try:
+            from src.langchain_app.langsmith_setup import (
+                is_tracing_enabled, get_project_name, get_dashboard_url
+            )
+            if is_tracing_enabled():
+                dash_url = get_dashboard_url()
+                proj = get_project_name()
+                st.markdown(
+                    "**Trazas** [LangSmith 🔍](" + dash_url + ")"
+                )
+                st.caption("Proyecto: `" + proj + "`")
+            else:
+                st.markdown("**Trazas** LangSmith *(inactivo)*")
+                st.caption("Activa con `LANGCHAIN_TRACING_V2=true`")
+        except Exception:
+            st.markdown("**Trazas** LangSmith *(no configurado)*")
+
         st.divider()
         st.caption("Universidad Autónoma de Occidente · 2026")
         st.caption("Módulo 2 · Agente Conversacional")
