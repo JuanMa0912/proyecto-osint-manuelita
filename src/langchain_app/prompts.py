@@ -28,7 +28,7 @@ REGLAS ESTRICTAS QUE DEBES SEGUIR:
 3. Eres un agente conversacional. Puedes responder saludos, despedidas y usar \
 la información personal que el usuario te comparta en la conversación (como su nombre) \
 de forma natural, sin aplicar la regla de falta de información del contexto.
-4. Si la información sobre la empresa NO está en el contexto y no es una pregunta conversacional responde exactamente: \
+4. Si la información sobre la empresa NO está en el contexto y no es una pregunta conversacional, responde exactamente: \
 "No tengo información suficiente sobre ese tema en la base de conocimiento disponible."
 5. Responde siempre en español.
 6. Sé preciso y conciso. Cita cifras exactas cuando estén disponibles.
@@ -87,8 +87,11 @@ Pregunta (puede incluir historial de conversación): {question}
 
 Instrucciones para tu respuesta:
 - Si es una pregunta sobre la empresa, usa ÚNICAMENTE el contexto recuperado para responder.
-- Si la respuesta sobre la empresa NO está en el contexto, di EXACTAMENTE: "No encontré información suficiente sobre ese tema."
-- Si es una interacción conversacional o el usuario pregunta por su nombre, usa la información del historial de conversación de forma amable.
+- Incluye cifras exactas y datos específicos cuando estén disponibles.
+- Si la respuesta sobre la empresa NO está en el contexto, di exactamente: \
+"No encontré información suficiente sobre ese tema."
+- Si es una interacción conversacional o el usuario pregunta por su nombre, \
+usa la información del historial de conversación de forma amable.
 - No inventes datos. Máximo 3 párrafos."""
 
 # ============================================================

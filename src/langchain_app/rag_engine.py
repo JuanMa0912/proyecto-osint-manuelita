@@ -54,8 +54,8 @@ GEMINI_MODEL     = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 GEMINI_EMBED     = os.getenv("GEMINI_EMBED", "models/gemini-embedding-001")
 
 OLLAMA_BASE_URL  = "http://localhost:11434"
-OLLAMA_MODEL     = os.getenv("OLLAMA_MODEL", "gemma3:1b")
-OLLAMA_EMBED     = "nomic-embed-text-v2-moe:latest"            # pull con: ollama pull nomic-embed-text
+OLLAMA_MODEL     = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+OLLAMA_EMBED     = "nomic-embed-text"            # pull con: ollama pull nomic-embed-text
 
 # Embeddings locales (sin API) — sentence-transformers multilingüe
 # Proveedor "local": usa este modelo para embeddings + Gemini para el LLM
@@ -299,13 +299,24 @@ def build_llm(provider: str = PROVIDER):
 # ──────────────────────────────────────────────────────────────────────────────
 
 RAG_PROMPT_TEMPLATE = """\
-Eres un asistente experto en Manuelita S.A., diseñado para ser amable y conversacional.
+Eres un asistente experto en Manuelita S.A., empresa agroindustrial colombiana \
+fundada en 1864, con operaciones en Colombia, Perú y Chile en las plataformas \
+de caña de azúcar, palma de aceite, acuicultura y frutas y hortalizas. \
+También eres amable y conversacional.
 
-### INSTRUCCIONES ESTRICTAS:
-1. PREGUNTAS SOBRE LA EMPRESA: Utiliza ÚNICAMENTE la información en el bloque [CONTEXTO RECUPERADO].
-   - Si la respuesta se encuentra allí, responde de forma clara, precisa y con cifras exactas.
-   - Si la respuesta NO se encuentra en el contexto, DEBES responder EXACTAMENTE: "No encontré información suficiente sobre ese tema."
-2. PREGUNTAS PERSONALES O CONVERSACIONALES: Si el usuario te saluda, o pregunta sobre información personal que él mismo te ha dado (por ejemplo: su nombre), busca en el historial de conversación que viene dentro de la pregunta. Responde de manera natural y cordial.
+### INSTRUCCIONES:
+1. PREGUNTAS SOBRE LA EMPRESA: Responde basándote ÚNICAMENTE en el contexto recuperado.
+   - Incluye cifras exactas y usa negritas (**dato**) para resaltar datos clave.
+   - Si la respuesta NO está en el contexto, di exactamente: \
+"No encontré información suficiente sobre ese tema."
+   - No inventes datos, cifras ni hechos.
+2. PREGUNTAS CONVERSACIONALES: Si el usuario te saluda, se despide, o pregunta \
+por información personal que él mismo compartió (como su nombre), responde de \
+forma natural y cordial usando el historial de conversación.
+3. Si la pregunta incluye un historial de conversación previo, úsalo para \
+resolver referencias como "allí", "eso", "ese país", etc.
+4. Responde en español, de forma clara y estructurada. Máximo 3 párrafos \
+salvo que la pregunta requiera una lista detallada.
 
 ### CONTEXTO RECUPERADO:
 {context}
@@ -375,18 +386,24 @@ class ManuelitaRAG:
         """
         Recupera los k chunks más relevantes para la pregunta.
 
+        Si la pregunta viene enriquecida con historial conversacional,
+        extrae solo la pregunta actual para la búsqueda vectorial.
+
         Returns:
             Lista de Documents ordenados por relevancia.
         """
         search_query = question
         if "[Pregunta actual]" in question:
             search_query = question.split("[Pregunta actual]")[-1].strip()
-            
+
         return self.vectorstore.similarity_search(search_query, k=k)
 
     def retrieve_with_scores(self, question: str, k: int = DEFAULT_K):
         """
         Recupera chunks con su puntaje de similitud.
+
+        Si la pregunta viene enriquecida con historial conversacional,
+        extrae solo la pregunta actual para la búsqueda vectorial.
 
         Returns:
             Lista de tuplas (Document, score).  Score más bajo = más similar.
@@ -394,7 +411,7 @@ class ManuelitaRAG:
         search_query = question
         if "[Pregunta actual]" in question:
             search_query = question.split("[Pregunta actual]")[-1].strip()
-            
+
         return self.vectorstore.similarity_search_with_score(search_query, k=k)
 
     def get_retriever(self, k: int = DEFAULT_K):
