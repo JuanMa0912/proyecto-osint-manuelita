@@ -62,6 +62,11 @@ proyecto_manuelita/
 Usuario
   │
   ▼
+Interfaz Streamlit       ← app.py (Bloque 5)
+  │  Chat con burbujas · badges de fuente · selector de proveedor
+  │  Sugerencias visuales en estado vacío (sin botones)
+  │
+  ▼
 ContextualAgent          ← memory.py — mantiene últimos 5 turnos (Bloque 4)
   │   ConversationBufferWindowMemory
   │   _enrich_question() → inyecta historial en preguntas de seguimiento
@@ -69,23 +74,25 @@ ContextualAgent          ← memory.py — mantiene últimos 5 turnos (Bloque 4)
   ▼
 ManuelitaAgent           ← agent.py — HybridRouter (Bloque 3)
   │   _route(question) decide:
+  │     0. Extrae pregunta real si viene enriquecida con historial
   │     1. Señales narrativas → RAG
-  │     2. Categoría exacta  → Datos Estructurados
+  │     2. Categoría exacta  → Datos Estructurados (con fuzzy matching)
   │     3. Default           → RAG
   │
   ├─── ManuelitaStructuredTool    ← tools/structured_tool.py (Bloque 2)
   │      JSON en memoria · 0ms · 100% exacto · sin LLM
   │      Categorías: nit, presidente, fundacion, paises, empleados,
   │                  ingresos, ebitda, unidades, carbono, general
+  │      Fuzzy matching: tolera typos (distancia Levenshtein ≤ 2)
   │
   └─── ManuelitaRAG               ← rag_engine.py (Bloque 1)
          ChromaDB + Embeddings + LLM
          Corpus: data_processed/markdown/*.md
          Prioridad: key_facts_manuelita.md (formato Q&A)
+         retrieve() extrae pregunta real si viene con historial
   │
   ▼
-Interfaz Streamlit       ← app.py (Bloque 5)
-  Chat con burbujas · badges de fuente · selector de proveedor
+Prompt RAG con contexto Manuelita + soporte conversacional + anti-alucinación
 ```
 
 ---
@@ -148,12 +155,21 @@ MEMORY_WINDOW=5              # turnos de historial a mantener
 
 El router tiene una prioridad estricta en `agent.py → _route()`:
 
+0. **Extracción de pregunta real**: si la pregunta viene enriquecida con historial
+   (formato `[Pregunta actual]\n...`), `_route()` extrae solo la pregunta actual.
+   Esto evita que el historial contamine el routing (bug corregido: historial con "nit"
+   hacía que preguntas sobre "presidente" se rutearan a NIT).
+
 1. **`_RAG_SIGNALS`** (set de strings): palabras que fuerzan RAG sin importar nada más.
    - Incluye: `valores`, `cultura`, `cómo`, `gestiona`, `premios`, `comunidades`, etc.
    - **Si agregas una palabra a esta lista, verifica que no rompa el test Q8** (`¿Cómo gestiona Manuelita la sostenibilidad ambiental?` → debe ir a RAG).
 
 2. **`_detect_category()`** en `structured_tool.py`: detecta categorías por keywords del JSON.
    - La sección `keywords` en `manuelita_datos.json` mapea categoría → lista de triggers.
+   - **Keywords cortas (≤4 chars)** usan word boundaries (`\b`) para evitar falsos positivos
+     (ej: `"nit"` no debe matchear `"unidades"`).
+   - **Keywords largas (>4 chars)** usan fuzzy matching (Levenshtein ≤ 2) para tolerar typos
+     (ej: `"presiente"` → matchea `"presidente"`).
    - **Nunca pongas `"sostenibilidad"` como keyword de `carbono`** — rompe el routing (fue un bug ya corregido).
 
 3. **Default → RAG**: si no hay señal clara, va a RAG. Es el comportamiento correcto.
@@ -170,6 +186,33 @@ El router tiene una prioridad estricta en `agent.py → _route()`:
 - `ContextualAgent.chat()` guarda siempre la **pregunta original** en memoria, no la enriquecida.
 - `_enrich_question()` solo inyecta historial cuando detecta señales de follow-up O la pregunta tiene menos de 5 palabras.
 - `reset()` borra el historial — se llama desde el botón "Nueva conversación" de la UI.
+
+### Manejo de preguntas enriquecidas (historial inyectado)
+
+Cuando `_enrich_question()` inyecta historial, la pregunta tiene el formato:
+```
+[Contexto de la conversación]
+Usuario: ...
+Asistente: ...
+
+[Pregunta actual]
+<la pregunta real>
+```
+
+Tres puntos del código extraen la pregunta real antes de procesarla:
+- **`agent.py → _route()`**: rutea sobre la pregunta real, no sobre el historial.
+- **`rag_engine.py → retrieve()`**: busca en ChromaDB solo con la pregunta real.
+- **`rag_engine.py → retrieve_with_scores()`**: ídem.
+
+El prompt RAG sí recibe la pregunta completa (con historial) para que el LLM pueda
+resolver referencias como "allí", "eso", "ese país".
+
+### Prompts — diseño conversacional + anti-alucinación
+
+Los prompts (`rag_engine.py`, `prompts.py`) distinguen dos tipos de interacción:
+1. **Preguntas sobre la empresa** → solo responde con contexto recuperado, no inventa.
+2. **Preguntas conversacionales** (saludos, nombre del usuario) → responde de forma natural
+   usando el historial de conversación inyectado, sin aplicar regla anti-alucinación.
 
 ### Números en español
 
@@ -203,6 +246,11 @@ El score de keywords con modo `local` es bajo (~60%) por las limitaciones de `ll
 | Números con coma en vez de punto | `f"{n:,}"` da `"7,971"` en inglés | `_fmt()` con `.replace(",", ".")` |
 | `index.lock` en git | Proceso git colgado en mount Windows | Eliminar desde PowerShell con `Remove-Item` |
 | Botones negros en Streamlit | CSS solo para `button[kind="primary"]` | Añadir CSS para `button:not([kind="primary"])` |
+| "unidades" ruteaba a NIT | `"nit"` matcheaba como substring en `"unidades"` | Word boundaries (`\b`) para keywords ≤4 chars |
+| Historial contaminaba routing | `_route()` evaluaba pregunta enriquecida completa | Extraer `[Pregunta actual]` antes de rutear |
+| Typos rompían routing | `"presiente"` no matcheaba `"presidente"` | Fuzzy matching (Levenshtein ≤ 2) en `_detect_category()` |
+| RAG buscaba con historial | `retrieve()` buscaba en ChromaDB con todo el bloque enriquecido | Extraer pregunta real antes de similarity_search |
+| `.env` con modelos incorrectos | `gemini-2.5-flash` (20/día) y `gemma3:1b` (17% score) | Corregir a `gemini-2.0-flash` y `llama3.2:3b` |
 
 ---
 

@@ -41,16 +41,6 @@ except ImportError:
 
 MEMORY_WINDOW = int(os.getenv("MEMORY_WINDOW", "5"))
 
-EXAMPLE_QUESTIONS = [
-    "¿Cuál es el NIT de Manuelita?",
-    "¿Quién es el presidente de Manuelita?",
-    "¿En qué países opera Manuelita?",
-    "¿Cuántos empleados tiene?",
-    "¿Cuáles fueron los ingresos en 2023?",
-    "¿Cuál es la meta de carbono para 2030?",
-    "¿Cuáles son los valores corporativos?",
-    "¿Cómo gestiona Manuelita la sostenibilidad ambiental?",
-]
 
 st.set_page_config(
     page_title="Manuelita AI — Agente Conversacional",
@@ -152,25 +142,6 @@ st.markdown("""
     }
     div.stButton > button[kind="primary"]:hover { background: var(--green-700); }
 
-    /* Botones secundarios — chips de ejemplo */
-    div.stButton > button[kind="secondary"],
-    div.stButton > button:not([kind="primary"]) {
-        background: #ffffff !important;
-        color: var(--green-800) !important;
-        border: 1.5px solid var(--green-700) !important;
-        border-radius: 8px !important;
-        font-size: 0.82rem !important;
-        font-weight: 600 !important;
-        padding: 0.3rem 0.7rem !important;
-        transition: all 0.15s ease !important;
-    }
-    div.stButton > button[kind="secondary"]:hover,
-    div.stButton > button:not([kind="primary"]):hover {
-        background: var(--green-700) !important;
-        color: #ffffff !important;
-        border-color: var(--green-700) !important;
-    }
-
     /* Boton sidebar — nueva conversacion */
     [data-testid="stSidebar"] div.stButton > button {
         background: rgba(255,255,255,0.12) !important;
@@ -185,10 +156,27 @@ st.markdown("""
 
     .stExpander { border: 1px solid var(--line) !important; border-radius: 8px !important; }
     .empty-chat {
-        text-align: center; color: #5f6f63; padding: 2.5rem 1rem;
-        font-size: 0.95rem; border: 2px dashed #dce8df; border-radius: 12px;
-        background: rgba(255,255,255,0.6);
+        text-align: center; color: #5f6f63; padding: 3rem 2rem;
+        font-size: 0.95rem; border: 2px dashed #dce8df; border-radius: 16px;
+        background: rgba(255,255,255,0.6); margin-bottom: 1rem;
     }
+    .empty-chat-title {
+        font-size: 1.3rem; font-weight: 700; color: var(--green-800);
+        margin-bottom: 0.5rem;
+    }
+    .empty-chat-hints {
+        display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+        margin-top: 1rem;
+    }
+    .hint-chip {
+        background: rgba(31,107,59,0.08); border: 1px solid rgba(31,107,59,0.2);
+        border-radius: 999px; padding: 0.35rem 0.9rem; font-size: 0.8rem;
+        color: var(--green-800); font-weight: 500;
+    }
+    /* Chat container */
+    .chat-container { min-height: 200px; margin-bottom: 0.5rem; }
+    /* Input form styling */
+    .stForm { border: none !important; padding: 0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -321,7 +309,16 @@ def _badge(tool: str, enriched: bool) -> str:
 def render_chat_history(messages: list) -> None:
     if not messages:
         st.markdown(
-            '<div class="empty-chat">👋 ¡Hola! Escribe una pregunta o elige un ejemplo para comenzar.</div>',
+            '<div class="empty-chat">'
+            '<div class="empty-chat-title">Asistente de Manuelita S.A.</div>'
+            '<p>Pregunta sobre la empresa en lenguaje natural. Algunos ejemplos:</p>'
+            '<div class="empty-chat-hints">'
+            '<span class="hint-chip">NIT de la empresa</span>'
+            '<span class="hint-chip">Ingresos 2023</span>'
+            '<span class="hint-chip">Valores corporativos</span>'
+            '<span class="hint-chip">Sostenibilidad ambiental</span>'
+            '<span class="hint-chip">Unidades de negocio</span>'
+            '</div></div>',
             unsafe_allow_html=True,
         )
         return
@@ -355,9 +352,6 @@ def render_chat_tab(agent, provider: str) -> None:
         st.session_state["chat_messages"] = []
     if "turn_count" not in st.session_state:
         st.session_state["turn_count"] = 0
-    if "pending_q" not in st.session_state:
-        st.session_state["pending_q"] = ""
-
     if st.session_state.get("_prov") != provider:
         st.session_state["_prov"] = provider
         st.session_state["chat_messages"] = []
@@ -365,31 +359,21 @@ def render_chat_tab(agent, provider: str) -> None:
 
     msgs = st.session_state["chat_messages"]
 
-    # Chips de ejemplos
-    st.markdown("**Prueba con alguna de estas preguntas:**")
-    cols = st.columns(4)
-    for i, q in enumerate(EXAMPLE_QUESTIONS):
-        if cols[i % 4].button(q, key="ex_" + str(i), use_container_width=True):
-            st.session_state["pending_q"] = q
-
-    st.divider()
-
     # Historial
     render_chat_history(msgs)
 
     # Input
-    st.markdown("")
     with st.form("chat_form", clear_on_submit=True):
-        c1, c2 = st.columns([5, 1])
+        c1, c2 = st.columns([6, 1])
         with c1:
             q = st.text_input(
                 "Pregunta:",
-                value=st.session_state.pop("pending_q", ""),
-                placeholder="Ej: ¿Cuál es la meta de carbono de Manuelita para 2030?",
+                value="",
+                placeholder="Escribe tu pregunta sobre Manuelita S.A. ...",
                 label_visibility="collapsed",
             )
         with c2:
-            send = st.form_submit_button("Enviar ▶", type="primary", use_container_width=True)
+            send = st.form_submit_button("Enviar", type="primary", use_container_width=True)
 
     if send and q.strip():
         msgs.append({"role": "user", "content": q})
