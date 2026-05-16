@@ -97,14 +97,19 @@ class ManuelitaAgent:
         Returns:
             ("structured", categoria) o ("rag", "corpus")
         """
-        q_lower = question.lower()
+        # Extraer solo la pregunta actual si viene enriquecida con historial
+        q_for_routing = question
+        if "[Pregunta actual]" in question:
+            q_for_routing = question.split("[Pregunta actual]")[-1].strip()
+
+        q_lower = q_for_routing.lower()
 
         # 1. Señales narrativas/abiertas → forzar RAG
         if any(signal in q_lower for signal in self._RAG_SIGNALS):
             return "rag", "corpus"
 
         # 2. Categoría estructurada detectada
-        category = self.structured._detect_category(question)
+        category = self.structured._detect_category(q_for_routing)
         if category != "general":
             return "structured", category
 

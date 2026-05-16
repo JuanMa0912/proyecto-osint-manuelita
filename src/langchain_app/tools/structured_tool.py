@@ -66,26 +66,60 @@ class ManuelitaStructuredTool:
 
     # ── Detección de intención ─────────────────────────────────
 
+    @staticmethod
+    def _fuzzy_match(word: str, keyword: str, max_dist: int = 2) -> bool:
+        """Verifica si dos palabras son similares (distancia de edición <= max_dist).
+
+        Permite tolerar typos comunes como 'presiente' → 'presidente'.
+        Solo aplica a palabras de longitud similar (±max_dist chars).
+        """
+        if abs(len(word) - len(keyword)) > max_dist:
+            return False
+        # Distancia de Levenshtein simplificada (DP)
+        m, n = len(word), len(keyword)
+        dp = list(range(n + 1))
+        for i in range(1, m + 1):
+            prev, dp[0] = dp[0], i
+            for j in range(1, n + 1):
+                temp = dp[j]
+                dp[j] = min(
+                    dp[j] + 1,          # eliminación
+                    dp[j - 1] + 1,      # inserción
+                    prev + (0 if word[i - 1] == keyword[j - 1] else 1),  # sustitución
+                )
+                prev = temp
+        return dp[n] <= max_dist
+
     def _detect_category(self, question: str) -> str:
         """Detecta la categoría temática de la pregunta por keywords.
 
-        Usa word boundaries (\\b) para evitar falsos positivos por substring.
-        Ejemplo: 'nit' no debe matchear 'unidades' ni 'comunitar'.
+        Usa word boundaries para keywords cortas y fuzzy matching para
+        tolerar errores de escritura (distancia de edición <= 2).
+        Ejemplo: 'presiente' matchea con 'presidente', pero 'nit' no matchea 'unidades'.
         """
         q = question.lower()
         q = re.sub(r"[¿?¡!.,;:]", "", q)
+        q_words = q.split()
 
         for category, kws in self.keywords.items():
             for kw in kws:
                 kw_lower = kw.lower()
-                # Usar word boundaries para keywords cortas (<=4 chars)
-                # para evitar matches parciales como "nit" en "unidades"
+                # Keywords cortas (<=4 chars): match exacto con word boundaries
                 if len(kw_lower) <= 4:
                     if re.search(r"\b" + re.escape(kw_lower) + r"\b", q):
                         return category
+                # Keywords multi-palabra: match exacto por substring
+                elif " " in kw_lower:
+                    if kw_lower in q:
+                        return category
+                # Keywords largas (>4 chars, una palabra): exacto + fuzzy
                 else:
                     if kw_lower in q:
                         return category
+                    # Fuzzy: comparar contra cada palabra de la pregunta
+                    for w in q_words:
+                        if len(w) >= 5 and self._fuzzy_match(w, kw_lower):
+                            return category
         return "general"
 
     # ── Constructores de respuesta por categoría ───────────────
