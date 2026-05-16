@@ -54,8 +54,8 @@ GEMINI_MODEL     = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 GEMINI_EMBED     = os.getenv("GEMINI_EMBED", "models/gemini-embedding-001")
 
 OLLAMA_BASE_URL  = "http://localhost:11434"
-OLLAMA_MODEL     = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
-OLLAMA_EMBED     = "nomic-embed-text"            # pull con: ollama pull nomic-embed-text
+OLLAMA_MODEL     = os.getenv("OLLAMA_MODEL", "gemma4:latest ")
+OLLAMA_EMBED     = "nomic-embed-text-v2-moe:latest"            # pull con: ollama pull nomic-embed-text
 
 # Embeddings locales (sin API) — sentence-transformers multilingüe
 # Proveedor "local": usa este modelo para embeddings + Gemini para el LLM
@@ -301,8 +301,7 @@ def build_llm(provider: str = PROVIDER):
 RAG_PROMPT_TEMPLATE = """\
 Eres un asistente experto en Manuelita S.A., empresa agroindustrial colombiana \
 fundada en 1864, con operaciones en Colombia, Perú y Chile en las plataformas \
-de caña de azúcar, palma de aceite, acuicultura y frutas y hortalizas. \
-También eres amable y conversacional.
+de caña de azúcar, palma de aceite, acuicultura y frutas y hortalizas.
 
 ### INSTRUCCIONES:
 1. PREGUNTAS SOBRE LA EMPRESA: Responde basándote ÚNICAMENTE en el contexto recuperado.
@@ -310,12 +309,12 @@ También eres amable y conversacional.
    - Si la respuesta NO está en el contexto, di exactamente: \
 "No encontré información suficiente sobre ese tema."
    - No inventes datos, cifras ni hechos.
-2. PREGUNTAS CONVERSACIONALES: Si el usuario te saluda, se despide, o pregunta \
-por información personal que él mismo compartió (como su nombre), responde de \
-forma natural y cordial usando el historial de conversación.
+2. PREGUNTAS CONVERSACIONALES: Si el usuario te saluda o se despide, responde \
+de forma breve y directa (1-2 oraciones máximo). Si te da su nombre, úsalo \
+en respuestas posteriores.
 3. Si la pregunta incluye un historial de conversación previo, úsalo para \
 resolver referencias como "allí", "eso", "ese país", etc.
-4. Responde en español, de forma clara y estructurada. Máximo 3 párrafos \
+4. Responde en español, de forma clara y directa. Máximo 3 párrafos \
 salvo que la pregunta requiera una lista detallada.
 
 ### CONTEXTO RECUPERADO:
