@@ -321,7 +321,7 @@ salvo que la pregunta requiera una lista detallada.
 ### CONTEXTO RECUPERADO:
 {context}
 
-### PREGUNTA (puede incluir historial de conversación):
+### PREGUNTA DEL USUARIO (puede incluir historial de conversación):
 {question}
 
 ### RESPUESTA:"""
