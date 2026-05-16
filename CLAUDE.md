@@ -93,7 +93,61 @@ ManuelitaAgent           ← agent.py — HybridRouter (Bloque 3)
   │
   ▼
 Prompt RAG con contexto Manuelita + soporte conversacional + anti-alucinación
+  │
+  ▼
+LangSmith                ← langsmith_setup.py (Bloque 5 — Observabilidad)
+     Traza TODAS las llamadas LangChain automáticamente
+     @traceable en ManuelitaAgent.ask() → run_name="manuelita_ask"
+     Badge de estado en sidebar Streamlit
+     Proyecto: manuelita-osint-ia
 ```
+
+---
+
+## Observabilidad — LangSmith
+
+**Módulo:** `src/langchain_app/langsmith_setup.py`
+
+LangSmith actúa como middleware de observabilidad: cuando `LANGCHAIN_TRACING_V2=true` está en `.env`, registra automáticamente cada llamada al LLM, embeddings, retriever, memoria y herramientas sin modificar el código del agente.
+
+### Activación (una sola vez)
+
+```powershell
+# 1. Instalar SDK
+uv add langsmith
+
+# 2. Crear cuenta y API key en https://smith.langchain.com
+# 3. Agregar al .env:
+#    LANGCHAIN_TRACING_V2=true
+#    LANGCHAIN_API_KEY=lsv2_pt_...
+#    LANGCHAIN_PROJECT=manuelita-osint-ia
+
+# 4. Verificar
+uv run python scripts/test_langsmith_bloque5.py
+```
+
+### API del módulo
+
+```python
+from src.langchain_app.langsmith_setup import (
+    init_langsmith,          # Inicializa y verifica — llamar al arrancar
+    get_traceable,           # Devuelve @traceable o no-op si no instalado
+    is_tracing_enabled,      # Bool — True si LANGCHAIN_TRACING_V2=true + API key
+    get_project_name,        # "manuelita-osint-ia"
+    get_dashboard_url,       # URL del dashboard en LangSmith
+    langsmith_status_badge,  # String markdown para Streamlit
+)
+```
+
+### Qué traza automáticamente
+
+| Componente | Run name en LangSmith |
+|------------|----------------------|
+| `ManuelitaAgent.ask()` | `manuelita_ask` (tags: modulo2, hybrid_router) |
+| LLM (Gemini/Ollama) | `ChatGoogleGenerativeAI` / `ChatOllama` |
+| Embeddings | `GoogleGenerativeAIEmbeddings` / `HuggingFaceEmbeddings` |
+| ChromaDB retriever | `VectorStoreRetriever` |
+| Memoria | `ConversationBufferWindowMemory` |
 
 ---
 
