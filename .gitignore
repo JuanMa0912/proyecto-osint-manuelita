@@ -49,7 +49,9 @@ logs/*.log
 logs/**/*.log
 
 # ----- Herramientas de desarrollo -----
-.claude/
+# Ignora la config local de Claude pero versiona las reglas de interacción.
+.claude/*
+!.claude/rules.md
 .vscode/
 .idea/
 *.swp

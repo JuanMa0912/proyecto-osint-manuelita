@@ -3,6 +3,10 @@
 Guía de contexto para el agente de IA que trabaja en este repositorio.
 Lee este archivo antes de hacer cualquier cambio de código.
 
+> **Reglas de interacción (obligatorias):** antes de responder, aplica
+> [`.claude/rules.md`](.claude/rules.md) — define el estilo de trabajo esperado
+> (crítica directa, empezar por los huecos, sin validación automática).
+
 ---
 
 ## Identidad del proyecto
@@ -28,8 +32,9 @@ proyecto_manuelita/
 │   ├── rag_engine.py               # Motor RAG con ChromaDB (Bloque 1)
 │   ├── tools/
 │   │   └── structured_tool.py      # Herramienta datos estructurados JSON (Bloque 2)
-│   ├── agent.py                    # HybridRouter — ManuelitaAgent (Bloque 3)
+│   ├── agent.py                    # ManuelitaAgent (HybridRouter) + build_react_agent() (Bloque 3)
 │   ├── memory.py                   # ConversationMemory + ContextualAgent (Bloque 4)
+│   ├── langsmith_setup.py          # Observabilidad LangSmith (Bloque 6)
 │   ├── corpus_loader.py            # Carga del corpus Markdown (Módulo 1)
 │   ├── prompts.py                  # Plantillas de prompts (Módulo 1)
 │   └── qa_system.py                # Motor Q&A simple (Módulo 1 — conservado)
@@ -37,7 +42,7 @@ proyecto_manuelita/
 ├── data/
 │   ├── structured/
 │   │   └── manuelita_datos.json    # JSON con datos exactos: NIT, cifras, directivos
-│   └── vectorstore/                # Índice ChromaDB persistente (NO en git)
+│   └── vectorstore/{proveedor}/    # Índice ChromaDB persistente, una subcarpeta por proveedor (NO en git)
 │
 ├── data_processed/markdown/
 │   ├── key_facts_manuelita.md      # Corpus Q&A — formato clave para retrieval
@@ -48,10 +53,12 @@ proyecto_manuelita/
 │   ├── test_structured_tool.py     # Tests herramienta estructurada
 │   ├── test_agente_bloque3.py      # Tests router 10 preguntas
 │   ├── test_memoria_bloque4.py     # Tests memoria conversacional
-│   └── test_modulo2_completo.py    # Suite integrada completa
+│   ├── test_langsmith_bloque5.py   # Test de observabilidad LangSmith (Bloque 6)
+│   ├── test_modulo2_completo.py    # Suite integrada completa (Bloque 7)
+│   └── test_20_preguntas.py        # Las 20 preguntas académicas (Módulo 1, qa_system)
 │
 └── reports/
-    └── informe_modulo2.pdf         # Informe académico 11 páginas
+    └── informe_modulo2.pdf         # Informe académico 11 páginas (regenerar si cambia la numeración)
 ```
 
 ---
@@ -72,12 +79,14 @@ ContextualAgent          ← memory.py — mantiene últimos 5 turnos (Bloque 4)
   │   _enrich_question() → inyecta historial en preguntas de seguimiento
   │
   ▼
-ManuelitaAgent           ← agent.py — HybridRouter (Bloque 3)
+ManuelitaAgent           ← agent.py — HybridRouter (Bloque 3, estrategia por defecto)
   │   _route(question) decide:
   │     0. Extrae pregunta real si viene enriquecida con historial
   │     1. Señales narrativas → RAG
   │     2. Categoría exacta  → Datos Estructurados (con fuzzy matching)
   │     3. Default           → RAG
+  │   (Alternativa: build_react_agent() — agente ReAct de LangChain
+  │    que deja al LLM razonar la herramienta. Ver "Estrategias de agente".)
   │
   ├─── ManuelitaStructuredTool    ← tools/structured_tool.py (Bloque 2)
   │      JSON en memoria · 0ms · 100% exacto · sin LLM
@@ -95,16 +104,39 @@ ManuelitaAgent           ← agent.py — HybridRouter (Bloque 3)
 Prompt RAG con contexto Manuelita + soporte conversacional + anti-alucinación
   │
   ▼
-LangSmith                ← langsmith_setup.py (Bloque 5 — Observabilidad)
+LangSmith                ← langsmith_setup.py (Bloque 6 — Observabilidad)
      Traza TODAS las llamadas LangChain automáticamente
      @traceable en ManuelitaAgent.ask() → run_name="manuelita_ask"
      Badge de estado en sidebar Streamlit
      Proyecto: manuelita-osint-ia
 ```
 
+> **Numeración de bloques (canónica):** 1 RAG · 2 Estructurado · 3 Router ·
+> 4 Memoria · 5 Streamlit · 6 Observabilidad LangSmith · 7 Tests + Informe.
+> Si tocas la numeración, regenera también `reports/informe_modulo2.pdf` para
+> que no quede desincronizado.
+
 ---
 
-## Observabilidad — LangSmith
+## Estrategias de agente — HybridRouter vs ReAct
+
+`agent.py` implementa **dos** estrategias seleccionables sobre las mismas dos
+herramientas (`ManuelitaDatosEstructurados` + `ManuelitaRAG`):
+
+| Estrategia | Cómo decide | Cuándo usarla | Punto de entrada |
+|------------|-------------|---------------|------------------|
+| **HybridRouter** (por defecto) | Clasifica por keywords en `_route()` antes de invocar herramientas. Determinista, 0 tokens en el routing. | Producción y modo `local`: funciona con cualquier LLM, incluso pequeños. | `ManuelitaAgent(provider).ask(q)` |
+| **ReAct** (demo académico) | El LLM razona en formato Thought/Action/Observation y elige la herramienta solo. `max_iterations=3`. | Demostrar razonamiento de agente. Requiere LLM capaz — recomendado `gemini-2.0-flash`; puede fallar con modelos <7B. | `build_react_agent(provider).invoke({"input": q})` |
+
+- El `ManuelitaAgent.ask()` es lo que usa la UI (`app.py`) y la memoria
+  (`ContextualAgent`). El ReAct es independiente y se invoca aparte.
+- **Nota:** el default de `LLM_PROVIDER` en código (`agent.py`, `rag_engine.py`)
+  es `"gemini"`. El `.env` del repo usa `local`. Si no defines la variable,
+  arranca en modo `gemini` y exigirá `GEMINI_API_KEY`.
+
+---
+
+## Observabilidad — LangSmith (Bloque 6)
 
 **Módulo:** `src/langchain_app/langsmith_setup.py`
 
@@ -231,9 +263,13 @@ El router tiene una prioridad estricta en `agent.py → _route()`:
 ### Vectorstore
 
 - La carpeta `data/vectorstore/` está en `.gitignore` — se regenera con `--reindex`.
+- El índice se persiste en una **subcarpeta por proveedor**: `data/vectorstore/{proveedor}/`
+  (`gemini/`, `local/`, `ollama/`). Cambiar de proveedor usa/crea su propio índice.
 - Si el vectorstore está vacío o da errores, siempre correr `--reindex` primero.
 - El archivo `key_facts_manuelita.md` en formato Q&A es crítico para el score RAG. No eliminarlo.
-- Parámetros actuales: `CHUNK_SIZE=500`, `CHUNK_OVERLAP=80`, `DEFAULT_K=5–6`.
+- Parámetros actuales (`rag_engine.py`): `CHUNK_SIZE=500`, `CHUNK_OVERLAP=80`,
+  `DEFAULT_K=5`, `COLLECTION_NAME="manuelita_corpus"`. Ojo: `ManuelitaAgent.ask()`
+  recupera con `k=6` (no con el `DEFAULT_K=5`), ver [agent.py:175](src/langchain_app/agent.py#L175).
 
 ### Memoria conversacional
 
@@ -281,9 +317,13 @@ Los prompts (`rag_engine.py`, `prompts.py`) distinguen dos tipos de interacción
 | Script | Score esperado | Tiempo aprox. |
 |--------|---------------|--------------|
 | `test_structured_tool.py` | 100% keywords, 100% categorías | <1s |
+| `test_rag_bloque1.py` (local, `--reindex`) | Score RAG ~86%, gemini ~95% | ~1-2min |
 | `test_agente_bloque3.py` (local) | Routing 10/10 (100%), keywords ~60% | ~2min |
 | `test_agente_bloque3.py` (gemini) | Routing 10/10 (100%), keywords ~95% | ~30s |
 | `test_memoria_bloque4.py` | Memoria 100%, follow-up ≥85% | ~2min |
+| `test_langsmith_bloque5.py` | Estado ACTIVO si `.env` tiene API key; traza visible en dashboard | <10s |
+| `test_modulo2_completo.py` | Suite integrada Bloques 2+3+4; genera JSON en `reports/` | ~3-4min |
+| `test_20_preguntas.py` | Las 20 preguntas académicas (Módulo 1, `qa_system`) | ~2-3min |
 
 El score de keywords con modo `local` es bajo (~60%) por las limitaciones de `llama3.2:3b` en español. El **routing** siempre debe ser 100% — si falla, hay un bug en `_route()` o `_RAG_SIGNALS`.
 
