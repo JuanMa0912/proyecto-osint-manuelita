@@ -44,6 +44,29 @@ $uuid = (($agentLines | Select-String -SimpleMatch "manuelita-bot").Line -split 
 
 (Los Hands sí usan UUID v5 determinista; solo el agente conversacional es v4.)
 
+### 2.4 Conflicto HTTP 409 por doble daemon (reproducido y resuelto)
+
+Telegram (Bot API) **solo admite un poller `getUpdates` por token**. Si quedan **dos
+daemons** de OpenFang vivos a la vez, ambos hacen *long-polling* del mismo bot y Telegram
+responde repetidamente `409 Conflict — stale polling session, retrying` → **el bot deja de
+responder de forma fiable**.
+
+Causa raíz (reproducida en vivo, jun 2026): `openfang stop` (basado en *pidfile*) resultó
+**poco fiable** matando daemons lanzados por `nohup` → en cada reinicio se acumulaba un daemon
+huérfano. Diagnóstico: `pgrep -x openfang` mostraba **2** procesos y el log llenándose de 409.
+
+Fix aplicado en `scripts/01-start-daemon.sh` y `scripts/03-switch-provider.sh`: matar por
+**nombre del binario** antes de arrancar —
+
+```bash
+pkill -9 -x openfang 2>/dev/null || true   # mata el daemon por nombre, no por pidfile
+sleep 1
+```
+
+⚠️ **No usar** `pkill -f "openfang start"`: ese patrón coincide con el propio script (que
+contiene la cadena) y se **auto-mata**, dejando dos daemons o ninguno. Verificación de éxito:
+`pgrep -x openfang` debe devolver **1** y `grep -c 409 daemon.log` debe quedar en **0**.
+
 ## 3. WhatsApp — gateway Baileys (QR)
 
 ### 3.1 Qué es
