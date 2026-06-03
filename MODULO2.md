@@ -362,7 +362,83 @@ app.py
 
 ---
 
-## Bloque 6 — Tests Integrados e Informe ✅
+## Bloque 6 — Observabilidad con LangSmith
+
+### Qué es LangSmith
+
+[LangSmith](https://smith.langchain.com) es la plataforma oficial de observabilidad para aplicaciones LangChain. Registra automáticamente todas las llamadas a LLMs, embeddings, retrievers, herramientas y cadenas, mostrando:
+
+- Latencia de cada paso (embedding, retrieval, LLM call)
+- Tokens consumidos por llamada
+- Prompt exacto enviado al LLM y respuesta recibida
+- Árbol de ejecución completo de la cadena
+- Historial de corridas y comparativas entre modelos
+
+### Implementación en Manuelita S.A.
+
+**Módulo:** `src/langchain_app/langsmith_setup.py`
+
+Componentes:
+- `init_langsmith()` — inicializa y verifica la conexión; se llama al importar `agent.py`
+- `get_traceable()` — devuelve el decorador `@traceable` o un no-op si LangSmith no está instalado
+- `is_tracing_enabled()` — helper para la UI
+- `langsmith_status_badge()` — markdown badge para Streamlit sidebar
+
+**Integración en `agent.py`:**
+```python
+from src.langchain_app.langsmith_setup import init_langsmith, get_traceable
+
+_langsmith_status = init_langsmith()   # activa tracing al importar
+_traceable = get_traceable()
+
+class ManuelitaAgent:
+    @_traceable(name="manuelita_ask", tags=["modulo2", "hybrid_router"])
+    def ask(self, question: str) -> dict:
+        ...
+```
+
+Cada llamada a `ask()` queda registrada en LangSmith con nombre `manuelita_ask` y las etiquetas `modulo2` y `hybrid_router`. Las llamadas internas al LLM, retriever y embeddings se anidan automáticamente.
+
+### Activación
+
+Agregar al `.env`:
+
+```env
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=<obtener en https://smith.langchain.com>
+LANGCHAIN_PROJECT=manuelita-osint-ia
+```
+
+### Test de verificación
+
+```bash
+uv run python scripts/test_langsmith_bloque5.py
+```
+
+Salida esperada con LangSmith activo:
+```
+  Estado    : ACTIVO ✓
+  Proyecto  : manuelita-osint-ia
+  🔍 Traza registrada en LangSmith
+     Dashboard  : https://smith.langchain.com/o/projects/manuelita-osint-ia
+     Run name   : manuelita_ask
+     Tags       : modulo2, hybrid_router
+```
+
+### Qué se traza en el proyecto
+
+| Componente | Tipo de traza | Nombre en LangSmith |
+|------------|---------------|---------------------|
+| `ManuelitaAgent.ask()` | `@traceable` | `manuelita_ask` |
+| LLM (Gemini / Ollama) | Auto (LangChain) | `ChatGoogleGenerativeAI` / `ChatOllama` |
+| Embeddings | Auto (LangChain) | `GoogleGenerativeAIEmbeddings` / `HuggingFaceEmbeddings` |
+| ChromaDB retriever | Auto (LangChain) | `VectorStoreRetriever` |
+| ConversationMemory | Auto (LangChain) | `ConversationBufferWindowMemory` |
+| ReAct Agent (demo) | Auto (LangChain) | `AgentExecutor` |
+
+---
+
+## Bloque 7 — Tests Integrados e Informe ✅
 
 ### Archivos
 | Archivo | Descripción |
@@ -438,80 +514,4 @@ OLLAMA_MODEL=llama3.2:3b    # modelo de chat
 # Memoria conversacional (Bloque 4):
 MEMORY_WINDOW=5             # turnos a mantener en memoria (default: 5)
 ```
-
----
-
-## Bloque 5 — Observabilidad con LangSmith
-
-### Qué es LangSmith
-
-[LangSmith](https://smith.langchain.com) es la plataforma oficial de observabilidad para aplicaciones LangChain. Registra automáticamente todas las llamadas a LLMs, embeddings, retrievers, herramientas y cadenas, mostrando:
-
-- Latencia de cada paso (embedding, retrieval, LLM call)
-- Tokens consumidos por llamada
-- Prompt exacto enviado al LLM y respuesta recibida
-- Árbol de ejecución completo de la cadena
-- Historial de corridas y comparativas entre modelos
-
-### Implementación en Manuelita S.A.
-
-**Módulo:** `src/langchain_app/langsmith_setup.py`
-
-Componentes:
-- `init_langsmith()` — inicializa y verifica la conexión; se llama al importar `agent.py`
-- `get_traceable()` — devuelve el decorador `@traceable` o un no-op si LangSmith no está instalado
-- `is_tracing_enabled()` — helper para la UI
-- `langsmith_status_badge()` — markdown badge para Streamlit sidebar
-
-**Integración en `agent.py`:**
-```python
-from src.langchain_app.langsmith_setup import init_langsmith, get_traceable
-
-_langsmith_status = init_langsmith()   # activa tracing al importar
-_traceable = get_traceable()
-
-class ManuelitaAgent:
-    @_traceable(name="manuelita_ask", tags=["modulo2", "hybrid_router"])
-    def ask(self, question: str) -> dict:
-        ...
-```
-
-Cada llamada a `ask()` queda registrada en LangSmith con nombre `manuelita_ask` y las etiquetas `modulo2` y `hybrid_router`. Las llamadas internas al LLM, retriever y embeddings se anidan automáticamente.
-
-### Activación
-
-Agregar al `.env`:
-
-```env
-LANGCHAIN_TRACING_V2=true
-LANGCHAIN_API_KEY=<obtener en https://smith.langchain.com>
-LANGCHAIN_PROJECT=manuelita-osint-ia
-```
-
-### Test de verificación
-
-```bash
-uv run python scripts/test_langsmith_bloque5.py
-```
-
-Salida esperada con LangSmith activo:
-```
-  Estado    : ACTIVO ✓
-  Proyecto  : manuelita-osint-ia
-  🔍 Traza registrada en LangSmith
-     Dashboard  : https://smith.langchain.com/o/projects/manuelita-osint-ia
-     Run name   : manuelita_ask
-     Tags       : modulo2, hybrid_router
-```
-
-### Qué se traza en el proyecto
-
-| Componente | Tipo de traza | Nombre en LangSmith |
-|------------|---------------|---------------------|
-| `ManuelitaAgent.ask()` | `@traceable` | `manuelita_ask` |
-| LLM (Gemini / Ollama) | Auto (LangChain) | `ChatGoogleGenerativeAI` / `ChatOllama` |
-| Embeddings | Auto (LangChain) | `GoogleGenerativeAIEmbeddings` / `HuggingFaceEmbeddings` |
-| ChromaDB retriever | Auto (LangChain) | `VectorStoreRetriever` |
-| ConversationMemory | Auto (LangChain) | `ConversationBufferWindowMemory` |
-| ReAct Agent (demo) | Auto (LangChain) | `AgentExecutor` |
 
