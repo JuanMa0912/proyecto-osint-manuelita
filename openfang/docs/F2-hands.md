@@ -106,8 +106,34 @@ openfang hand pause sostenibilidad-manuelita
 ## 6. Estado
 
 Las 3 Hands quedaron **activadas, configuradas y pausadas** (quota-safe). Para la demo se
-reanudan con `openfang hand resume <id>` y se observan en el dashboard `http://127.0.0.1:4200`.
+reanudan con `openfang hand resume <instance_uuid>` y se observan en el dashboard
+`http://127.0.0.1:4200`.
 
-## 7. Próximo paso
+## 7. Spike de ejecución del Custom Hand (jun 2026) — evidencia
 
-F3 — conectar **Telegram** para la prueba de fuego en vivo del agente conversacional.
+Se ejecutó el Hand de sostenibilidad **bajo demanda** (mensaje directo a su agente, ya que
+activar no dispara el ciclo: eso corre en el `schedule` semanal). Resultados verificados:
+
+- **La operación autónoma funciona.** `iterations=4`: el Hand planificó, hizo **`web_search`
+  real** (encontró la pagina de sostenibilidad de Manuelita y el PDF del Informe 2023-2024),
+  analizó, citó fuentes y **persistió en memoria** (`memory/<fecha>.md`). Fue honesto cuando
+  no pudo acceder al PDF completo — sin alucinar. ~15 s.
+- **Pero `flash-lite` no completó el `file_write`** del reporte nombrado (mismo patrón que el
+  agente conversacional: el modelo pequeño no cierra de forma fiable todas las fases con tool).
+  → El `HAND.toml` se fijó a **`gemini-2.5-flash`** para que cierre el ciclo (incluye el reporte).
+
+### Gotcha verificado — una Hand registrada NO se puede actualizar en caliente
+
+OpenFang v0.6.9 **no** tiene `hand uninstall` ni `install --force`. Tras registrar una Hand,
+`hand install` repetido falla con `Hand already registered`, y `deactivate` solo detiene la
+instancia (no la des-registra). Para cambiarle el modelo/definición hay que **resetear la DB**
+(`openfang.db`), lo cual borra también la config de canales. Implicación práctica:
+
+- En un **entorno limpio** (un compañero clonando: `02-deploy-agent.sh` borra `openfang.db`),
+  la Hand se registra **desde cero con el `HAND.toml` del repo** (ya en `gemini-2.5-flash`) y
+  completa el `file_write`.
+- En un entorno **ya poblado**, la Hand queda con el modelo con que se registró por primera vez.
+
+## 8. Próximo paso
+
+F3 — canales (Telegram ✅ probado) y luego F4 — informe unificado.
