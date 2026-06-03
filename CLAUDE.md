@@ -13,9 +13,11 @@ Lee este archivo antes de hacer cualquier cambio de código.
 
 **Nombre:** Sistema OSINT + Agente Conversacional — Manuelita S.A.  
 **Universidad:** Universidad Autónoma de Occidente — Maestría en IA y Ciencia de Datos  
-**Módulo actual:** Módulo 2 — Agente Conversacional con Memoria y Herramientas  
+**Módulo actual:** Módulo 3 — Productización y Sistemas Agénticos (**Ruta B: OpenFang Agent OS**). Ver [§ Módulo 3](#módulo-3--productización-ruta-b-openfang-agent-os).  
+**Módulos previos:** M1 (OSINT + corpus) · M2 (agente RAG + memoria, ver [MODULO2.md](MODULO2.md))  
 **Rama activa:** `development`  
-**Stack:** Python 3.11 · LangChain 0.3 · ChromaDB · Streamlit · uv
+**Stack M2:** Python 3.11 · LangChain 0.3 · ChromaDB · Streamlit · uv  
+**Stack M3:** OpenFang (Agent OS, Rust) · WSL2 · Ollama/Gemini · Telegram + WhatsApp
 
 ---
 
@@ -354,6 +356,94 @@ El score de keywords con modo `local` es bajo (~60%) por las limitaciones de `ll
 - **Convención de commits:** `feat(modulo2): ...` / `fix(app): ...` / `docs: ...`
 - **NO commitear:** `data/vectorstore/`, `**/*.sqlite3`, `reports/resultados_rag_*.json`
 - **Si hay `index.lock`:** eliminarlo desde PowerShell (`Remove-Item .git\index.lock -Force`), luego hacer git desde PowerShell (no desde el sandbox Linux).
+
+---
+
+## Módulo 3 — Productización (Ruta B: OpenFang Agent OS)
+
+> **Estado:** en planeación (junio 2026). Esta sección es la guía viva del M3.
+> El código/config del M3 aún no existe; no asumas que algo está implementado
+> hasta verificarlo en el repo.
+
+### Decisión de ruta
+
+De las dos rutas del enunciado, el equipo eligió **Ruta B — Sistema Operativo
+Agéntico con OpenFang** (en vez de Ruta A: FastAPI + Function Calling + N8N).
+
+**Consecuencia clave:** en Ruta B **el código del Módulo 2 (LangChain, ChromaDB,
+Streamlit) NO se reusa como base ejecutable.** Solo se migra el **corpus limpio
+del Módulo 1** (`data_processed/markdown/*.md`) a la memoria de OpenFang. El M2
+queda en el informe como "evolución arquitectónica", no como software vivo.
+
+### Qué es OpenFang (datos verificados — no inventar sobre esto)
+
+- Agent OS open source en **Rust**, MIT — [github.com/RightNow-AI/openfang](https://github.com/RightNow-AI/openfang).
+- **Versión: v0.6.9, pre-1.0.** El README advierte: *"feature complete but still
+  pre-1.0. Expect rough edges and breaking changes between minor versions."*
+  → **Fijar la versión exacta** y no actualizar antes de la sustentación.
+- Binario ~32MB, dashboard local en `http://localhost:4200`.
+- 7 Hands incluidos (Clip, **Lead**, **Collector**, Predictor, Researcher,
+  Twitter, Browser) · 27 proveedores LLM · ~40 adaptadores de canal.
+
+### Decisiones de arquitectura (tomadas con el equipo)
+
+| Tema | Decisión | Nota |
+|------|----------|------|
+| **Entorno** | WSL2 (Ubuntu) sobre Windows 11 | Más estable para Rust+Node pre-1.0. |
+| **Motor LLM** | Intercambiable: **Ollama local** (soberanía de datos, rubric) o **Gemini** (velocidad, sin GPU). Se decide por demo. | OpenFang permite override de proveedor por canal. |
+| **Canales** | **Telegram + WhatsApp** (ambos). Telegram = principal por estabilidad. | Telegram: token de BotFather. WhatsApp: gateway Node QR en puerto 3009 (enlaza WhatsApp personal). |
+| **Hands** | **2 built-in** (sugeridos: Lead + Collector) **+ 1 Custom** propio de Manuelita | El Custom es el "toque auténtico" que el enunciado premia. |
+| **t-SNE ("picante")** | **Diferido** (opcional avanzado). Se evalúa al final. | Extraer sesiones (JSONL/SQLite FTS5) → embeddings → t-SNE/UMAP → clústeres. |
+
+### Comandos base (verificados del README)
+
+```bash
+# Instalación (dentro de WSL2):
+curl -fsSL https://openfang.sh/install | sh
+openfang init
+openfang start                       # dashboard en http://localhost:4200
+
+# Hands:
+openfang hand activate <nombre>      # ej. lead, collector
+openfang hand status <nombre>
+
+# WhatsApp gateway (puerto 3009, requiere Node):
+node packages/whatsapp-gateway/index.js   # luego escanear QR (Linked Devices)
+```
+
+> El instalador nativo de Windows existe (`irm https://openfang.sh/install.ps1 | iex`)
+> pero usamos WSL2 por estabilidad. Ollama se expone en el puerto `11434`.
+
+### Punto de mayor riesgo — leer antes de avanzar
+
+La **ingesta del corpus corporativo al vector store + KV de OpenFang** es el paso
+**peor documentado** en el README (memoria vía crate `openfang-memory`, SQLite +
+embeddings, pero "exact ingestion mechanics aren't detailed"). Es el paso con más
+probabilidad de atascar el proyecto.
+
+→ **Hacer un spike de este paso PRIMERO** (Fase 0), con 1 solo archivo del corpus,
+antes de invertir en Hands y canales. Si la ingesta no sale en ~1 sesión, hay que
+reconsiderar la ruta antes de quedarse sin tiempo para la sustentación.
+
+### Plan por fases
+
+| Fase | Objetivo | Entregable |
+|------|----------|-----------|
+| **F0** | Spike: instalar OpenFang en WSL2, `openfang start`, ingerir **1** archivo del corpus y validar 1 query RAG interna | Prueba de viabilidad |
+| **F1** | Ingerir todo `data_processed/markdown/*.md` (historia, productos, sostenibilidad) a vector + KV | "Identidad base" de Manuelita en el OS |
+| **F2** | Configurar `HAND.toml` + `SKILL.md` de los 3 Hands (2 built-in + 1 Custom) | Operaciones autónomas activas |
+| **F3** | Conectar Telegram (BotFather) y WhatsApp (gateway 3009); prueba en vivo | Bot respondiendo desde un teléfono real |
+| **F4** | Informe técnico **unificado** (M1+M2+M3) en PDF: problema, evolución arquitectónica, diagrama end-to-end | `reports/informe_final.pdf` |
+| **F5** | (Opcional "picante") t-SNE/UMAP sobre el historial de sesiones | Notebook + análisis de clústeres |
+
+### Entregables del módulo (del enunciado)
+
+1. **Informe técnico final unificado (PDF):** problema/solución · evolución M2→M3 ·
+   ventajas del Agent OS (seguridad WASM, gestión de RAM) · `HAND.toml` elegido ·
+   cómo se inyectó la memoria corporativa · diagrama end-to-end · t-SNE (si aplica).
+2. **Sustentación en vivo (15 min, cero diapositivas):** demo práctica (código,
+   terminal, dashboard). **Prueba de fuego:** el profesor escribe desde su propio
+   teléfono al bot. Mitigación: ensayar el flujo completo end-to-end días antes.
 
 ---
 
