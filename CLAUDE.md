@@ -5,7 +5,8 @@ Lee este archivo antes de hacer cualquier cambio de código.
 
 > **Reglas de interacción (obligatorias):** antes de responder, aplica
 > [`.claude/rules.md`](.claude/rules.md) — define el estilo de trabajo esperado
-> (crítica directa, empezar por los huecos, sin validación automática).
+> (crítica directa, empezar por los huecos, sin validación automática, e
+> **investigar/verificar en la web en vez de inventar** versiones, APIs y prácticas).
 
 ---
 
@@ -238,6 +239,16 @@ MEMORY_WINDOW=5              # turnos de historial a mantener
 ---
 
 ## Reglas de desarrollo
+
+### Conocimiento actualizado — investiga, no inventes
+
+Antes de afirmar versiones, APIs, sintaxis, comandos o "mejores prácticas", y antes
+de ejecutar comandos en la máquina del usuario: **verifícalo con búsqueda web contra
+la documentación real**. El conocimiento de entrenamiento tiene fecha de corte y se
+desactualiza; no respondas de memoria si hay duda. Prefiere siempre lo más reciente
+y probado. Ejemplos de este repo: OpenFang (v0.6.9 verificada en su GitHub) y
+gentle-ai (comandos confirmados antes de correrlos). Detalle completo en
+[`.claude/rules.md`](.claude/rules.md) (reglas 10–11).
 
 ### Routing — NO tocar sin leer esto primero
 
