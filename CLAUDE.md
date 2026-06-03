@@ -436,6 +436,55 @@ probabilidad de atascar el proyecto.
 antes de invertir en Hands y canales. Si la ingesta no sale en ~1 sesión, hay que
 reconsiderar la ruta antes de quedarse sin tiempo para la sustentación.
 
+### Hallazgos verificados — spike F0 (2 jun 2026, OpenFang v0.6.9)
+
+Spike ejecutado en Ubuntu/WSL2. **Corrige supuestos del enunciado — no inventar sobre esto:**
+
+- **NO existe ingesta a un "vector store semántico".** Confirmado por CLI (no hay
+  comando `ingest`; `memory` es solo KV: list/get/set/delete) y por API REST (404 en
+  `/api/{memory,knowledge,documents,rag,embeddings,vector,ingest,upload}`).
+- **Cómo se le da conocimiento a un agente (mecanismo real):**
+  1. `[model] system_prompt` en `~/.openfang/agents/<agente>/agent.toml` → persona +
+     reglas anti-alucinación. **Aquí se porta el contenido de los prompts del M2** (no
+     las plantillas LangChain, solo el contenido/persona).
+  2. **Workspace** `~/.openfang/workspaces/<agente>/data/` → se dejan los `.md` del
+     corpus; el agente los lee con `file_read`/`file_list` (el template lo llama
+     literalmente *"Access knowledge base"*). Es recuperación **agéntica por archivos**.
+  3. **KV** (`memory_store`/`memory_recall`) → datos estructurados (NIT, cifras).
+  4. `MEMORY.md` del workspace → *"Long-Term Memory: curated knowledge across sessions"*.
+- **Conclusión:** OpenFang hace **recuperación agéntica por archivos + KV**, NO RAG por
+  embeddings. En el informe se describe así (honesto), no como "vector store". Afinar
+  chunking/embeddings del M2 es irrelevante aquí; lo que importa es la **calidad/estructura
+  del corpus** (Markdown limpio, formato Q&A tipo `key_facts_manuelita.md`).
+- **Base recomendada:** clonar el template `customer-support` o `sales-assistant`
+  (manifiesto en `agent.toml`, tools ya incluyen `file_read`+`memory_*`).
+- **Daemon:** `openfang start` → API/dashboard en `127.0.0.1:4200`. Provider por defecto
+  `groq` (pide `GROQ_API_KEY`); cambiar a Ollama local o Gemini en `~/.openfang/config.toml`.
+
+### Receta funcional verificada (2 jun 2026) — `manuelita-bot` responde ✅
+
+Spike F0 cerrado: un agente respondiendo de verdad (~3 s vía Gemini). Reproducible:
+
+1. **Entorno:** Ubuntu en WSL2 (`wsl --install -d Ubuntu`). OpenFang vive bajo `/root`
+   → operar como root: `wsl -d Ubuntu -u root`. Binario en `/root/.openfang/bin/openfang`.
+2. **Red:** `~/.wslconfig` con `[wsl2]`/`networkingMode=mirrored` (+ `wsl --shutdown`)
+   para que WSL alcance servicios de Windows por `localhost` (Ollama en `11434`).
+3. **Un solo agente:** crear `agents/manuelita-bot/` (cp de un template) **y borrar
+   `~/.openfang/data/openfang.db*`** — los 30 templates están registrados en la DB
+   (no solo en disco); sin borrar la DB el daemon revive los 30. Tras borrarla spawnea 1.
+4. **Proveedor demo: Gemini `gemini-2.5-flash-lite`.** ⚠️ `gemini-2.0-flash` quedó con
+   free tier en **0** (HTTP 429); `2.5-flash-lite` sí tiene cupo (jun 2026, verificado).
+   La key como env var `GEMINI_API_KEY` al lanzar el daemon (archivo `~/.openfang/manuelita.env`).
+5. **Proveedor soberanía: Ollama.** Cableado pero **lento sin GPU** (>2 min con `llama3.2:3b`
+   → el CLI corta a 120 s). **Fix del driver:** `base_url = "http://localhost:11434/v1"`
+   (faltaba `/v1` → daba 404; bug #137/#212). Para acelerar usar un modelo 1b. El
+   endpoint de embeddings `/v1/embeddings` aún falla en OpenFang.
+6. **Arrancar/probar:** `openfang start` (con la key en env) → dashboard `127.0.0.1:4200`.
+   `openfang message <uuid> "..."` (CLI corta a 120 s; con Gemini responde en ~3 s).
+
+**Lección de cuota:** muchos agentes + free tier = 429 inmediato y quema de cupo. Con
+**1 agente** y `2.5-flash-lite` el bot respondió en ~3 s.
+
 ### Plan por fases
 
 | Fase | Objetivo | Entregable |
