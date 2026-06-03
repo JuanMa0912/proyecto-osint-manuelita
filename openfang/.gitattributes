@@ -1,0 +1,3 @@
+# Los scripts se ejecutan en WSL/Linux: forzar saltos de linea LF
+# (evita el error "bad interpreter: \r" si git los convierte a CRLF en Windows)
+*.sh text eol=lf
