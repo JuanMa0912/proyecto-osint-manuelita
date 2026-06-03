@@ -154,3 +154,34 @@ En `openfang/scripts/` del repositorio se encuentran los scripts necesarios:
 
 - **Recuperación agéntica, no garantizada.** El conocimiento profundo (más allá de los datos núcleo) depende de que el LLM **decida** leer los archivos del workspace. A diferencia de un retriever, no hay garantía determinista de que el contexto relevante se recupere en cada consulta.
 - **Próxima fase (F3):** conectar **Telegram** para realizar la demo en vivo del agente.
+
+---
+
+## 10. Spike de grounding y elección de modelo (jun 2026) — evidencia
+
+Se midió empíricamente (vía la misma API REST que usan los canales) si el agente
+realmente consulta el corpus o improvisa. Hallazgos:
+
+| Modelo | ¿Usa `file_read` solo? | Respuesta a pregunta abierta | Latencia | Tokens (aprox.) |
+|--------|------------------------|------------------------------|----------|-----------------|
+| `gemini-2.5-flash-lite` | **No** — ignora la orden del prompt | genérica / improvisada (alucinación blanda) | 3–9 s | ~7.500 |
+| `gemini-2.5-flash` | **Sí** — 2–3 iteraciones | aterrizada, con datos del corpus y cita de fuente | 7–20 s | ~24.000 |
+
+Conclusiones verificadas:
+1. **Las tools de archivo funcionan, rápido y SIN aprobación** (`/api/approvals` quedó
+   vacío antes y después; no bloquean la respuesta).
+2. El fallo original no era de tools sino de **navegación**: el modelo hacía `file_list`
+   de la raíz y no entraba en `data/`. El prompt ahora trae un **mapa tema→archivo** con
+   rutas completas (`data/<archivo>`).
+3. **Instruir no basta con un modelo pequeño:** `2.5-flash-lite` ignora "DEBES leer el
+   archivo" en preguntas abiertas. Solo `2.5-flash` recupera de forma autónoma.
+
+**Decisión:** el agente conversacional usa **`gemini-2.5-flash`** (override por-agente en
+`agent.toml`), con **fallback a `gemini-2.5-flash-lite`** si topa cuota. Para que lo común
+siga siendo rápido sin tool, se **curaron al núcleo** (DATOS NUCLEO) los hechos de mayor
+probabilidad de demo (operación por país, cifras operativas, utilidad neta, familias
+beneficiadas). El detalle profundo se recupera con `file_read` (~7–20 s).
+
+**Costo a vigilar (cuota):** una pregunta profunda con `2.5-flash` gasta ~10× tokens que
+el lite. El tope `max_llm_tokens_per_hour = 200000` da ~8 preguntas profundas/hora. Es
+suficiente para una demo de 15 min, pero **no conviene ensayar en exceso** el mismo día.
