@@ -18,5 +18,11 @@ if [ -z "${GEMINI_API_KEY:-}" ]; then
   echo "  (Sin key, el agente Gemini devolvera errores.)"
 fi
 
+# Idempotencia: mata cualquier daemon previo para evitar DOBLE polling de Telegram
+# (error 409 Conflict). Se mata por NOMBRE del binario (-x openfang); NO usar
+# 'pkill -f "openfang start"' porque ese patron coincide con este mismo script.
+pkill -9 -x openfang 2>/dev/null || true
+sleep 1
+
 echo "Arrancando OpenFang... dashboard: http://127.0.0.1:4200"
 exec "$OF/bin/openfang" start

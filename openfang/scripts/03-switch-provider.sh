@@ -38,7 +38,11 @@ print(f"manuelita-bot -> provider={provider}, model={model}")
 PY
 
 echo ">> Reiniciando daemon para aplicar el cambio..."
-"$OF_BIN" stop >/dev/null 2>&1 || true
+# Mata por NOMBRE del binario (-x openfang). NO uses 'pkill -f "openfang start"':
+# ese patron coincide con este propio script (contiene la cadena) y se auto-mata,
+# dejando dos daemons o ninguno. 'openfang stop' por pidfile resulto poco fiable
+# con daemons lanzados por nohup -> se acumulaban (Telegram 409 por doble polling).
+pkill -9 -x openfang 2>/dev/null || true
 sleep 2
 # shellcheck disable=SC1090
 [ -f "$ENV_FILE" ] && source "$ENV_FILE"
