@@ -19,6 +19,9 @@ tools = [
   "event_publish",
 ]
 requirements = []
+# Nota: el campo 'dashboard' usa una estructura anidada (HandMetric) no documentada
+# en v0.6.9; se omite (es cosmetico: solo el contador de tarjetas). El Hand igual
+# guarda metricas en memoria (sost_hand_*) via memory_store segun su system_prompt.
 
 [hand.agent]
 name = "sostenibilidad-hand"
@@ -64,6 +67,3 @@ options = [
   { label = "Diario", value = "daily" },
   { label = "Semanal", value = "weekly" },
 ]
-
-# dashboard: metricas opcionales (se omiten por ahora; el Hand funciona sin ellas)
-
