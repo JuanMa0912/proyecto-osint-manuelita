@@ -19,10 +19,15 @@ que se ejecuta solo en ciclos programados. Se gestionan con:
 openfang hand list                       # hands disponibles (9 built-in)
 openfang hand activate <id>              # activar
 openfang hand config <id> --set K=V      # configurar ajustes
-openfang hand active                     # instancias activas
-openfang hand pause <id> / resume <id>   # pausar / reanudar
+openfang hand active                     # instancias activas (muestra el INSTANCE UUID)
+openfang hand pause <instance_uuid>      # pausar / reanudar: usan el INSTANCE UUID, NO el nombre
+openfang hand resume <instance_uuid>     #   (verificado: pasar el nombre reporta "'' paused" sin efecto)
 openfang hand install <dir>              # instalar una Hand custom (dir con HAND.toml)
 ```
+
+> **Gotcha verificado (jun 2026):** `pause`/`resume` esperan el **INSTANCE UUID** que
+> lista `openfang hand active` (col. INSTANCE), no el id del hand. Con el nombre el CLI
+> dice `✔ Hand instance '' paused.` pero el estado sigue `Active`. Con el UUID pasa a `Paused`.
 
 ## 3. Hands desplegadas
 

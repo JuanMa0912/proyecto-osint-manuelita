@@ -14,11 +14,15 @@ openfang/
 ├── docs/
 │   ├── F0-spike-infraestructura.md    # Fase F0: instalar y validar OpenFang
 │   ├── F1-agente-manuelita.md         # Fase F1: el agente, prompt y pruebas
-│   └── F2-hands.md                    # Fase F2: operaciones autónomas (Hands)
+│   ├── F2-hands.md                    # Fase F2: operaciones autónomas (Hands)
+│   └── F3-canales.md                  # Fase F3: canales Telegram + WhatsApp
 ├── agents/manuelita-bot/
 │   ├── agent.toml                     # manifiesto: persona + system_prompt + tools
 │   └── MEMORY.md                      # hechos curados de Manuelita
 ├── hands/sostenibilidad-manuelita/    # Custom Hand (HAND.toml + SKILL.md)
+├── whatsapp-gateway/                  # Gateway QR (Baileys) → manuelita-bot (F3)
+│   ├── index.js · package.json        # gateway Node (node_modules y auth_store NO se versionan)
+│   └── start-gateway.ps1              # launcher: lee el UUID del agente en vivo y arranca
 ├── config/
 │   └── config.example.toml            # config de OpenFang (Gemini / Ollama)
 └── scripts/
@@ -59,7 +63,7 @@ de WSL como root: `wsl -d Ubuntu -u root`.
 | F0 | Infraestructura OpenFang en WSL2 (instalación, networking, proveedores) | ✅ Validada |
 | F1 | Agente `manuelita-bot`: persona + corpus + anti-alucinación proporcional | ✅ Responde (~3 s vía Gemini) |
 | F2 | Hands: 2 built-in (`collector`, `lead`) + 1 Custom (`sostenibilidad-manuelita`) | ✅ Configuradas y pausadas |
-| F3 | Conectar Telegram (BotFather) para la demo en vivo | ⏳ Pendiente |
+| F3 | Canales: WhatsApp (gateway QR, versionado y listo) + Telegram (vía nativa verificada) | 🟡 Gateway listo · falta QR en vivo + token @BotFather |
 | F4 | Informe técnico unificado | ⏳ Pendiente |
 | F5 | Análisis t-SNE de conversaciones (opcional) | ⏳ Pendiente |
 
