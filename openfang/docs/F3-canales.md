@@ -94,41 +94,64 @@ solo en arranques siguientes.
 **Escanear el QR** con el WhatsApp personal. Es una acción manual ineludible (vincula
 el dispositivo). El resto está automatizado en el launcher.
 
-## 4. Telegram — canal nativo de OpenFang
+## 4. Telegram — canal nativo de OpenFang (procedimiento verificado, funcionando ✅)
 
-### 4.1 Vía no-interactiva (la que usamos)
+> Corrige un supuesto previo: `channel enable` **no** es la vía. La envvar sola deja
+> el canal en `Not configured`, y `enable` sobre un canal sin configurar devuelve
+> `404` (`POST /api/channels/telegram/enable`). Lo que **configura** el canal es el
+> wizard `channel setup`, que persiste `[channels.telegram]` en `config.toml`.
 
-`openfang channel list` muestra que Telegram se detecta por la variable de entorno
-**`TELEGRAM_BOT_TOKEN`** (estado `Not configured` hasta que exista). Hay un wizard
-interactivo (`openfang channel setup telegram`) pero **no** es necesario: basta la
-env var + `enable`.
-
-Pasos (cuando llegue el token de **@BotFather**):
+### 4.1 Pasos reales (los que dejaron el bot respondiendo)
 
 ```bash
-# 1) Token en el env del daemon (NO se commitea):
+# 1) Token en el env del daemon (NO se commitea — va a ~/.openfang/manuelita.env):
 echo 'export TELEGRAM_BOT_TOKEN=123456:ABC...' >> ~/.openfang/manuelita.env
+chmod 600 ~/.openfang/manuelita.env
 
-# 2) Reiniciar el daemon para que lo tome:
-bash scripts/01-start-daemon.sh
+# 2) Configurar el canal. El wizard pide UNA cosa: pegar el token. Es interactivo,
+#    pero se puede alimentar por stdin de forma no-interactiva:
+source ~/.openfang/manuelita.env
+printf '%s\n' "$TELEGRAM_BOT_TOKEN" | openfang channel setup telegram
+#  -> escribe [channels.telegram] en config.toml  +  guarda el token en ~/.openfang/.env
 
-# 3) Activar el canal y probar:
-openfang channel enable telegram
-openfang channel list            # debe pasar a configurado/enabled
-openfang channel test telegram   # envía un mensaje de prueba
+# 3) Apuntar el canal a NUESTRO agente (por defecto queda 'assistant', que NO existe
+#    porque deshabilitamos los templates). El canal resuelve el agente POR NOMBRE
+#    (busca el manifiesto agents/<nombre>/agent.toml), NO por UUID -> usar el nombre,
+#    que ademas sobrevive redeploys (el UUID v4 no):
+openfang config set channels.telegram.default_agent manuelita-bot
+
+# 4) Reiniciar el daemon (con el token en env) para activar el bridge:
+openfang stop; source ~/.openfang/manuelita.env; \
+  nohup openfang start > ~/.openfang/daemon.log 2>&1 < /dev/null & disown
+
+# 5) Verificar:
+openfang channel list            # telegram -> STATUS "Ready"
+grep -i telegram ~/.openfang/daemon.log | tail
+#  Esperado en el log:
+#    telegram default agent: manuelita-bot (561b8865-...)
+#    Telegram bot @<tu_bot> connected
+#    Telegram: cleared webhook, polling mode active
+#    telegram channel bridge started
 ```
 
-### 4.2 Incógnita abierta (a resolver en vivo, no inventar)
+### 4.2 Binding canal↔agente — RESUELTO
 
-El **binding canal↔agente** no está documentado: falta confirmar a qué agente rutea
-Telegram por defecto y cómo forzar que sea `manuelita-bot` (vs. el `assistant` por
-defecto). Se verifica al cablear el token real; si rutea al agente equivocado, se
-ajusta en `config.toml` o con la opción del `channel setup`. **No se asume resuelto.**
+El canal busca el agente por **nombre** (ruta del manifiesto), confirmado por el log:
+`could not find or spawn default agent 'assistant': Manifest not found:
+/root/.openfang/agents/assistant/agent.toml`. Por eso `default_agent = "manuelita-bot"`
+(nombre) es correcto y estable. Si quedara mal, el síntoma es ese WARN en el log y el
+bot no responde aunque Telegram esté conectado.
+
+### 4.3 Gotcha de reinicio (cuota) — verificado
+
+Cada `openfang start` **revive los Hands built-in como `Active`** con **instance UUIDs
+nuevos**; el estado `Paused` **no persiste** entre reinicios. → Pausar los Hands
+**después del último arranque** del daemon, justo antes de la demo, no antes.
 
 ## 5. Cuota — disciplina para la demo
 
-- Los **3 Hands quedan `Paused`** (ver F2) para no quemar cuota Gemini en segundo plano.
-  Se reanudan solo para mostrarlos.
+- Los Hands se dejan **`Paused`** para no quemar cuota Gemini en segundo plano, y
+  **se re-pausan tras el último reinicio** (ver 4.3). Se reanudan solo para mostrarlos.
 - Telegram + WhatsApp comparten el mismo `gemini-2.5-flash-lite`. Ensayar el flujo
   completo **días antes**, no el mismo día, para no agotar el free tier en pruebas.
 
@@ -136,8 +159,8 @@ ajusta en `config.toml` o con la opción del `channel setup`. **No se asume resu
 
 | Canal | Estado |
 |-------|--------|
+| Telegram (nativo) | ✅ **Funcionando** — bot `@Cortana_Juanito0312_bot` conectado, ruteando a `manuelita-bot`. Falta prueba en vivo desde un teléfono. |
 | WhatsApp (gateway QR) | Gateway versionado y listo; **pendiente escanear QR** en vivo |
-| Telegram (nativo) | Vía verificada; **pendiente el token de @BotFather** |
 
 ## 7. Próximo paso
 

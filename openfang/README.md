@@ -63,7 +63,7 @@ de WSL como root: `wsl -d Ubuntu -u root`.
 | F0 | Infraestructura OpenFang en WSL2 (instalación, networking, proveedores) | ✅ Validada |
 | F1 | Agente `manuelita-bot`: persona + corpus + anti-alucinación proporcional | ✅ Responde (~3 s vía Gemini) |
 | F2 | Hands: 2 built-in (`collector`, `lead`) + 1 Custom (`sostenibilidad-manuelita`) | ✅ Configuradas y pausadas |
-| F3 | Canales: WhatsApp (gateway QR, versionado y listo) + Telegram (vía nativa verificada) | 🟡 Gateway listo · falta QR en vivo + token @BotFather |
+| F3 | Canales: Telegram (nativo, **funcionando** → `manuelita-bot`) + WhatsApp (gateway QR versionado) | 🟡 Telegram ✅ vivo · WhatsApp listo, falta escanear QR |
 | F4 | Informe técnico unificado | ⏳ Pendiente |
 | F5 | Análisis t-SNE de conversaciones (opcional) | ⏳ Pendiente |
 
