@@ -108,3 +108,8 @@ reports/resultados_20_preguntas_*.txt
 
 # Notas internas del equipo (privado, no subir)
 NOTAS_INTERNAS_M3.md
+
+# Salidas de tests/resultados (no se versionan)
+reports/resultados_*.json
+reports/resultados_*.txt
+reports/*_borrador.md
