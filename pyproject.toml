@@ -46,5 +46,7 @@ dependencies = [
     # --- Observabilidad — Módulo 2 Bloque 5 ---
     "langsmith>=0.1.0",
     "reportlab>=4.0.0",
+    "matplotlib>=3.10.9",
+    "msgpack>=1.1.2",
 ]
 

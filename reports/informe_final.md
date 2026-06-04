@@ -65,7 +65,7 @@ El sistema final del Módulo 3 se concibe como un **agente conversacional corpor
 - **Inyección de conocimiento corporativo a la memoria nativa del OS:** OpenFang dispone de una memoria de **6 capas** que incluye **búsqueda semántica por embeddings** (capa 2). La versión v0.6.9 no expone ingesta documental *masiva*, por lo que la memoria semántica se puebla **agent-driven** (`memory_store`) —verificado: recuperación persistente por similitud de significado—. El conocimiento se aporta mediante (1) `system_prompt` en `agent.toml` con la persona y reglas anti-alucinación portadas del M2, (2) los `.md` del corpus en el *workspace*, leídos por el agente con `file_read`/`file_list` (recuperación **agéntica por archivos**), (3) **memoria semántica/KV** (`memory_store`/`memory_recall`) para hechos clave y datos estructurados como el NIT y las cifras, y (4) `MEMORY.md` como memoria de largo plazo.
 - **Hands (operaciones autónomas):** dos built-in (`lead` + `collector`) más un Hand Custom propio de Manuelita.
 - **Canales de mensajería:** Telegram (principal, vía BotFather) y WhatsApp (gateway Node con QR en el puerto 3009).
-- **Dashboard local** en `http://127.0.0.1:4200` y, como entregable opcional avanzado ("picante"), un análisis **t-SNE/UMAP** sobre el historial de sesiones, actualmente **diferido**.
+- **Dashboard local** en `http://127.0.0.1:4200` y, como entregable opcional avanzado ("picante"), un análisis **t-SNE** sobre la memoria semántica y el historial de sesiones del Agent OS, **realizado** (§ 5.6 · `reports/modulo3/`).
 
 El sistema se desarrolla por fases (F0 spike de viabilidad → F1 ingesta del corpus → F2 Hands → F3 canales → F4 informe unificado → F5 t-SNE opcional). Al cierre del spike F0, un agente (`manuelita-bot`) ya responde de verdad, validando la viabilidad de la Ruta B antes de invertir en Hands y canales.
 
@@ -120,7 +120,7 @@ OpenFang es un Agent OS **open source con licencia MIT** escrito en **Rust** (Ri
 
 La diferencia de raíz con el M2 no es "tener o no memoria semántica" —ambos la tienen—, sino **dónde vive**: en el M2 era un *vector store* externo (ChromaDB) gobernado por código LangChain; en el M3 es la **memoria interna del Agent OS**, poblada de forma agent-driven. Por eso el código intermedio del M2 no se traslada (el sustrato de ejecución cambia), pero el **corpus limpio del M1 sí es directamente aprovechable**: lo que importa es su calidad y estructura (Markdown limpio, formato Q&A tipo `key_facts_manuelita.md`).
 
-**Estado verificado del M3 (junio 2026):** el agente `manuelita-bot` ya responde (~3 s vía Gemini para datos núcleo). Fases F0 (infraestructura) y F1 (agente con persona + corpus + anti-alucinación) validadas; F2 (Hands: 2 built-in `collector` y `lead` + 1 Custom `sostenibilidad-manuelita`) configuradas y pausadas; F3 (Telegram nativo funcionando; WhatsApp vía gateway QR Baileys listo, falta escanear QR); F4 (informe) y F5 (t-SNE, opcional) pendientes.
+**Estado verificado del M3 (junio 2026):** el agente `manuelita-bot` ya responde (~3 s vía Gemini para datos núcleo). Fases F0 (infraestructura) y F1 (agente con persona + corpus + anti-alucinación) validadas; F2 (Hands: 2 built-in `collector` y `lead` + 1 Custom `sostenibilidad-manuelita`) configuradas y pausadas; F3 (Telegram nativo funcionando; WhatsApp vía gateway QR Baileys listo, falta escanear QR); F5 (t-SNE, bonus) **realizado** (§ 5.6); resta F4 (exportar este informe a PDF).
 
 ### 2.4 Lectura transversal de la evolución
 
@@ -315,7 +315,7 @@ OpenFang documenta en `docs/architecture.md` un modelo de memoria de **6 capas**
 | 1 | **Structured KV Store** | Almacén clave-valor por agente (valores JSON) | Datos estructurados vía `memory_store`/`memory_recall`; CLI `memory` (list/get/set/delete). Persiste en `~/.openfang/data/openfang.db`. |
 | 2 | **Semantic Search** | Embeddings + similitud coseno | **Verificado**: el agente almacena con `memory_store` y recupera por significado, de forma persistente (spike § 5.1). Es el "RAG interno del OS". |
 | 3 | **Knowledge Graph** | Entidades-relaciones con traversal | Disponible en la plataforma; no explotado en este proyecto. |
-| 4 | **Session Manager** | Historial de conversación con conteo de tokens | Espejo en **JSONL** por sesión (`~/.openfang/workspaces/<agente>/sessions/<uuid>.jsonl`), insumo del t-SNE opcional (F5). |
+| 4 | **Session Manager** | Historial de conversación con conteo de tokens | Persistido en la tabla `sessions` de `openfang.db` (mensajes en *MessagePack*); se decodificó como insumo del análisis t-SNE (§ 5.6). |
 | 5 | **Task Board** | Cola de tareas multi-agente | Usado internamente por las Hands; no explotado de forma directa. |
 | 6 | **Usage & Canonical Sessions** | Costos + resúmenes de sesión multicanal | Soporta la gestión multicanal (Telegram/WhatsApp) de la fase F3. |
 
@@ -348,6 +348,12 @@ El spike de *grounding* (jun 2026) midió, vía la misma API REST que usan los c
 - **Instruir no basta con un modelo pequeño:** `gemini-2.5-flash-lite` ignora la orden de leer el archivo en preguntas abiertas (alucinación blanda, ~7.500 tokens, 3–9 s); solo `gemini-2.5-flash` recupera de forma autónoma (2–3 iteraciones, datos del corpus con cita de fuente, ~24.000 tokens, 7–20 s).
 
 **Decisión derivada:** ante el cuello de botella del *free tier* de Gemini (cascada de 429 por RPM, ver § 4.4), el agente migró a **Ollama Cloud `gemma3:27b`** (endpoint OpenAI-compatible, GPU remota, cuota independiente) como motor primario, con *fallback* a `gemini-2.5-flash`. Además se curaron al núcleo los hechos de mayor probabilidad de demo para que lo común siga siendo rápido sin invocar herramientas; el detalle profundo se recupera con `file_read`.
+
+### 5.6 Análisis t-SNE de la memoria semántica (bonus transversal, F5)
+
+Como entregable opcional avanzado ("picante") se realizó un análisis de **reducción dimensional (t-SNE) + clústeres** sobre datos **reales** extraídos de la base nativa de OpenFang (`openfang.db`): los vectores de la capa **Semantic Search** (tabla `memories`) y el **historial de sesiones** (tabla `sessions`, decodificado de *MessagePack*). El pipeline (`scripts/tsne_sesiones_m3.py`, todo local, sin gasto de cuota) produce dos vistas: (A) un mapa del **espacio de conocimiento** del agente —corpus + 12 hechos núcleo, re-embebidos con un modelo multilingüe— y (B) los **vectores nativos del OS** tal cual.
+
+Hallazgos: (1) OpenFang almacena embeddings de **768 dimensiones** (verificado: `memories.embedding` = 3.072 bytes = 768 × float32) — **lo que corrige** la creencia previa de que el modelo era `all-MiniLM-L6-v2` (384-dim). (2) KMeans recupera los temas con **60 % de pureza** (vs. ~17 % aleatorio para 6 clases): el contenido de **redes sociales/YouTube** forma un clúster **perfectamente separado**, mientras que los temas corporativos (identidad, financiero, sostenibilidad) **se solapan** por compartir vocabulario. (3) Ese solapamiento **justifica visualmente** la necesidad del **mapa tema→archivo** en el `system_prompt`: la separación semántica por sí sola no basta para desambiguar qué documento leer. Detalle, figura y metodología en [`reports/modulo3/tsne_analisis.md`](modulo3/tsne_analisis.md) y la figura [`tsne_clusters.png`](modulo3/tsne_clusters.png).
 
 ---
 

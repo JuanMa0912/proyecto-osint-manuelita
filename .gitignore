@@ -109,6 +109,10 @@ reports/resultados_20_preguntas_*.txt
 # Notas internas del equipo (privado, no subir)
 NOTAS_INTERNAS_M3.md
 
+# t-SNE (M3): carpeta de trabajo con copia del openfang.db (no versionar binarios del OS).
+# El entregable SI se versiona: scripts/tsne_sesiones_m3.py, reports/modulo3/tsne_*
+reports/modulo3/_work/
+
 # Salidas de tests/resultados (no se versionan)
 reports/resultados_*.json
 reports/resultados_*.txt

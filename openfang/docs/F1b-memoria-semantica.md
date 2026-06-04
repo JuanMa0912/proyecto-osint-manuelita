@@ -159,10 +159,13 @@ Hallazgos nuevos, todos verificados:
   `openfang memory set` (KV exacto) **no** se recupera por similitud (el agente respondió "no tengo"
   ante una consulta reformulada). → La capa semántica **solo** se puebla con el **tool `memory_store`
   del agente** (genera embeddings). El loader debe ser agent-driven; no hay atajo gratis por CLI.
-- **Embeddings locales.** La memoria semántica usa el modelo **`all-MiniLM-L6-v2`** (config
-  `[memory] embedding_model`, doc `configuration.md`), centrado en inglés → el recall en español
-  parafraseado es imperfecto; se mitiga con hechos atómicos + sinónimos y, sobre todo, con los
-  **DATOS NÚCLEO** del `system_prompt` como red de seguridad determinista.
+- **Embeddings locales de 768 dimensiones.** *(Corregido 4 jun 2026)* La memoria semántica usa un
+  modelo de **768-dim** — verificado empíricamente en `openfang.db` (`memories.embedding` = 3072 bytes
+  = 768 × float32). **NO es `all-MiniLM-L6-v2`** (ese es de 384-dim); esa afirmación previa era
+  incorrecta. El `[memory]` de `config.toml` **no** fija `embedding_model`, así que el OS usa su
+  default interno (nombre exacto no documentado públicamente; lo verificable es la dimensión, 768).
+  El recall en español parafraseado sigue siendo imperfecto; se mitiga con hechos atómicos + sinónimos
+  y, sobre todo, con los **DATOS NÚCLEO** del `system_prompt` como red de seguridad determinista.
 - **Acumulación de sesión.** Varios `openfang message` en ráfaga comparten sesión y el agente se
   "pega" a la respuesta previa (devuelve lo mismo a preguntas distintas). Con sesión fresca
   (reinicio) responde bien. Implicación demo: preguntas espaciadas/atómicas, no ráfagas.
