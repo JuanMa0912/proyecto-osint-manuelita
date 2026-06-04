@@ -30,6 +30,23 @@
 
 ---
 
+## 🧭 Estado del proyecto por módulos (jun 2026)
+
+Este repositorio recorre tres módulos. **El Módulo 3 es la etapa que culmina el proyecto.**
+
+| Módulo | Tema | Stack | Estado | Documentación |
+|--------|------|-------|--------|---------------|
+| **M1** | Base de conocimiento semántica + Q&A | Python · spaCy · LangChain | ✅ Entregado | Este README + [`reports/`](reports/) |
+| **M2** | Agente RAG conversacional + memoria | LangChain · ChromaDB · Streamlit | ✅ Entregado | [`MODULO2.md`](MODULO2.md) |
+| **M3** | Productización sobre Agent OS (**Ruta B — OpenFang**) | OpenFang (Rust) · WSL2 · Gemini/Ollama · Telegram/WhatsApp | 🟡 En curso (F0–F3 ✅ · F4 informe en markdown, falta PDF) | [`openfang/README.md`](openfang/README.md) |
+
+> **Nota de arquitectura (M2 → M3):** en la Ruta B, el código del Módulo 2 (LangChain/ChromaDB/Streamlit)
+> **no se reusa como software vivo**; solo se migra el **corpus limpio del Módulo 1** a la memoria de OpenFang.
+> El M2 queda en el informe como "evolución arquitectónica". Detalle en [`openfang/README.md`](openfang/README.md)
+> y en el informe unificado [`reports/informe_final.md`](reports/informe_final.md).
+
+---
+
 ## Descripción del problema
 
 La gestión de la información dentro del Ingenio Manuelita enfrenta el desafío de optimizar sus flujos de comunicación interna y externa. Existe una dependencia de canales manuales o semi-automatizados que, ante el gran volumen de datos generados en la cadena de valor, incrementan el riesgo de asimetrías informativas, tiempos de respuesta prolongados y posibles errores humanos en la interpretación de reportes críticos.

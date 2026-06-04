@@ -182,9 +182,10 @@ nuevos**; el estado `Paused` **no persiste** entre reinicios. → Pausar los Han
 
 | Canal | Estado |
 |-------|--------|
-| Telegram (nativo) | ✅ **Funcionando** — bot `@Cortana_Juanito0312_bot` conectado, ruteando a `manuelita-bot`. Falta prueba en vivo desde un teléfono. |
+| Telegram (nativo) | ✅ **Funcionando y ensayado en vivo desde un teléfono real** — bot `@Cortana_Juanito0312_bot` conectado, ruteando a `manuelita-bot`. Prueba de fuego validada en ensayo. |
 | WhatsApp (gateway QR) | Gateway versionado y listo; **pendiente escanear QR** en vivo |
 
 ## 7. Próximo paso
 
-F4 — informe técnico unificado (M1+M2+M3) en PDF.
+F4 — informe técnico unificado (M1+M2+M3). El markdown ya está completo y depurado
+en `reports/informe_final.md` (`0 POR VERIFICAR`); falta solo exportarlo a PDF.
