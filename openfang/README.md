@@ -64,9 +64,14 @@ de WSL como root: `wsl -d Ubuntu -u root`.
    openfang message <UUID> "¿Cuál es el NIT de Manuelita y quién es su presidente?"
    ```
 
-> **Orden crítico:** `02-deploy` → `01-start` → `04-cargar-memoria` → probar. Si saltas el
-> paso 4, el agente pierde la memoria semántica (queda solo con `system_prompt` + archivos
-> del workspace). Ver [`docs/F1b-memoria-semantica.md`](docs/F1b-memoria-semantica.md).
+> **Orden crítico (tras cada deploy, porque el wipe de `openfang.db` borra Hands Custom y memoria):**
+> `02-deploy` → `01-start` → `05-setup-hands` → `04-cargar-memoria` → probar.
+> - `05-setup-hands.sh`: reinstala+activa los 3 Hands (el wipe des-registra el Custom).
+> - `04-cargar-memoria-semantica.sh`: repuebla la memoria semántica (si lo saltas, el agente
+>   queda solo con `system_prompt` + archivos del workspace).
+> Detalle en [`docs/F1b-memoria-semantica.md`](docs/F1b-memoria-semantica.md). **Nota:** en OpenFang
+> cada Hand es un agente especializado, por eso aparecen como agentes (`lead-hand`, `collector-hand`,
+> `sostenibilidad-hand`) en la vista de Agentes/Chat — es lo esperado.
 >
 > Detalles, comandos y solución de problemas (gotchas) en `docs/`.
 
