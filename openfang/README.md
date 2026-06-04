@@ -85,10 +85,15 @@ Estado del proyecto OpenFang revisado contra su repo oficial
 - **Versión vigente: `v0.6.9` (12 may 2026) — sigue siendo la última.** Es la que tenemos
   fijada. **No actualizar antes de la sustentación** (pre-1.0, breaking changes entre minors).
   Que sea la última valida la decisión: no estamos atrasados.
-- **El modelo de conocimiento no cambió.** No hay novedades de RAG / embeddings / vector store /
-  ingesta semántica en el rango `0.6.5 → 0.6.9`. Esto **ratifica** lo documentado en
-  [`docs/F1-agente-manuelita.md`](docs/F1-agente-manuelita.md): OpenFang hace **recuperación
-  agéntica por archivos + KV**, no RAG por embeddings. El informe describe esto de forma honesta.
+- **Memoria — corrección importante (3 jun 2026).** La doc oficial
+  ([`architecture.md`](https://github.com/RightNow-AI/openfang/blob/main/docs/architecture.md))
+  describe una **memoria de 6 capas**, incluida **Semantic Search por embeddings** (capa 2).
+  → **OpenFang SÍ tiene vector store semántico**; afirmaciones previas en contra eran
+  demasiado fuertes. Lo que NO está documentado (ni CLI ni REST) es **cómo ingerir el corpus
+  documental** en esa capa: el CLI `memory` es solo KV (list/get/set/delete) y no hay comando
+  `ingest`. Población de la capa semántica = **riesgo abierto** del proyecto. Detalle y plan en
+  [`docs/F1b-memoria-semantica.md`](docs/F1b-memoria-semantica.md). Pista nueva: existe
+  `openfang migrate --from langchain` (el M2 era LangChain), candidato a vía oficial.
 - **Gotcha de Hands sigue vigente.** Confirmado contra el changelog: **no** existe `hand uninstall`
   ni `hand install --force` en 0.6.x. Para cambiar una Hand registrada hay que resetear
   `openfang.db` (ver [`docs/F2-hands.md`](docs/F2-hands.md) §7). El nuevo

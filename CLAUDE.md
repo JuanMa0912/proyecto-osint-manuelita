@@ -442,11 +442,27 @@ reconsiderar la ruta antes de quedarse sin tiempo para la sustentación.
 
 ### Hallazgos verificados — spike F0 (2 jun 2026, OpenFang v0.6.9)
 
-Spike ejecutado en Ubuntu/WSL2. **Corrige supuestos del enunciado — no inventar sobre esto:**
+Spike ejecutado en Ubuntu/WSL2. **No inventar sobre esto.**
 
-- **NO existe ingesta a un "vector store semántico".** Confirmado por CLI (no hay
-  comando `ingest`; `memory` es solo KV: list/get/set/delete) y por API REST (404 en
-  `/api/{memory,knowledge,documents,rag,embeddings,vector,ingest,upload}`).
+> **⚠️ CORRECCIÓN (3 jun 2026) — leer antes que el bullet siguiente.** La afirmación
+> original "OpenFang NO tiene vector store semántico" era **demasiado fuerte y es
+> incorrecta**. La doc oficial (`docs/architecture.md`) describe un **sistema de memoria
+> de 6 capas**, y la capa 2 es **Semantic Search**: *"Documents are embedded using the
+> configured embedding driver and stored with their vectors. Queries are embedded at
+> search time and matched by cosine similarity."* Las 6 capas: (1) Structured KV Store ·
+> (2) Semantic Search (embeddings) · (3) Knowledge Graph · (4) Session Manager ·
+> (5) Task Board · (6) Usage & Canonical Sessions. **El profe NO se equivocó:** el vector
+> store existe. Lo que F0 sí verificó bien es que **no hay mecanismo de ingesta documental
+> documentado** (ni CLI `ingest`, ni endpoint REST hallado). El CLI `memory` es solo KV
+> (list/get/set/delete). Cómo se *puebla* la capa semántica con el corpus sigue siendo el
+> **punto de mayor riesgo abierto** → ver [`openfang/docs/F1b-memoria-semantica.md`](openfang/docs/F1b-memoria-semantica.md).
+> **Pista nueva:** existe `openfang migrate --from langchain` (el M2 era LangChain) —
+> candidato a vía oficial de migración, aún por probar (`--dry-run` es seguro).
+
+- **El mecanismo de ingesta documental NO está expuesto en CLI/REST conocidos.** Verificado:
+  no hay comando `ingest`; `memory` es solo KV (list/get/set/delete); la API REST dio 404 en
+  `/api/{memory,knowledge,documents,rag,embeddings,vector,ingest,upload}`. La capa semántica
+  existe (arriba), pero su población documental no está documentada en v0.6.9.
 - **Cómo se le da conocimiento a un agente (mecanismo real):**
   1. `[model] system_prompt` en `~/.openfang/agents/<agente>/agent.toml` → persona +
      reglas anti-alucinación. **Aquí se porta el contenido de los prompts del M2** (no
