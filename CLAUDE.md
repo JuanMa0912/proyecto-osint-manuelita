@@ -61,7 +61,10 @@ proyecto_manuelita/
 │   └── test_20_preguntas.py        # Las 20 preguntas académicas (Módulo 1, qa_system)
 │
 └── reports/
-    └── informe_modulo2.pdf         # Informe académico 11 páginas (regenerar si cambia la numeración)
+    ├── informe_final.md            # Informe unificado M1+M2+M3 (VIGENTE; exportar a PDF)
+    ├── modulo1/                     # Entregables M1 (QA, fase1 mapa de fuentes, .pdf/.docx/.tex)
+    ├── modulo2/                     # Entregable M2 (informe_entrega2_modulo2.pdf)
+    └── _archivo/                    # Documentos antiguos/superados (no vigentes)
 ```
 
 ---
@@ -116,8 +119,8 @@ LangSmith                ← langsmith_setup.py (Bloque 6 — Observabilidad)
 
 > **Numeración de bloques (canónica):** 1 RAG · 2 Estructurado · 3 Router ·
 > 4 Memoria · 5 Streamlit · 6 Observabilidad LangSmith · 7 Tests + Informe.
-> Si tocas la numeración, regenera también `reports/informe_modulo2.pdf` para
-> que no quede desincronizado.
+> Si tocas la numeración, regenera también el informe del M2
+> (`reports/modulo2/informe_entrega2_modulo2.pdf`) para que no quede desincronizado.
 
 ---
 
