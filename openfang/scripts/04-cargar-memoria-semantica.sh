@@ -46,12 +46,17 @@ UUID=$("$OF" agent list 2>/dev/null | grep -i manuelita-bot | awk '{print $1}')
 if [ -z "$UUID" ]; then echo "ERROR: no se encontro manuelita-bot"; exit 4; fi
 echo "agente UUID=$UUID"
 
-echo "=== cargando ${#FACTS[@]} hechos a memoria semantica (memory_store) ==="
+# ⚠️ CUOTA: cada mensaje dispara 2-3 iteraciones del modelo. Sin pausa entre hechos se
+#    revienta el limite POR MINUTO (RPM) de Gemini free tier -> 429 y el agente se atasca.
+#    SLEEP_BETWEEN espacia las llamadas para mantenerse bajo el RPM. Subelo si ves 429.
+SLEEP_BETWEEN="${SLEEP_BETWEEN:-10}"
+echo "=== cargando ${#FACTS[@]} hechos a memoria semantica (memory_store), pausa ${SLEEP_BETWEEN}s entre cada uno ==="
 i=0
 for f in "${FACTS[@]}"; do
   i=$((i+1))
   echo "--- [$i/${#FACTS[@]}] $f"
   "$OF" message "$UUID" "Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: $f" 2>&1 | tail -3
+  sleep "$SLEEP_BETWEEN"
 done
 
 echo "=== verificacion: recall semantico (consulta reformulada) ==="
