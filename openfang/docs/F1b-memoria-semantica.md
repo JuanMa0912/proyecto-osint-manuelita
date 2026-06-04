@@ -145,7 +145,39 @@ tras reinicio) como prueba contundente del "RAG interno del OS". ~3 llamadas Gem
 
 ## 6. Pendiente de actualizar cuando se resuelva
 
-- [ ] `reports/informe_final.md` — la "Nota de honestidad técnica" (§3.2) afirma que no hay
-  vector store; **reescribir** con el modelo de 6 capas y la vía elegida.
+- [x] `reports/informe_final.md` — reescrito con el modelo de 6 capas y la vía elegida.
 - [ ] `docs/F1-agente-manuelita.md` §2 — suavizar "No hay RAG por embeddings".
-- [ ] Este doc — registrar el resultado del spike (A/B/C) con evidencia.
+- [x] Este doc — resultado del spike (A/B/C) registrado.
+
+## 7. Actualización 4 jun 2026 — motor Ollama Cloud + hallazgos de carga
+
+Tras migrar el motor a **Ollama Cloud `gemma3:27b`** (cuota independiente de Gemini), se repobló
+la memoria semántica (12 hechos núcleo, `04-cargar-memoria-semantica.sh`) y se verificó en vivo.
+Hallazgos nuevos, todos verificados:
+
+- **`memory set` (CLI) NO es semántico.** Confirmado con prueba limpia: un dato guardado por
+  `openfang memory set` (KV exacto) **no** se recupera por similitud (el agente respondió "no tengo"
+  ante una consulta reformulada). → La capa semántica **solo** se puebla con el **tool `memory_store`
+  del agente** (genera embeddings). El loader debe ser agent-driven; no hay atajo gratis por CLI.
+- **Embeddings locales.** La memoria semántica usa el modelo **`all-MiniLM-L6-v2`** (config
+  `[memory] embedding_model`, doc `configuration.md`), centrado en inglés → el recall en español
+  parafraseado es imperfecto; se mitiga con hechos atómicos + sinónimos y, sobre todo, con los
+  **DATOS NÚCLEO** del `system_prompt` como red de seguridad determinista.
+- **Acumulación de sesión.** Varios `openfang message` en ráfaga comparten sesión y el agente se
+  "pega" a la respuesta previa (devuelve lo mismo a preguntas distintas). Con sesión fresca
+  (reinicio) responde bien. Implicación demo: preguntas espaciadas/atómicas, no ráfagas.
+- **Tope de tokens.** El `agent.toml` tenía `max_llm_tokens_per_hour = 200000`, que se agotaba
+  **solo cargando** la memoria (12 hechos × varias iteraciones). Subido a `5000000` (con Ollama
+  Cloud la cuota es independiente; el tope es guarda anti-runaway, no racionamiento).
+- **Aplicar cambios:** `config.toml` (modelo) se lee **vivo** en cada arranque → cambiar el modelo
+  de los Hands built-in **no** requiere wipe. Pero el **manifiesto del agente** (`agent.toml`:
+  system_prompt, model override) está **cacheado en `openfang.db`** → cambiarlo **sí requiere wipe**
+  (deploy), que a su vez borra memoria y des-registra el Hand Custom.
+- **Anti-alucinación (crítico).** `gemma3:27b` **fabrica** cifras si se le da un archivo **vacío**
+  (`red_social_linkedin_manuelit.md`, `word_count: 0`): inventó "24.781 seguidores". El prompt
+  endurecido **no bastó**; la solución de raíz fue **curar el corpus** (el deploy excluye archivos
+  vacíos). Tras curar, responde "No tengo ese dato confirmado". Lección: la calidad del corpus es
+  parte de la anti-alucinación, no solo el prompt.
+- **Conflicto financiero (abierto).** Ingresos 2019–2022 difieren entre el JSON estructurado y el
+  corpus markdown (2021: 1.819.755 vs 648.942). Solo 2023 coincide → la memoria carga **solo 2023**.
+  A resolver por el equipo contra la fuente Supersociedades.
