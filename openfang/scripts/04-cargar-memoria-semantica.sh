@@ -32,6 +32,7 @@ FACTS=(
   "Las metas de sostenibilidad de Manuelita son reducir el 70 por ciento de emisiones de Alcances 1 y 2 al ano 2030, y alcanzar neutralidad de carbono al ano 2040."
   "Manuelita produce cerca de 487.000 toneladas de azucar al ano y unos 275 millones de litros de bioetanol al ano, con mas de 160 anos de trayectoria."
   "Manuelita beneficia a mas de 4.000 familias de empleados y comunidades vecinas."
+  "Manuelita cuenta con certificaciones de sostenibilidad: RSPO, HACCP, ASC y GRI. Su actividad principal (CIIU C1071) es la elaboracion y refinacion de azucar."
 )
 
 echo "=== (re)arranque idempotente del daemon ==="

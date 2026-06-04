@@ -36,10 +36,20 @@ rm -f "$OF/data/openfang.db" "$OF/data/openfang.db-shm" "$OF/data/openfang.db-wa
 echo ">> agentes plantilla desactivados + DB limpiada"
 
 # 4) Workspace: corpus del Modulo 1 + MEMORY.md curado
+#    OJO: NO copiar archivos OSINT VACIOS (word_count: 0). Un archivo vacio en data/
+#    invita a la alucinacion: el modelo lo abre, no encuentra el dato e inventa uno.
+#    Mejor que el agente no tenga el archivo -> responde "No tengo ese dato".
 mkdir -p "$OF/workspaces/$AGENT/data"
-cp "$REPO/data_processed/markdown/"*.md "$OF/workspaces/$AGENT/data/" 2>/dev/null || true
+rm -f "$OF/workspaces/$AGENT/data/"*.md 2>/dev/null || true
+for f in "$REPO/data_processed/markdown/"*.md; do
+  if grep -qE "^word_count: 0$" "$f" 2>/dev/null; then
+    echo ">> SKIP (archivo OSINT vacio): $(basename "$f")"
+    continue
+  fi
+  cp "$f" "$OF/workspaces/$AGENT/data/"
+done
 cp "$REPO/openfang/agents/$AGENT/MEMORY.md" "$OF/workspaces/$AGENT/MEMORY.md"
-echo ">> corpus ($(ls "$OF/workspaces/$AGENT/data" | wc -l) archivos) + MEMORY.md desplegados"
+echo ">> corpus ($(ls "$OF/workspaces/$AGENT/data" | wc -l) archivos no vacios) + MEMORY.md desplegados"
 
 echo ""
 echo "Listo. Pasos siguientes (EN ORDEN):"
