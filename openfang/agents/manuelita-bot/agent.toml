@@ -5,15 +5,18 @@ author = "uao-maestria-ia"
 module = "builtin:chat"
 tags = ["manuelita", "corporativo", "osint", "agroindustria", "asistente"]
 
-# Modelo: gemini-2.5-flash (NO el lite). Decision basada en spike (jun 2026):
-#   el lite IGNORA la orden de usar file_read en preguntas abiertas -> improvisa
-#   respuestas genericas (alucinacion blanda). El flash SI consulta el corpus de
-#   data/ por su cuenta (autonomous file retrieval) y aterriza con cita de fuente.
-#   Costo: ~20s y ~10x tokens en preguntas profundas; lo comun se cubre con
-#   DATOS NUCLEO (sin tool, ~3s). Fallback a lite si flash topa cuota.
+# Modelo primario: Ollama Cloud gpt-oss:20b (via endpoint OpenAI-compatible).
+#   Decision (jun 2026): el free tier de Gemini reventaba por RPM (un mensaje del
+#   agente = varias llamadas LLM; al topar 429 caia al fallback flash-lite ya agotado
+#   -> cascada de 429 y el agente se trababa). Ollama Cloud corre en GPU remota:
+#   gpt-oss:20b respondio en ~1.6s y resolvio preguntas compuestas (probado directo).
+#   Cuota independiente de Gemini (free tier por tiempo de GPU). base_url DEBE terminar
+#   en /v1. Fallback: Gemini 2.5-flash (el que conserva cupo), no el lite muerto.
 [model]
-provider = "gemini"
-model = "gemini-2.5-flash"
+provider = "openai"
+model = "gpt-oss:20b"
+api_key_env = "OLLAMA_API_KEY"
+base_url = "https://ollama.com/v1"
 max_tokens = 4096
 temperature = 0.2
 system_prompt = """Eres «Manuelita-Bot», el asistente corporativo oficial de Manuelita S.A., empresa agroindustrial colombiana fundada en 1864. Respondes en espanol, con tono profesional, cordial y claro.
@@ -73,7 +76,8 @@ LIMITES
 
 [[fallback_models]]
 provider = "gemini"
-model = "gemini-2.5-flash-lite"
+model = "gemini-2.5-flash"
+api_key_env = "GEMINI_API_KEY"
 
 [resources]
 max_llm_tokens_per_hour = 200000

@@ -38,9 +38,12 @@ Requisitos: Windows 11 + WSL2 con Ubuntu y OpenFang ya instalado (ver
 [`docs/F0-spike-infraestructura.md`](docs/F0-spike-infraestructura.md)). Operar dentro
 de WSL como root: `wsl -d Ubuntu -u root`.
 
-1. **Key local** (una vez; NO se commitea):
+1. **Keys locales** (una vez; NO se commitean). El agente usa **Ollama Cloud** como motor
+   primario (rápido, sin GPU local, cuota aparte) y Gemini como fallback:
    ```bash
-   echo 'export GEMINI_API_KEY=TU_KEY' > ~/.openfang/manuelita.env && chmod 600 ~/.openfang/manuelita.env
+   echo 'export OLLAMA_API_KEY=TU_KEY_OLLAMA' >  ~/.openfang/manuelita.env   # ollama.com/settings/keys (gratis)
+   echo 'export GEMINI_API_KEY=TU_KEY_GEMINI' >> ~/.openfang/manuelita.env   # fallback
+   chmod 600 ~/.openfang/manuelita.env
    ```
 2. **Desplegar el agente:**
    ```bash
@@ -80,9 +83,12 @@ de WSL como root: `wsl -d Ubuntu -u root`.
 
 ## Notas
 
-- **Proveedor LLM:** demo con Gemini `gemini-2.5-flash-lite` (el `gemini-2.0-flash`
-  quedó con cuota free tier en 0). Modo soberanía con Ollama local documentado en F0
-  (cableado, pero lento sin GPU).
+- **Proveedor LLM (jun 2026):** primario **Ollama Cloud `gpt-oss:20b`** vía endpoint
+  OpenAI-compatible (`https://ollama.com/v1`, auth Bearer `OLLAMA_API_KEY`) —
+  **verificado end-to-end**: ~1.6 s, usa `file_read` y no alucina, con cuota independiente
+  de Gemini. Fallback: Gemini `gemini-2.5-flash`. El free tier de Gemini reventaba por RPM
+  (un mensaje = varias llamadas; al topar 429 caía al `flash-lite` ya agotado → cascada).
+  Modo soberanía pura con Ollama local sigue documentado (cableado, pero lento sin GPU).
 - **Conocimiento:** OpenFang no hace RAG por embeddings; el agente usa su `system_prompt`
   + archivos del workspace (`file_read`) + memoria KV. Ver F1.
 - La carpeta de trabajo real de OpenFang vive en WSL (`/root/.openfang/`); estos archivos
