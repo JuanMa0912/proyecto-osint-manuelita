@@ -34,6 +34,10 @@ openfang/
 
 ## Quick start
 
+> 📋 **Para la demo, sigue el [`docs/RUNBOOK-demo.md`](docs/RUNBOOK-demo.md)** — paso a paso con
+> verificación y troubleshooting del daemon. Chequeo rápido de estado: `bash scripts/00-estado.sh`.
+
+
 Requisitos: Windows 11 + WSL2 con Ubuntu y OpenFang ya instalado (ver
 [`docs/F0-spike-infraestructura.md`](docs/F0-spike-infraestructura.md)). Operar dentro
 de WSL como root: `wsl -d Ubuntu -u root`.
