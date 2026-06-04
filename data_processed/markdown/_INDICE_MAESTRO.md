@@ -61,7 +61,7 @@ CORPUS MANUELITA S.A.
 | [financiero_supersociedades_manuelit.md](./financiero_supersociedades_manuelit.md) | 2019–2024 | Supersociedades vía Estrategia en Acción | `0.98` |
 
 **KPIs 2023:** Ingresos $1.043.562M · EBITDA $369.380M (35,4%) · Deuda/EBITDA 1,3x · Utilidad neta $78.153M  
-**Tendencia:** Ingresos superaron el billón COP en 2022 y se mantienen en 2024 · EBITDA máximo histórico en 2024 ($388.760M · 37,1%)
+**Tendencia (cifras individuales Manuelita S.A.):** Ingresos cruzaron el billón COP en 2023 y se mantienen en 2024 · EBITDA máximo histórico en 2024 ($388.760M · 37,1%) · *(las cifras consolidadas del Grupo son mayores: ~$2,7 billones en 2022)*
 
 ---
 

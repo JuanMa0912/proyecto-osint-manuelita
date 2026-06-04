@@ -87,6 +87,8 @@ Manuelita S.A. (NIT 891.300.241) reportó ingresos de **$1.043.562 millones COP*
 
 ## Estado de resultados histórico 2019–2024 (COP millones)
 
+> **Nota de alcance (importante).** Esta serie corresponde a los **estados financieros individuales (separados) de Manuelita S.A.** (NIT 891.300.241), la sociedad matriz, según se reportan a la **Superintendencia de Sociedades**. Es la fuente regulatoria oficial y la serie **comparable año a año** que adopta este proyecto. Las cifras **consolidadas del Grupo Manuelita** (que suman todas las filiales de Colombia, Perú y Chile) son **mayores** y **no son comparables** con esta tabla: por ejemplo, la prensa reportó ingresos **consolidados** del Grupo de **~$2,7 billones en 2022** (+41% vs ~$1,91 billones en 2021). Al citar una cifra, indica siempre si es **individual** (esta tabla) o **consolidada del Grupo**.
+
 | Rubro | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 |
 |-------|-----:|-----:|-----:|-----:|-----:|-----:|
 | **Ingresos** | 631.073 | 648.445 | 648.942 | 966.169 | 1.043.562 | 1.046.652 |

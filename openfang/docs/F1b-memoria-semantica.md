@@ -178,6 +178,10 @@ Hallazgos nuevos, todos verificados:
   endurecido **no bastó**; la solución de raíz fue **curar el corpus** (el deploy excluye archivos
   vacíos). Tras curar, responde "No tengo ese dato confirmado". Lección: la calidad del corpus es
   parte de la anti-alucinación, no solo el prompt.
-- **Conflicto financiero (abierto).** Ingresos 2019–2022 difieren entre el JSON estructurado y el
-  corpus markdown (2021: 1.819.755 vs 648.942). Solo 2023 coincide → la memoria carga **solo 2023**.
-  A resolver por el equipo contra la fuente Supersociedades.
+- **Conflicto financiero (RESUELTO, jun. 2026).** Los ingresos 2019–2022 diferían entre el JSON y el
+  corpus markdown (2021: 1.819.755 vs 648.942) porque medían **alcances distintos**: el markdown es la
+  serie **individual de Manuelita S.A.** (Supersociedades, NIT 891.300.241), consistente 2019–2024; el
+  JSON mezclaba años **consolidados del Grupo** (Informe de Sostenibilidad) con un 2023 individual.
+  Verificado contra prensa (La República: ~$2,7 billones consolidados en 2022). **Resolución:** la serie
+  individual de Supersociedades es la canónica; el JSON se unificó a ese alcance (`historico`) y guarda
+  lo consolidado en `consolidado_grupo`. La memoria semántica sigue cargando 2023 (coincide en ambas).
