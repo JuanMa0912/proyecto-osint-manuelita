@@ -5,16 +5,19 @@
 # Deja los 3 Hands listos para la demo: reinstala el Hand Custom, activa los 3
 # (2 built-in + 1 Custom) y configura el collector quota-safe.
 #
-# ⚠️ POR QUE ESTE SCRIPT: 02-deploy-agent.sh borra openfang.db -> eso DES-REGISTRA
-#    el Hand Custom (sostenibilidad-manuelita). Los built-in (collector, lead) reviven
-#    solos al arrancar el daemon, pero el Custom NO. Hay que re-instalarlo aqui.
+# ⚠️ POR QUE ESTE SCRIPT: el Hand Custom (sostenibilidad-manuelita) NO sobrevive ni a un
+#    wipe de openfang.db (02-deploy) NI a un simple REINICIO del daemon. Los built-in
+#    (collector, lead) reviven solos porque vienen empaquetados en disco; el Custom NO.
+#    => Re-corre este script DESPUES de cualquier 'openfang start'/reinicio, y SIEMPRE
+#       AL FINAL (despues de 04-cargar-memoria, que reinicia el daemon). Si reinicias
+#       luego por cualquier motivo, vuelve a correrlo.
 #
 # En OpenFang un Hand ES un agente especializado (system_prompt + tools + schedule);
 # por eso en la vista de Agentes/Chat los veras como agentes: lead-hand, collector-hand,
 # sostenibilidad-hand. Es lo esperado.
 #
-# Orden completo de despliegue:
-#   02-deploy -> 01-start -> 05-setup-hands -> 04-cargar-memoria -> probar
+# Orden completo de despliegue (05 va AL FINAL, tras la carga que reinicia el daemon):
+#   02-deploy -> 01-start -> 04-cargar-memoria -> 05-setup-hands -> probar
 #
 # Uso (en WSL, como root, con el daemon ARRIBA):
 #   bash openfang/scripts/05-setup-hands.sh

@@ -114,10 +114,11 @@ Las 3 Hands corren en **Ollama Cloud `gemma3:27b`** (consistente con el agente):
 > en la vista de Agentes/Chat aparecen como agentes: `lead-hand`, `collector-hand`, `sostenibilidad-hand`,
 > junto al conversacional `manuelita-bot`. Es lo esperado, no un error.
 >
-> ⚠️ **Tras cada `02-deploy` (que borra `openfang.db`) el Hand Custom se DES-REGISTRA** (los built-in
-> reviven solos; el Custom no). Hay que reinstalarlo+activarlo con
-> [`scripts/05-setup-hands.sh`](../scripts/05-setup-hands.sh). Orden: `02-deploy` → `01-start` →
-> `05-setup-hands` → `04-cargar-memoria`.
+> ⚠️ **El Hand Custom NO sobrevive ni a un `02-deploy` (wipe) ni a un simple REINICIO del daemon**
+> (los built-in reviven solos; el Custom no). Como `04-cargar-memoria` reinicia el daemon, hay que
+> dejar [`scripts/05-setup-hands.sh`](../scripts/05-setup-hands.sh) **AL FINAL**. Orden correcto:
+> `02-deploy` → `01-start` → `04-cargar-memoria` → `05-setup-hands` → probar. Si reinicias el daemon
+> luego por cualquier motivo, **vuelve a correr `05-setup-hands`**.
 
 ## 7. Spike de ejecución del Custom Hand (jun 2026) — evidencia
 
