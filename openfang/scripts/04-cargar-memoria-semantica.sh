@@ -23,7 +23,8 @@ OF=/root/.openfang/bin/openfang
 FACTS=(
   "Manuelita S.A. tiene NIT 891.300.241, fue fundada en 1864 y su sede principal esta en Palmira, Valle del Cauca, Colombia, con centro corporativo en Cali."
   "El presidente de Manuelita S.A. es Harold Eder."
-  "Manuelita opera en 3 paises: Colombia, Peru y Chile, y exporta a 49 paises."
+  "Manuelita tiene operaciones en 3 paises: Colombia, Peru y Chile."
+  "Manuelita exporta y vende sus productos al exterior a 49 paises (exportaciones internacionales: 49 paises de destino)."
   "Manuelita tiene 4 plataformas de negocio: azucar de cana, palma de aceite, acuicultura, y frutas y hortalizas."
   "Manuelita tiene 7 unidades de negocio: Manuelita Azucar y Energia, Agroindustrial Laredo, Manuelita Aceites y Energia, Palmar de Altamira, Manuelita Acuicultura, Oceanos, y Manuelita Frutas y Hortalizas."
   "Manuelita tiene aproximadamente 7.971 colaboradores."
