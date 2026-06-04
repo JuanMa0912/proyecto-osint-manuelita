@@ -26,8 +26,10 @@ openfang/
 ├── config/
 │   └── config.example.toml            # config de OpenFang (Gemini / Ollama)
 └── scripts/
-    ├── 01-start-daemon.sh             # arranca el daemon con la API key
-    └── 02-deploy-agent.sh             # despliega manuelita-bot (manifiesto + corpus + memoria)
+    ├── 01-start-daemon.sh                 # arranca el daemon con la API key
+    ├── 02-deploy-agent.sh                 # despliega manuelita-bot (manifiesto + corpus + MEMORY.md)
+    ├── 03-switch-provider.sh              # alterna proveedor LLM (Gemini / Ollama)
+    └── 04-cargar-memoria-semantica.sh     # puebla la memoria SEMANTICA via memory_store (RE-correr tras cada deploy)
 ```
 
 ## Quick start
@@ -48,12 +50,21 @@ de WSL como root: `wsl -d Ubuntu -u root`.
    ```bash
    bash scripts/01-start-daemon.sh        # dashboard: http://127.0.0.1:4200
    ```
-4. **Probar:**
+4. **Cargar la memoria semántica** (⚠️ obligatorio tras cada deploy — el paso 2 borra
+   `openfang.db` y con ella la memoria KV/semántica):
+   ```bash
+   bash scripts/04-cargar-memoria-semantica.sh   # ~10 hechos via memory_store (gasta ~11 llamadas LLM)
+   ```
+5. **Probar:**
    ```bash
    openfang agent list                    # copia el UUID de manuelita-bot
    openfang message <UUID> "¿Cuál es el NIT de Manuelita y quién es su presidente?"
    ```
 
+> **Orden crítico:** `02-deploy` → `01-start` → `04-cargar-memoria` → probar. Si saltas el
+> paso 4, el agente pierde la memoria semántica (queda solo con `system_prompt` + archivos
+> del workspace). Ver [`docs/F1b-memoria-semantica.md`](docs/F1b-memoria-semantica.md).
+>
 > Detalles, comandos y solución de problemas (gotchas) en `docs/`.
 
 ## Estado del proyecto (junio 2026)

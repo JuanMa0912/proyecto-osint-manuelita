@@ -25,6 +25,8 @@ fi
 
 # 3) Dejar SOLO este agente (mover los demas) y limpiar la DB para forzar recarga
 #    (los 30 templates viven en openfang.db; sin borrarla reviven al reiniciar)
+#    ⚠️ OJO: borrar openfang.db TAMBIEN borra la memoria KV/semantica del agente.
+#       => Tras arrancar, hay que RE-CARGARLA con 04-cargar-memoria-semantica.sh
 mkdir -p "$OF/agents_disabled"
 for d in "$OF/agents"/*/; do
   n=$(basename "$d")
@@ -40,5 +42,8 @@ cp "$REPO/openfang/agents/$AGENT/MEMORY.md" "$OF/workspaces/$AGENT/MEMORY.md"
 echo ">> corpus ($(ls "$OF/workspaces/$AGENT/data" | wc -l) archivos) + MEMORY.md desplegados"
 
 echo ""
-echo "Listo. Ahora arranca el daemon:  bash 01-start-daemon.sh"
+echo "Listo. Pasos siguientes (EN ORDEN):"
+echo "  1) Arranca el daemon:            bash 01-start-daemon.sh"
+echo "  2) RE-CARGA la memoria semantica: bash 04-cargar-memoria-semantica.sh"
+echo "     (este deploy borro openfang.db -> la memoria KV/semantica quedo vacia)"
 echo "(Si es la primera vez y el workspace se regenera, vuelve a correr este script tras el primer arranque.)"

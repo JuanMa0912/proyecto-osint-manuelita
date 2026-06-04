@@ -95,10 +95,23 @@ vía **agent-driven** sí funciona y da recuperación semántica persistente. Ev
 por **similitud semántica** (no por clave exacta), sobreviviendo al reinicio. Esto **es** el
 "vector store / RAG interno del OS" que pide el enunciado, poblado por vía agent-driven.
 
-**Cómo escalarlo al corpus:** un script que recorra `data_processed/markdown/*.md` por *chunks*
-y, por cada uno, envíe al agente una instrucción `memory_store` (o llame al tool por API).
-⚠️ Gasta cuota de embeddings/LLM → cargar **una vez**, fuera de horario de demo, y con el
-corpus ya curado. Probar primero con `key_facts_manuelita.md`.
+**Implementado:** [`scripts/04-cargar-memoria-semantica.sh`](../scripts/04-cargar-memoria-semantica.sh)
+recorre una lista curada de ~10 hechos núcleo y por cada uno envía una instrucción
+`memory_store`. **Ejecutado el 3 jun 2026:** los 10 hechos quedaron guardados ✓.
+
+⚠️ **Caveat de deploy (crítico, dejar escrito):** `02-deploy-agent.sh` **borra `openfang.db`**,
+que es donde vive la memoria KV/semántica → **cada deploy la deja vacía**. Por eso `04` debe
+**re-correrse tras cada deploy** y antes de la demo. Orden: `02-deploy` → `01-start` →
+`04-cargar-memoria` → probar.
+
+### Limitación honesta del recall (verificada, NO ocultar en la demo)
+En la verificación, una consulta **compuesta** ("¿cuántas familias beneficia y a cuántos países
+exporta?") recuperó bien *"más de 4.000 familias"* pero **omitió** *"exporta a 49 países"*, aunque
+ese hecho **sí estaba guardado**. → El recall agent-driven **no es un retriever determinista**:
+puede traer un hecho y omitir otro en la misma consulta. Mitigaciones: (a) preguntas atómicas en
+la demo; (b) los datos más críticos (NIT, presidente, 49 países) están **además** en DATOS NÚCLEO
+del `system_prompt`, así que el agente los responde aunque la memoria semántica falle. La memoria
+semántica **complementa**, no reemplaza, al núcleo embebido + `file_read`.
 
 ### Vía C — fallback honesto (si A y B no poblan la capa en v0.6.9)
 - **No falsear.** Explicar en informe y demo que v0.6.9 (pre-1.0) **expone** la capa

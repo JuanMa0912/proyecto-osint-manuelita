@@ -62,7 +62,7 @@ Una consecuencia explícita y deliberada de la Ruta B es que el código del Mód
 El sistema final del Módulo 3 se concibe como un **agente conversacional corporativo de Manuelita desplegado sobre OpenFang**, un Agent OS **open source con licencia MIT** (RightNow-AI/openfang) escrito en Rust (versión fijada **v0.6.9, pre-1.0**), ejecutado sobre **WSL2 (Ubuntu) en Windows 11**. Sus elementos previstos son:
 
 - **Motor LLM intercambiable:** Ollama local (soberanía de datos) o Gemini (velocidad, sin GPU), decidido en la demostración. En el spike funcional verificado, el proveedor que respondió de forma estable fue Gemini, mientras que Ollama quedó cableado pero lento sin GPU.
-- **Inyección de conocimiento corporativo sin RAG por embeddings:** el spike F0 confirmó que OpenFang **no** dispone de ingesta a un "vector store semántico"; el conocimiento se aporta mediante (1) `system_prompt` en `agent.toml` con la persona y reglas anti-alucinación portadas del M2, (2) los `.md` del corpus en el *workspace*, leídos por el agente con `file_read`/`file_list` (recuperación **agéntica por archivos**), (3) memoria clave-valor (`memory_store`/`memory_recall`) para datos estructurados como el NIT y las cifras, y (4) `MEMORY.md` como memoria de largo plazo.
+- **Inyección de conocimiento corporativo a la memoria nativa del OS:** OpenFang dispone de una memoria de **6 capas** que incluye **búsqueda semántica por embeddings** (capa 2). La versión v0.6.9 no expone ingesta documental *masiva*, por lo que la memoria semántica se puebla **agent-driven** (`memory_store`) —verificado: recuperación persistente por similitud de significado—. El conocimiento se aporta mediante (1) `system_prompt` en `agent.toml` con la persona y reglas anti-alucinación portadas del M2, (2) los `.md` del corpus en el *workspace*, leídos por el agente con `file_read`/`file_list` (recuperación **agéntica por archivos**), (3) **memoria semántica/KV** (`memory_store`/`memory_recall`) para hechos clave y datos estructurados como el NIT y las cifras, y (4) `MEMORY.md` como memoria de largo plazo.
 - **Hands (operaciones autónomas):** dos built-in (`lead` + `collector`) más un Hand Custom propio de Manuelita.
 - **Canales de mensajería:** Telegram (principal, vía BotFather) y WhatsApp (gateway Node con QR en el puerto 3009).
 - **Dashboard local** en `http://127.0.0.1:4200` y, como entregable opcional avanzado ("picante"), un análisis **t-SNE/UMAP** sobre el historial de sesiones, actualmente **diferido**.
@@ -111,13 +111,14 @@ OpenFang es un Agent OS **open source con licencia MIT** escrito en **Rust** (Ri
 
 **La consecuencia arquitectónica más fuerte del cambio de ruta:** en la Ruta B, el **código del M2 (LangChain, ChromaDB, Streamlit) NO se reusa como base ejecutable**. Lo único que migra es el **corpus limpio del M1** (`data_processed/markdown/*.md`). El M2 queda en el informe como "evolución arquitectónica", no como software vivo.
 
-**Por qué el corpus es lo único que sobrevive — el mecanismo de conocimiento cambia de raíz.** El hallazgo verificado en el spike F0 es que **OpenFang no hace RAG por embeddings**: no existe ingesta a un vector store semántico (confirmado por CLI y por API REST). En su lugar, el conocimiento se le da al agente por tres vías:
+**Por qué el corpus es lo único que sobrevive — el mecanismo de conocimiento cambia de raíz.** En la Ruta B el conocimiento ya **no** se sirve desde un pipeline RAG externo (chunking + embeddings + ChromaDB, como en el M2), sino desde la **memoria nativa de OpenFang** (modelo de 6 capas, con búsqueda semántica propia). El conocimiento se le da al agente por cuatro vías:
 
 1. **`system_prompt`** en `agent.toml` → persona y reglas anti-alucinación; aquí se porta el *contenido* de los prompts del M2 (no las plantillas LangChain).
 2. **Workspace de archivos** → los `.md` del corpus se leen agénticamente con `file_read`/`file_list`.
-3. **Memoria KV** (`memory_store`/`memory_recall`) → datos estructurados como NIT y cifras, más un `MEMORY.md` de hechos curados.
+3. **Memoria semántica/KV** (`memory_store`/`memory_recall`) → hechos clave y datos estructurados (NIT, cifras), con recuperación por similitud verificada (§ 5.1).
+4. **`MEMORY.md`** → memoria de largo plazo con hechos curados.
 
-Es decir, OpenFang hace **recuperación agéntica por archivos + KV**, no RAG por embeddings. Por eso afinar chunking/embeddings del M2 es irrelevante en el M3: lo que importa es la **calidad y estructura del corpus** (Markdown limpio, formato Q&A tipo `key_facts_manuelita.md`) — precisamente el activo heredado del M1. Esto explica de forma honesta por qué el código intermedio del M2 no se traslada: el modelo de recuperación es incompatible, pero el insumo de datos es directamente aprovechable.
+La diferencia de raíz con el M2 no es "tener o no memoria semántica" —ambos la tienen—, sino **dónde vive**: en el M2 era un *vector store* externo (ChromaDB) gobernado por código LangChain; en el M3 es la **memoria interna del Agent OS**, poblada de forma agent-driven. Por eso el código intermedio del M2 no se traslada (el sustrato de ejecución cambia), pero el **corpus limpio del M1 sí es directamente aprovechable**: lo que importa es su calidad y estructura (Markdown limpio, formato Q&A tipo `key_facts_manuelita.md`).
 
 **Estado verificado del M3 (junio 2026):** el agente `manuelita-bot` ya responde (~3 s vía Gemini para datos núcleo). Fases F0 (infraestructura) y F1 (agente con persona + corpus + anti-alucinación) validadas; F2 (Hands: 2 built-in `collector` y `lead` + 1 Custom `sostenibilidad-manuelita`) configuradas y pausadas; F3 (Telegram nativo funcionando; WhatsApp vía gateway QR Baileys listo, falta escanear QR); F4 (informe) y F5 (t-SNE, opcional) pendientes.
 
@@ -153,7 +154,7 @@ El enunciado del módulo planteaba dos rutas de productización: **Ruta A — Fa
 
 La consecuencia arquitectónica clave de esta decisión es que, en Ruta B, **el código del Módulo 2 (LangChain, ChromaDB, Streamlit) no se reutiliza como base ejecutable**: solo se migra el **corpus limpio del Módulo 1** (`data_processed/markdown/*.md`) a la memoria de OpenFang. El Módulo 2 queda en el informe como "evolución arquitectónica", no como software vivo. Esto convierte a OpenFang en el sustrato de ejecución único del agente productizado, en lugar de orquestar servicios separados (API + automatizaciones) como haría la Ruta A.
 
-> **Nota de honestidad técnica (verificada en F0):** la motivación inicial de la Ruta B asumía una "ingesta de corpus a un vector store semántico" dentro de OpenFang. El spike F0 **desmintió ese supuesto**: OpenFang v0.6.9 **no expone ingesta RAG por embeddings** (no existe comando `ingest`; la API REST devuelve **404** en `/api/memory`, `/api/knowledge`, `/api/documents`, `/api/rag`, `/api/embeddings`, `/api/vector`, `/api/ingest`). El conocimiento se inyecta al agente por **recuperación agéntica por archivos** (`system_prompt` del manifiesto, archivos del workspace leídos con `file_read`, memoria **KV** vía `memory_store`/`memory_recall`, y el `MEMORY.md` del workspace), **no** mediante RAG por embeddings.
+> **Nota de honestidad técnica (verificada en F0, matizada el 3 jun 2026):** OpenFang v0.6.9 **sí posee memoria semántica con embeddings** —es la capa 2 ("Semantic Search") de su modelo nativo de **6 capas**, documentado en `docs/architecture.md` (*"Documents are embedded using the configured embedding driver… matched by cosine similarity"*)—. Lo que el spike F0 sí constató es que la versión **no expone un mecanismo de ingesta documental *masiva*** (no existe comando `ingest`; la API REST devuelve **404** en `/api/{memory,knowledge,documents,rag,embeddings,vector,ingest}`; el CLI `memory` solo opera KV). La población de la memoria semántica se hace, por tanto, de forma **agent-driven**: el agente almacena hechos con `memory_store` y los **recupera por similitud semántica de forma persistente** —verificado en un spike controlado (almacenar un hecho → recuperarlo con una consulta reformulada *sin las palabras originales*, sobreviviendo a un reinicio del daemon)—. El conocimiento llega así al agente por **cuatro vías combinadas**: `system_prompt` (datos núcleo), archivos del workspace leídos con `file_read` (recuperación agéntica), **memoria semántica/KV** vía `memory_store`/`memory_recall`, y el `MEMORY.md` del workspace.
 
 ### 3.3 Ventajas del Agent OS
 
@@ -172,7 +173,7 @@ A partir de lo verificado en el repositorio y en la documentación oficial de Op
 
 ## 4. El agente conversacional `manuelita-bot`
 
-El agente `manuelita-bot` es la pieza conversacional de la Fase F1 del Módulo 3. Su objetivo es dotar a un agente de OpenFang de la **persona de Manuelita S.A.** y de su **conocimiento corporativo**, gobernados por un prompt anti-alucinación de carácter **proporcional**. A diferencia del Módulo 2, aquí no hay RAG por embeddings: OpenFang realiza recuperación **agéntica**, en la que el propio LLM decide cuándo leer un archivo del workspace para responder. El conocimiento llega al agente por tres vías combinadas: el `system_prompt` (datos núcleo embebidos), los archivos Markdown del workspace (leídos con herramientas) y la memoria clave-valor.
+El agente `manuelita-bot` es la pieza conversacional de la Fase F1 del Módulo 3. Su objetivo es dotar a un agente de OpenFang de la **persona de Manuelita S.A.** y de su **conocimiento corporativo**, gobernados por un prompt anti-alucinación de carácter **proporcional**. A diferencia del Módulo 2 —que dependía de un pipeline RAG externo (chunking + embeddings + ChromaDB)—, aquí la recuperación se apoya en la **memoria nativa del Agent OS**: el LLM decide cuándo leer un archivo del workspace (recuperación **agéntica**) y, además, dispone de la **memoria semántica/KV** del OS (`memory_store`/`memory_recall`), cuya capa de embeddings da recuperación por similitud. El conocimiento llega al agente por **cuatro vías combinadas**: el `system_prompt` (datos núcleo embebidos), los archivos Markdown del workspace (leídos con herramientas), la **memoria semántica/KV** y el `MEMORY.md` de largo plazo.
 
 ### 4.1 Persona
 
@@ -240,13 +241,15 @@ Hallazgos verificados del spike:
 
 ## 5. Inyección de la memoria corporativa y modelo de memoria
 
-### 5.1 El mecanismo real: recuperación agéntica, no RAG por embeddings
+### 5.1 El mecanismo real: memoria nativa del OS (semántica + KV + archivos)
 
-El hallazgo central del spike F0 (OpenFang v0.6.9, 2 jun 2026) corrige el supuesto del enunciado: **OpenFang no realiza RAG por embeddings**. No existe un comando de ingesta ni un *vector store* semántico. Se confirmó por dos vías: (i) la CLI no expone ningún comando `ingest` —`memory` es únicamente un almacén clave-valor (KV) con operaciones `list/get/set/delete`—, y (ii) la API REST devuelve 404 en todos los endpoints candidatos (`/api/{memory,knowledge,documents,rag,embeddings,vector,ingest,upload}`). El endpoint `/v1/embeddings` tampoco funciona en el driver de Ollama.
+El modelo de memoria de OpenFang v0.6.9 es **nativo del Agent OS** y se organiza en **6 capas** (documentadas en `docs/architecture.md`): (1) **Structured KV Store**, (2) **Semantic Search** —embeddings con similitud coseno—, (3) Knowledge Graph, (4) Session Manager, (5) Task Board y (6) Usage & Canonical Sessions. Esto **corrige** una conclusión preliminar (demasiado fuerte) del spike F0: OpenFang **sí dispone de memoria semántica por embeddings**; el enunciado del módulo no se equivocaba al referirse a un "vector store / RAG interno del OS".
 
-En consecuencia, OpenFang hace **recuperación agéntica por archivos + KV**: no hay indexación vectorial ni búsqueda semántica determinista. El conocimiento llega al agente por vías combinadas, y es el propio LLM quien **decide** cuándo leer un archivo del workspace para responder. Esto tiene una implicación de diseño explícita en el repo: afinar *chunking* o *embeddings* (como en el Módulo 2) es irrelevante aquí; lo que importa es la **calidad y estructura del corpus** en Markdown limpio (formato Q&A tipo `key_facts_manuelita.md`).
+Lo que el spike sí constató con precisión es un límite de la versión: **no hay un mecanismo de ingesta documental *masiva* expuesto**. La CLI `memory` opera únicamente KV (`list/get/set/delete`), no existe un comando `ingest`, y la API REST devuelve 404 en los endpoints candidatos (`/api/{memory,knowledge,documents,rag,embeddings,vector,ingest}`); el endpoint `/v1/embeddings` del driver Ollama tampoco respondía. La memoria semántica **se puebla de forma agent-driven**, no por carga documental directa.
 
-Como límite reconocido del enfoque: a diferencia de un *retriever*, **no hay garantía de que el contexto relevante se recupere en cada consulta**, porque depende de que el modelo decida invocar la herramienta de lectura. Este punto se evidencia en el spike de *grounding* (§ 4.4).
+**Evidencia verificada (spike de memoria semántica, 3 jun 2026).** Se instruyó al agente almacenar un hecho de prueba con `memory_store` ("el proyecto piloto interno se llama Colibrí Azul y lo lidera Marta Ruiz") y luego se consultó con una pregunta **reformulada semánticamente, sin las palabras originales** ("¿quién está a cargo del experimento del *ave pequeña*?"): el agente respondió correctamente "Marta Ruiz". La prueba se repitió **tras reiniciar el daemon** —lo que vacía el contexto de sesión en RAM—, y el agente **siguió recuperando el dato**, confirmando que reside en **memoria persistente** y que la recuperación es por **similitud de significado**, no por coincidencia léxica exacta. Esto materializa el "RAG interno del OS" que pide el enunciado.
+
+Como límite honesto del enfoque, ni la recuperación agéntica por archivos ni la memoria semántica agent-driven son un *retriever* determinista: **no hay garantía de recuperar todos los hechos relevantes en cada consulta**. Se observó que una consulta **compuesta** recuperó un hecho almacenado y **omitió otro** que también estaba guardado. Por eso el diseño es **defensivo y por capas**: los datos más críticos (NIT, presidente, países, cifras) viven **además** en los DATOS NÚCLEO del `system_prompt`, de modo que el agente los responde aunque la memoria semántica o el `file_read` fallen en una consulta dada. La memoria semántica **complementa** —no reemplaza— al núcleo embebido y a los archivos del workspace; y en los tres casos lo que más importa es la **calidad y estructura del corpus** en Markdown limpio (formato Q&A tipo `key_facts_manuelita.md`).
 
 ### 5.2 Cómo se le da conocimiento al agente
 
@@ -259,18 +262,20 @@ Según lo verificado en F0 y documentado para `manuelita-bot`, el conocimiento s
 
 El agente `manuelita-bot` declara las herramientas `["file_read", "file_write", "file_list", "memory_store", "memory_recall", "web_fetch"]`, con `temperature = 0.2` y `max_tokens = 4096`.
 
-### 5.3 Las cuatro capas de memoria
+### 5.3 El modelo de memoria de 6 capas
 
-El modelo de memoria de OpenFang se organiza en cuatro capas, todas verificadas por inspección directa del filesystem y la CLI/API en el spike de esta versión (v0.6.9):
+OpenFang documenta en `docs/architecture.md` un modelo de memoria de **6 capas**. La tabla las lista y mapea cada una a lo verificado en el spike de esta versión (v0.6.9) y a su uso concreto en `manuelita-bot`:
 
-| Capa | Naturaleza | Soporte verificado |
-|------|-----------|--------------------|
-| **Sesiones** | Historial de las conversaciones, extraíble para análisis posterior (p. ej. el t-SNE opcional de la fase F5) | Archivos **JSONL** en `~/.openfang/workspaces/<agente>/sessions/<uuid>.jsonl`, una línea por turno con `{timestamp, role, content}`. (Confirmado que **no** es "SQLite FTS5"; son ficheros JSONL.) |
-| **Memoria de trabajo** | Memoria diaria por fecha, auto-append por día | Archivos Markdown `~/.openfang/workspaces/<agente>/memory/<fecha>.md`. (Capa verificada por inspección.) |
-| **`MEMORY.md`** | *Long-Term Memory* curada: conocimiento clave a través de sesiones | Verificado: se curó el `MEMORY.md` en la raíz del workspace de `manuelita-bot` (hechos curados). |
-| **KV (clave-valor)** | Datos estructurados accesibles vía `memory_store` / `memory_recall` | Verificado: `memory` es solo KV (list/get/set/delete); persiste en el SQLite central `~/.openfang/data/openfang.db` (+ WAL). |
+| # | Capa (oficial) | Naturaleza | Uso / soporte verificado en este proyecto |
+|---|----------------|-----------|-------------------------------------------|
+| 1 | **Structured KV Store** | Almacén clave-valor por agente (valores JSON) | Datos estructurados vía `memory_store`/`memory_recall`; CLI `memory` (list/get/set/delete). Persiste en `~/.openfang/data/openfang.db`. |
+| 2 | **Semantic Search** | Embeddings + similitud coseno | **Verificado**: el agente almacena con `memory_store` y recupera por significado, de forma persistente (spike § 5.1). Es el "RAG interno del OS". |
+| 3 | **Knowledge Graph** | Entidades-relaciones con traversal | Disponible en la plataforma; no explotado en este proyecto. |
+| 4 | **Session Manager** | Historial de conversación con conteo de tokens | Espejo en **JSONL** por sesión (`~/.openfang/workspaces/<agente>/sessions/<uuid>.jsonl`), insumo del t-SNE opcional (F5). |
+| 5 | **Task Board** | Cola de tareas multi-agente | Usado internamente por las Hands; no explotado de forma directa. |
+| 6 | **Usage & Canonical Sessions** | Costos + resúmenes de sesión multicanal | Soporta la gestión multicanal (Telegram/WhatsApp) de la fase F3. |
 
-La persistencia central del daemon —estado de agentes, hands y sesiones, además del KV— vive en `~/.openfang/data/openfang.db` (+ ficheros WAL). Por eso, tras desplegar un agente nuevo es necesario **borrar `openfang.db*` y reiniciar** para que OpenFang cargue el manifiesto actualizado (de lo contrario el daemon revive los 30 templates registrados en la DB, no solo en disco).
+Complementan al modelo dos artefactos de workspace inspeccionados directamente: la **memoria de trabajo** diaria (`~/.openfang/workspaces/<agente>/memory/<fecha>.md`, auto-append por día) y el **`MEMORY.md`** de largo plazo (curado con los hechos clave de Manuelita). La persistencia central del daemon —estado de agentes, hands, sesiones y KV— vive en `~/.openfang/data/openfang.db` (+ ficheros WAL); por eso, tras desplegar un agente nuevo es necesario **borrar `openfang.db*` y reiniciar** para que OpenFang cargue el manifiesto actualizado (de lo contrario el daemon revive los templates registrados en la DB, no solo en disco).
 
 ### 5.4 Migración del corpus del Módulo 1 al workspace `data/`
 
