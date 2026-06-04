@@ -127,7 +127,7 @@ La diferencia de raíz con el M2 no es "tener o no memoria semántica" —ambos 
 | Aspecto | Módulo 1 | Módulo 2 | Módulo 3 |
 |---|---|---|---|
 | Foco | Adquisición OSINT + corpus | Agente RAG conversacional | Productización (Agent OS) |
-| Conocimiento | Corpus Markdown | RAG por embeddings (ChromaDB) + JSON | Archivos (`file_read`) + KV, sin embeddings |
+| Conocimiento | Corpus Markdown | RAG por embeddings (ChromaDB) + JSON | Memoria nativa del OS: semántica (embeddings) + KV + archivos (`file_read`) |
 | Routing | — | Router híbrido por keywords (determinista) | Razonamiento del agente OpenFang: el LLM decide qué archivo leer (sin router determinista) |
 | Memoria | — | `ConversationBufferWindowMemory` | KV + `MEMORY.md` |
 | Interfaz | Streamlit Q&A | Streamlit chat | Telegram + WhatsApp |
@@ -135,6 +135,33 @@ La diferencia de raíz con el M2 no es "tener o no memoria semántica" —ambos 
 | Reuso de código | — | base del M2 | **No reusa el código del M2; solo migra el corpus del M1** |
 
 El hilo conductor es que **el activo persistente entre los tres módulos es el corpus**: el M1 lo crea, el M2 lo explota con RAG y herramientas, y el M3 lo reutiliza bajo un paradigma de recuperación distinto. Cada cambio de capa (Q&A → agente RAG → Agent OS) responde a una limitación concreta: falta de discriminación y memoria en el M1, y necesidad de productización multicanal con un OS agéntico en el M3. Una diferencia de fondo en el routing: mientras el M2 usa un router híbrido **determinista** por keywords, en el M3 **no hay router determinista** — es el propio LLM del agente OpenFang quien decide qué archivo de `data/` leer con `file_read` (recuperación agéntica por archivos). El spike de grounding (§ 4.4) verificó que esta decisión depende de la capacidad del modelo: un modelo pequeño (`gemini-2.5-flash-lite`) no dispara las herramientas de forma fiable en preguntas abiertas, por lo que `manuelita-bot` requiere un modelo capaz —tras el cuello de botella de cuota de Gemini, el motor primario es **Ollama Cloud `gemma3:27b`**, con `gemini-2.5-flash` como *fallback* (§ 4.4).
+
+### 2.5 Metodología: de MLOps a LLMOps a AgentOps
+
+La evolución M1 → M2 → M3 no es solo arquitectónica: es un tránsito de **metodología operacional**. Las tres disciplinas no son alternativas excluyentes — cada una **extiende** a la anterior, heredando sus prácticas y añadiendo las propias.
+
+- **MLOps (Machine Learning Operations).** Aplica principios DevOps al **ciclo de vida de modelos de ML**: pipelines de datos, entrenamiento, versionado, despliegue y monitoreo de *drift*. Asume un modelo entrenado cuyo desempeño se mide con métricas de exactitud. **Ninguno de los tres módulos es MLOps puro**: no entrenamos modelos, consumimos modelos pre-entrenados. Es el punto de partida conceptual del que derivan las otras dos disciplinas.
+
+- **LLMOps (Large Language Model Operations).** Sub-disciplina de MLOps especializada en aplicaciones basadas en LLM. El comportamiento se gobierna por **prompts** (no por reentrenamiento), la salida es **no determinista** y no se evalúa con exactitud simple. Sus preocupaciones: gestión de prompts, *pipelines* RAG (chunking, embeddings, *vector store*), evaluación de calidad generativa, control de **costo y latencia** de tokens, y **observabilidad** de las llamadas. **El Módulo 2 es LLMOps**: RAG con ChromaDB, prompts anti-alucinación, router híbrido determinista y trazabilidad con **LangSmith**.
+
+- **AgentOps (Agent Operations).** Extiende LLMOps a **agentes autónomos** que razonan en varios pasos, **invocan herramientas**, mantienen **memoria** persistente y corren como servicio de larga duración. Añade lo que LLMOps no cubre: **gobernanza de acciones** (qué puede ejecutar el agente), **seguridad** ante *prompt injection*, **trazado de cadenas de razonamiento** y de secuencias de llamadas a herramientas, **gestión de memoria** y de **recursos en runtime** (RAM, *sandboxing*). **El Módulo 3 es AgentOps**: es el propio LLM quien decide qué herramienta (`file_read`, `memory_recall`) usar, sobre **OpenFang** como sustrato de ejecución gobernado.
+
+El Módulo 3 materializa prácticas concretas de AgentOps, cada una trazable a una sección de este informe:
+
+| Práctica de AgentOps | Cómo se materializa en `manuelita-bot` (M3) | Sección |
+|---|---|---|
+| Gobernanza de acciones / **privilegio mínimo** | `[capabilities]` recorta las herramientas a solo-lectura (`file_read`, `file_list`, `memory_recall`, `memory_store`); sin `file_write` ni shell | § 4.6 |
+| **Seguridad** del agente (*prompt injection*, OWASP LLM01) | Defensa en profundidad de 4 capas: privilegio mínimo, jerarquía de instrucciones, anti-autoridad, anti-acción de sistema | § 4.6 |
+| Gestión de **memoria** | Memoria nativa de 6 capas (semántica + KV + sesiones); curación del corpus como anti-alucinación | § 5 |
+| Gestión de **recursos en runtime** | `max_llm_tokens_per_hour` como guarda anti-*runaway*; aislamiento **WASM** y gestión de RAM del Agent OS | § 3.3, § 4.3 |
+| **Operación de costo/cuota** | Migración del motor a Ollama Cloud ante el muro de cuota de Gemini; pausa de Hands en reposo | § 4.4, § 6.4 |
+| **Orquestación de operaciones autónomas** | Hands (`lead`, `collector`, Custom `sostenibilidad-manuelita`) en *schedule* | § 6 |
+| **Despliegue multicanal** como servicio | Adaptadores nativos de Telegram + gateway de WhatsApp | § 7 |
+| **Observabilidad** de trayectorias | En M2: trazas LangSmith (LLMOps); en M3: capa de sesiones/canónica del OS (AgentOps) | § 2.2, § 5.3 |
+
+**Lectura honesta del alcance.** El proyecto **no** implementa una plataforma AgentOps completa: no hay, por ejemplo, evaluación automática de trayectorias ni integración continua de agentes. Lo que sí demuestra es el **cambio de paradigma operacional**: del *pipeline* de LLM gobernado por código (LLMOps, M2) al **agente autónomo gobernado por un OS**, con herramientas, memoria, seguridad y recursos administrados (AgentOps, M3). Esa es la contribución metodológica central del Módulo 3.
+
+> *Fuentes (verificadas jun. 2026):* MLflow — *What is LLMOps*; TechNet Experts — *MLOps vs LLMOps vs AgentOps*; ZBrain — *A comprehensive guide to AgentOps*. AgentOps se define consistentemente como el conjunto de prácticas para **diseñar, desplegar, monitorear, optimizar y gobernar agentes autónomos en producción**, extendiendo LLMOps a sistemas multi-paso con herramientas y memoria.
 
 ---
 
