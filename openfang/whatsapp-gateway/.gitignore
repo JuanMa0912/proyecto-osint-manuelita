@@ -1,0 +1,6 @@
+# Dependencias (se reinstalan con `npm install` desde package-lock.json)
+node_modules/
+
+# Credenciales de la sesion de WhatsApp (Baileys) — NUNCA commitear:
+# contienen las llaves de la sesion vinculada al telefono personal.
+auth_store/

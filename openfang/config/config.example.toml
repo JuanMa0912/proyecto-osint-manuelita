@@ -1,0 +1,33 @@
+# ~/.openfang/config.toml — Ejemplo para el proyecto Manuelita (Modulo 3)
+# Copiar a /root/.openfang/config.toml dentro de WSL (Ubuntu) y elegir UN proveedor.
+
+api_listen = "127.0.0.1:4200"
+
+# ───────────────────────────────────────────────────────────────
+# OPCION A — Gemini (modo DEMO, recomendado: rapido y confiable)
+# ───────────────────────────────────────────────────────────────
+# La API key se pasa como variable de entorno GEMINI_API_KEY al lanzar el daemon
+# (NO se commitea). Ver scripts/01-start-daemon.sh.
+# IMPORTANTE: gemini-2.0-flash quedo con cuota free tier en 0 (HTTP 429) en jun-2026.
+# Usar gemini-2.5-flash-lite (verificado con cupo) o gemini-2.5-flash.
+[default_model]
+provider = "gemini"
+model = "gemini-2.5-flash-lite"
+api_key_env = "GEMINI_API_KEY"
+
+# ───────────────────────────────────────────────────────────────
+# OPCION B — Ollama local (modo SOBERANIA). Reemplaza el bloque [default_model] de arriba.
+# ───────────────────────────────────────────────────────────────
+# Requiere networking 'mirrored' en .wslconfig para que WSL alcance el Ollama de Windows.
+# CRITICO: base_url DEBE terminar en /v1 (OpenFang usa el endpoint OpenAI-compatible;
+#          sin /v1 da "404 page not found" — bug #137/#212).
+# Limitacion: en CPU sin GPU, llama3.2:3b tarda >2 min (el CLI corta a 120s). Usar un 1b.
+#
+# [default_model]
+# provider = "ollama"
+# model = "llama3.2:3b"          # para CPU sin GPU, considerar "llama3.2:1b"
+# base_url = "http://localhost:11434/v1"
+# api_key_env = ""
+
+[memory]
+decay_rate = 0.05
