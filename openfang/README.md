@@ -63,9 +63,9 @@ de WSL como root: `wsl -d Ubuntu -u root`.
 | F0 | Infraestructura OpenFang en WSL2 (instalación, networking, proveedores) | ✅ Validada |
 | F1 | Agente `manuelita-bot`: persona + corpus + anti-alucinación proporcional | ✅ Responde (~3 s vía Gemini) |
 | F2 | Hands: 2 built-in (`collector`, `lead`) + 1 Custom (`sostenibilidad-manuelita`) | ✅ Configuradas y pausadas |
-| F3 | Canales: Telegram (nativo, **funcionando** → `manuelita-bot`) + WhatsApp (gateway QR versionado) | 🟡 Telegram ✅ vivo · WhatsApp listo, falta escanear QR |
-| F4 | Informe técnico unificado | ⏳ Pendiente |
-| F5 | Análisis t-SNE de conversaciones (opcional) | ⏳ Pendiente |
+| F3 | Canales: Telegram (nativo, **funcionando** → `manuelita-bot`) + WhatsApp (gateway QR versionado) | ✅ Telegram vivo y **ensayado en vivo desde teléfono real** · 🟡 WhatsApp listo, falta escanear QR |
+| F4 | Informe técnico unificado | 🟡 Markdown completo y depurado (`reports/informe_final.md`, `0 POR VERIFICAR`) · falta solo exportar a PDF |
+| F5 | Análisis t-SNE de conversaciones (opcional) | ⏳ Pendiente (opcional avanzado) |
 
 ## Notas
 
@@ -76,3 +76,31 @@ de WSL como root: `wsl -d Ubuntu -u root`.
   + archivos del workspace (`file_read`) + memoria KV. Ver F1.
 - La carpeta de trabajo real de OpenFang vive en WSL (`/root/.openfang/`); estos archivos
   son la **fuente versionada** que se despliega allí con `scripts/02-deploy-agent.sh`.
+
+## Verificación contra upstream (jun 2026)
+
+Estado del proyecto OpenFang revisado contra su repo oficial
+([RightNow-AI/openfang](https://github.com/RightNow-AI/openfang)) el **3 jun 2026**:
+
+- **Versión vigente: `v0.6.9` (12 may 2026) — sigue siendo la última.** Es la que tenemos
+  fijada. **No actualizar antes de la sustentación** (pre-1.0, breaking changes entre minors).
+  Que sea la última valida la decisión: no estamos atrasados.
+- **El modelo de conocimiento no cambió.** No hay novedades de RAG / embeddings / vector store /
+  ingesta semántica en el rango `0.6.5 → 0.6.9`. Esto **ratifica** lo documentado en
+  [`docs/F1-agente-manuelita.md`](docs/F1-agente-manuelita.md): OpenFang hace **recuperación
+  agéntica por archivos + KV**, no RAG por embeddings. El informe describe esto de forma honesta.
+- **Gotcha de Hands sigue vigente.** Confirmado contra el changelog: **no** existe `hand uninstall`
+  ni `hand install --force` en 0.6.x. Para cambiar una Hand registrada hay que resetear
+  `openfang.db` (ver [`docs/F2-hands.md`](docs/F2-hands.md) §7). El nuevo
+  `DELETE /api/agents/{id}/uninstall` (v0.6.7) es para **agentes conversacionales**, no para Hands.
+
+### Novedades 0.6.x que NO adoptamos (y por qué)
+
+| Novedad upstream | Versión | Decisión |
+|------------------|---------|----------|
+| `OLLAMA_HOST` como env override | v0.6.8 | **No migrar para la demo.** Nuestro cableado actual (`base_url=…/v1`) funciona; cambiarlo ahora es riesgo sin upside. Anotado como mejora opcional post-sustentación. |
+| Telegram `message_thread_id` routing por tópico | v0.6.8 | No aplica: un solo agente, un solo chat. |
+| `DELETE /api/agents/{id}/uninstall` (borrar agente desde chat) | v0.6.7 | No necesario en la demo; útil solo en mantenimiento. No resuelve el gotcha de Hands. |
+
+> Regla del equipo: congelar versión y configuración antes de la sustentación. Estas novedades
+> quedan registradas para una iteración posterior, no para tocar el sistema que ya funciona.

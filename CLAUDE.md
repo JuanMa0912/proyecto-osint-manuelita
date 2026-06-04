@@ -372,9 +372,13 @@ El score de keywords con modo `local` es bajo (~60%) por las limitaciones de `ll
 
 ## Módulo 3 — Productización (Ruta B: OpenFang Agent OS)
 
-> **Estado:** en planeación (junio 2026). Esta sección es la guía viva del M3.
-> El código/config del M3 aún no existe; no asumas que algo está implementado
-> hasta verificarlo en el repo.
+> **Estado (jun 2026):** F0–F3 implementadas y versionadas en la carpeta
+> [`openfang/`](openfang/) (config del agente, Hands, canales, scripts y docs por fase).
+> F4 (informe) con el markdown completo y depurado en
+> [`reports/informe_final.md`](reports/informe_final.md) — falta solo exportarlo a PDF.
+> Resumen de estado por fase en [`openfang/README.md`](openfang/README.md). La tabla
+> de "Plan por fases" más abajo es la guía original; el estado real vive en ese README.
+> Sigue verificando contra el repo antes de asumir que algo está implementado.
 
 ### Decisión de ruta
 
