@@ -1,8 +1,9 @@
 {
   "_meta": {
     "version": "1.0",
-    "fuente": "Supersociedades, Informe de Sostenibilidad 2021-2022, perfil corporativo",
-    "ultima_actualizacion": "2024-12",
+    "fuente": "Financiero individual: Superintendencia de Sociedades (vía Estrategia en Acción), serie 2019-2024. Consolidado del Grupo: Informe de Sostenibilidad + prensa. Resto: perfil corporativo OSINT.",
+    "ultima_actualizacion": "2026-06",
+    "nota_correccion_financiera": "2026-06: la serie 'financiero.historico' se unificó al alcance INDIVIDUAL (Supersociedades) tras detectar que mezclaba años consolidados con un 2023 individual. Ver 'financiero.nota_alcance'.",
     "descripcion": "Datos estructurados de Manuelita S.A. para consulta directa por el agente conversacional"
   },
 
@@ -94,44 +95,75 @@
   "financiero": {
     "moneda": "COP (pesos colombianos)",
     "unidad": "millones COP",
+    "alcance": "individual",
+    "nota_alcance": "La serie 'historico' son los estados financieros INDIVIDUALES (separados) de Manuelita S.A. (NIT 891.300.241) reportados a la Superintendencia de Sociedades — fuente regulatoria autoritativa, consistente y comparable 2019-2024 (coincide con data_processed/markdown/financiero_supersociedades_manuelit.md). Las cifras CONSOLIDADAS del Grupo Manuelita (todas las filiales de Colombia/Perú/Chile) son mayores y NO son comparables con esta serie; se conservan aparte en 'consolidado_grupo'. Corrección 2026-06: la versión previa mezclaba años consolidados (2019-2022) con un 2023 individual, produciendo una falsa caída del -58%; verificado vía La República y el reporte de Supersociedades.",
     "historico": {
       "2019": {
-        "ingresos": 1313792,
-        "ebitda": 225494,
-        "ebitda_margen_pct": 17.2,
-        "utilidad_neta": 13800
+        "ingresos": 631073,
+        "ebitda": 225647,
+        "ebitda_margen_pct": 35.8,
+        "utilidad_neta": null,
+        "deuda_financiera": 466151,
+        "ratio_deuda_ebitda": 2.1
       },
       "2020": {
-        "ingresos": 1343465,
-        "ebitda": 251837,
-        "ebitda_margen_pct": 18.7,
-        "utilidad_neta": 2361
+        "ingresos": 648445,
+        "ebitda": 243657,
+        "ebitda_margen_pct": 32.9,
+        "utilidad_neta": null,
+        "deuda_financiera": 553522,
+        "ratio_deuda_ebitda": 2.6
       },
       "2021": {
-        "ingresos": 1819755,
-        "ebitda": 383285,
-        "ebitda_margen_pct": 21.1,
-        "utilidad_neta": 84527
+        "ingresos": 648942,
+        "ebitda": 187697,
+        "ebitda_margen_pct": 28.9,
+        "utilidad_neta": null,
+        "deuda_financiera": 566098,
+        "ratio_deuda_ebitda": 3.0
       },
       "2022": {
-        "ingresos": 2507235,
-        "ebitda": 720532,
-        "ebitda_margen_pct": 28.7,
-        "utilidad_neta": 503190
+        "ingresos": 966169,
+        "ebitda": 357493,
+        "ebitda_margen_pct": 37.0,
+        "utilidad_neta": null,
+        "deuda_financiera": 543345,
+        "ratio_deuda_ebitda": 1.5
       },
       "2023": {
         "ingresos": 1043562,
         "ebitda": 369380,
         "ebitda_margen_pct": 35.4,
         "utilidad_neta": 78153,
-        "deuda_financiera": null,
+        "deuda_financiera": 476917,
         "ratio_deuda_ebitda": 1.3
       },
       "2024": {
-        "ingresos": null,
-        "ebitda": null,
-        "nota": "Datos parciales — crecimiento ~0.3% vs 2023"
+        "ingresos": 1046652,
+        "ebitda": 388760,
+        "ebitda_margen_pct": 37.1,
+        "utilidad_neta": null,
+        "deuda_financiera": 509221,
+        "ratio_deuda_ebitda": 1.3,
+        "nota": "Cifras del reporte 2019-2024 de Estrategia en Acción vía Supersociedades; utilidad neta individual no desglosada."
       }
+    },
+    "consolidado_grupo": {
+      "_nota": "Cifras CONSOLIDADAS del Grupo Manuelita (NO individuales de la sociedad matriz). NO comparables con la serie 'historico'. Fuentes: Informe de Sostenibilidad del Grupo y prensa (La República, abr. 2023). Útiles solo si se pregunta explícitamente por el Grupo consolidado.",
+      "2021": {
+        "ingresos_informe_sostenibilidad": 1819755,
+        "ingresos_prensa_billones_cop": 1.91,
+        "utilidad_neta": 84527,
+        "utilidad_neta_prensa": 84725
+      },
+      "2022": {
+        "ingresos_informe_sostenibilidad": 2507235,
+        "ingresos_prensa_billones_cop": 2.70,
+        "utilidad_neta_prensa": 305091,
+        "crecimiento_ingresos_prensa_pct": 41,
+        "ebitda_informe_sostenibilidad": 720532
+      },
+      "fuente_prensa": "https://www.larepublica.co/empresas/manuelita-vendio-41-mas-que-el-ano-pasado-y-cerro-con-2-7-billones-en-ingresos-3646190"
     },
     "año_mas_reciente": 2023
   },

@@ -105,3 +105,15 @@ reports/resultados_20_preguntas_*.txt
 # reports/informe_modulo1_qa_manuelita.tex
 # reports/informe_tecnico_proyecto_ia_agroindustrial.md
 # reports/fase1_mapa_fuentes.md
+
+# Notas internas del equipo (privado, no subir)
+NOTAS_INTERNAS_M3.md
+
+# t-SNE (M3): carpeta de trabajo con copia del openfang.db (no versionar binarios del OS).
+# El entregable SI se versiona: scripts/tsne_sesiones_m3.py, reports/modulo3/tsne_*
+reports/modulo3/_work/
+
+# Salidas de tests/resultados (no se versionan)
+reports/resultados_*.json
+reports/resultados_*.txt
+reports/*_borrador.md

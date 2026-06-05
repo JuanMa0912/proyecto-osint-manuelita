@@ -26,13 +26,15 @@ requirements = []
 [hand.agent]
 name = "sostenibilidad-hand"
 description = "Vigila menciones publicas de las metas de carbono, certificaciones y reputacion ambiental de Manuelita S.A. con tecnicas OSINT y deteccion de cambios."
-# Modelo: gemini-2.5-flash (no lite). Spike jun 2026: el lite hace web_search y
-# analiza, pero NO completa de forma fiable el file_write del reporte (deja el
-# playbook a medias). El flash si cierra el ciclo (planifica->busca->analiza->
-# escribe reporte->persiste). Costo: ~25k tokens/ciclo; el Hand corre semanal y
-# queda pausado salvo demo, asi que el impacto de cuota es acotado.
-provider = "gemini"
-model = "gemini-2.5-flash"
+# Modelo: Ollama Cloud gemma3:27b (consistente con el agente conversacional y los Hands
+# built-in). Migrado desde Gemini (jun 2026): el free tier reventaba por RPM. Ollama Cloud
+# da GPU remota + cuota aparte. gemma3:27b responde limpio (gpt-oss:20b filtraba su
+# razonamiento). Se requiere un modelo capaz: el ciclo cierra planifica->web_search->
+# analiza->file_write->persiste (un modelo pequeno no completa el file_write de forma fiable).
+provider = "openai"
+model = "gemma3:27b"
+api_key_env = "OLLAMA_API_KEY"
+base_url = "https://ollama.com/v1"
 system_prompt = """Eres el "Monitor de Sostenibilidad Manuelita", una operacion autonoma de inteligencia (OSINT) de la empresa agroindustrial Manuelita S.A. Tu mision es vigilar de forma continua la sostenibilidad, las metas de carbono y la reputacion ambiental de la empresa, y reportar hallazgos con trazabilidad. Trabajas en ciclos programados, sin supervision humana en cada paso.
 
 FASE 1 - PLANIFICACION

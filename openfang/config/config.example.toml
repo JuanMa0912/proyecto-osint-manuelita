@@ -3,26 +3,44 @@
 
 api_listen = "127.0.0.1:4200"
 
-# ───────────────────────────────────────────────────────────────
-# OPCION A — Gemini (modo DEMO, recomendado: rapido y confiable)
-# ───────────────────────────────────────────────────────────────
-# La API key se pasa como variable de entorno GEMINI_API_KEY al lanzar el daemon
-# (NO se commitea). Ver scripts/01-start-daemon.sh.
-# IMPORTANTE: gemini-2.0-flash quedo con cuota free tier en 0 (HTTP 429) en jun-2026.
-# Usar gemini-2.5-flash-lite (verificado con cupo) o gemini-2.5-flash.
-[default_model]
-provider = "gemini"
-model = "gemini-2.5-flash-lite"
-api_key_env = "GEMINI_API_KEY"
+# Canal Telegram (token via env TELEGRAM_BOT_TOKEN, NO se commitea). Se configura con
+# 'openfang channel setup telegram'. El canal resuelve el agente POR NOMBRE.
+[channels.telegram]
+bot_token_env = "TELEGRAM_BOT_TOKEN"
+default_agent = "manuelita-bot"
 
 # ───────────────────────────────────────────────────────────────
-# OPCION B — Ollama local (modo SOBERANIA). Reemplaza el bloque [default_model] de arriba.
+# OPCION A (ACTIVA) — Ollama Cloud gpt-oss:20b (RECOMENDADO jun-2026)
+# ───────────────────────────────────────────────────────────────
+# GPU remota -> sin GPU local y cuota INDEPENDIENTE de Gemini. VERIFICADO end-to-end con
+# OpenFang: gpt-oss:20b respondio ~1.6s, uso file_read y no alucino. Usa el proveedor
+# generico "openai" (endpoint OpenAI-compatible). Key gratis en ollama.com/settings/keys
+# -> env OLLAMA_API_KEY (NO se commitea). base_url DEBE terminar en /v1. Free tier por
+# tiempo de GPU (reset por sesion de 5h + limite semanal).
+# NOTA: los Hands built-in (collector, lead) HEREDAN este default_model. El agente
+#       manuelita-bot y el Hand Custom fijan tambien Ollama Cloud en su propio manifiesto.
+[default_model]
+provider = "openai"
+model = "gemma3:27b"                # limpio y rapido en espanol. Alt: qwen3-next:80b, gpt-oss:20b (este filtra razonamiento)
+api_key_env = "OLLAMA_API_KEY"
+base_url = "https://ollama.com/v1"
+
+# ───────────────────────────────────────────────────────────────
+# OPCION B — Gemini (nube). Sirve como FALLBACK del agente. Reemplaza [default_model].
+# ───────────────────────────────────────────────────────────────
+# Key via env GEMINI_API_KEY. gemini-2.0-flash quedo en 429 limit:0 (jun-2026); el free
+# tier de 2.5-flash reventaba por RPM (cascada de 429). Usar 2.5-flash como fallback.
+# [default_model]
+# provider = "gemini"
+# model = "gemini-2.5-flash"
+# api_key_env = "GEMINI_API_KEY"
+
+# ───────────────────────────────────────────────────────────────
+# OPCION C — Ollama local (SOBERANIA pura, sin nube). Reemplaza [default_model].
 # ───────────────────────────────────────────────────────────────
 # Requiere networking 'mirrored' en .wslconfig para que WSL alcance el Ollama de Windows.
-# CRITICO: base_url DEBE terminar en /v1 (OpenFang usa el endpoint OpenAI-compatible;
-#          sin /v1 da "404 page not found" — bug #137/#212).
+# CRITICO: base_url DEBE terminar en /v1 (sin /v1 da 404 — bug #137/#212).
 # Limitacion: en CPU sin GPU, llama3.2:3b tarda >2 min (el CLI corta a 120s). Usar un 1b.
-#
 # [default_model]
 # provider = "ollama"
 # model = "llama3.2:3b"          # para CPU sin GPU, considerar "llama3.2:1b"

@@ -26,19 +26,28 @@ openfang/
 ├── config/
 │   └── config.example.toml            # config de OpenFang (Gemini / Ollama)
 └── scripts/
-    ├── 01-start-daemon.sh             # arranca el daemon con la API key
-    └── 02-deploy-agent.sh             # despliega manuelita-bot (manifiesto + corpus + memoria)
+    ├── 01-start-daemon.sh                 # arranca el daemon con la API key
+    ├── 02-deploy-agent.sh                 # despliega manuelita-bot (manifiesto + corpus + MEMORY.md)
+    ├── 03-switch-provider.sh              # alterna proveedor LLM (Gemini / Ollama)
+    └── 04-cargar-memoria-semantica.sh     # puebla la memoria SEMANTICA via memory_store (RE-correr tras cada deploy)
 ```
 
 ## Quick start
+
+> 📋 **Para la demo, sigue el [`docs/RUNBOOK-demo.md`](docs/RUNBOOK-demo.md)** — paso a paso con
+> verificación y troubleshooting del daemon. Chequeo rápido de estado: `bash scripts/00-estado.sh`.
+
 
 Requisitos: Windows 11 + WSL2 con Ubuntu y OpenFang ya instalado (ver
 [`docs/F0-spike-infraestructura.md`](docs/F0-spike-infraestructura.md)). Operar dentro
 de WSL como root: `wsl -d Ubuntu -u root`.
 
-1. **Key local** (una vez; NO se commitea):
+1. **Keys locales** (una vez; NO se commitean). El agente usa **Ollama Cloud** como motor
+   primario (rápido, sin GPU local, cuota aparte) y Gemini como fallback:
    ```bash
-   echo 'export GEMINI_API_KEY=TU_KEY' > ~/.openfang/manuelita.env && chmod 600 ~/.openfang/manuelita.env
+   echo 'export OLLAMA_API_KEY=TU_KEY_OLLAMA' >  ~/.openfang/manuelita.env   # ollama.com/settings/keys (gratis)
+   echo 'export GEMINI_API_KEY=TU_KEY_GEMINI' >> ~/.openfang/manuelita.env   # fallback
+   chmod 600 ~/.openfang/manuelita.env
    ```
 2. **Desplegar el agente:**
    ```bash
@@ -48,12 +57,26 @@ de WSL como root: `wsl -d Ubuntu -u root`.
    ```bash
    bash scripts/01-start-daemon.sh        # dashboard: http://127.0.0.1:4200
    ```
-4. **Probar:**
+4. **Cargar la memoria semántica** (⚠️ obligatorio tras cada deploy — el paso 2 borra
+   `openfang.db` y con ella la memoria KV/semántica):
+   ```bash
+   bash scripts/04-cargar-memoria-semantica.sh   # ~10 hechos via memory_store (gasta ~11 llamadas LLM)
+   ```
+5. **Probar:**
    ```bash
    openfang agent list                    # copia el UUID de manuelita-bot
    openfang message <UUID> "¿Cuál es el NIT de Manuelita y quién es su presidente?"
    ```
 
+> **Orden crítico (tras cada deploy):** `02-deploy` → `01-start` → `04-cargar-memoria` → `05-setup-hands` → probar.
+> - `04-cargar-memoria-semantica.sh`: repuebla la memoria semántica. **OJO: reinicia el daemon.**
+> - `05-setup-hands.sh`: reinstala+activa los 3 Hands. **DEBE ir AL FINAL**, porque el Hand Custom
+>   **no sobrevive a un reinicio del daemon** (los built-in reviven solos; el Custom no). Cualquier
+>   `openfang start`/reinicio posterior **vuelve a borrar el Custom** → re-corre `05-setup-hands`.
+> Detalle en [`docs/F1b-memoria-semantica.md`](docs/F1b-memoria-semantica.md). **Nota:** en OpenFang
+> cada Hand es un agente especializado, por eso aparecen como agentes (`lead-hand`, `collector-hand`,
+> `sostenibilidad-hand`) en la vista de Agentes/Chat — es lo esperado.
+>
 > Detalles, comandos y solución de problemas (gotchas) en `docs/`.
 
 ## Estado del proyecto (junio 2026)
@@ -69,9 +92,12 @@ de WSL como root: `wsl -d Ubuntu -u root`.
 
 ## Notas
 
-- **Proveedor LLM:** demo con Gemini `gemini-2.5-flash-lite` (el `gemini-2.0-flash`
-  quedó con cuota free tier en 0). Modo soberanía con Ollama local documentado en F0
-  (cableado, pero lento sin GPU).
+- **Proveedor LLM (jun 2026):** primario **Ollama Cloud `gpt-oss:20b`** vía endpoint
+  OpenAI-compatible (`https://ollama.com/v1`, auth Bearer `OLLAMA_API_KEY`) —
+  **verificado end-to-end**: ~1.6 s, usa `file_read` y no alucina, con cuota independiente
+  de Gemini. Fallback: Gemini `gemini-2.5-flash`. El free tier de Gemini reventaba por RPM
+  (un mensaje = varias llamadas; al topar 429 caía al `flash-lite` ya agotado → cascada).
+  Modo soberanía pura con Ollama local sigue documentado (cableado, pero lento sin GPU).
 - **Conocimiento:** OpenFang no hace RAG por embeddings; el agente usa su `system_prompt`
   + archivos del workspace (`file_read`) + memoria KV. Ver F1.
 - La carpeta de trabajo real de OpenFang vive en WSL (`/root/.openfang/`); estos archivos
@@ -85,10 +111,15 @@ Estado del proyecto OpenFang revisado contra su repo oficial
 - **Versión vigente: `v0.6.9` (12 may 2026) — sigue siendo la última.** Es la que tenemos
   fijada. **No actualizar antes de la sustentación** (pre-1.0, breaking changes entre minors).
   Que sea la última valida la decisión: no estamos atrasados.
-- **El modelo de conocimiento no cambió.** No hay novedades de RAG / embeddings / vector store /
-  ingesta semántica en el rango `0.6.5 → 0.6.9`. Esto **ratifica** lo documentado en
-  [`docs/F1-agente-manuelita.md`](docs/F1-agente-manuelita.md): OpenFang hace **recuperación
-  agéntica por archivos + KV**, no RAG por embeddings. El informe describe esto de forma honesta.
+- **Memoria — corrección importante (3 jun 2026).** La doc oficial
+  ([`architecture.md`](https://github.com/RightNow-AI/openfang/blob/main/docs/architecture.md))
+  describe una **memoria de 6 capas**, incluida **Semantic Search por embeddings** (capa 2).
+  → **OpenFang SÍ tiene vector store semántico**; afirmaciones previas en contra eran
+  demasiado fuertes. Lo que NO está documentado (ni CLI ni REST) es **cómo ingerir el corpus
+  documental** en esa capa: el CLI `memory` es solo KV (list/get/set/delete) y no hay comando
+  `ingest`. Población de la capa semántica = **riesgo abierto** del proyecto. Detalle y plan en
+  [`docs/F1b-memoria-semantica.md`](docs/F1b-memoria-semantica.md). Pista nueva: existe
+  `openfang migrate --from langchain` (el M2 era LangChain), candidato a vía oficial.
 - **Gotcha de Hands sigue vigente.** Confirmado contra el changelog: **no** existe `hand uninstall`
   ni `hand install --force` en 0.6.x. Para cambiar una Hand registrada hay que resetear
   `openfang.db` (ver [`docs/F2-hands.md`](docs/F2-hands.md) §7). El nuevo

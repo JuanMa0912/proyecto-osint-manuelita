@@ -1,0 +1,43 @@
+HISTORIAL DE SESIONES REALES (decodificado de openfang.db / MessagePack)
+======================================================================
+
+Sesión agente=c248dd6d-df28-4011-8572-be001dd3ec12 creada=2026-06-04T21:50:17.814893276+00:00 (28 turnos)
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita S.A. tiene NIT 891.300.241, fue f
+  [assistant] ¡Hola! Soy Manuelita-Bot, tu asistente corporativo de Manuelita S.A. ¿Cómo te llamas y cómo prefieres que me dirija a ti?
+
+Por cierto, Manue
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: El presidente de Manuelita S.A. es Harold E
+  [assistant] El presidente de Manuelita S.A. es Harold Eder.
+
+¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene operaciones en 3 paises: Co
+  [assistant] ¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita exporta y vende sus productos al
+  [assistant] ¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene 4 plataformas de negocio: a
+  [assistant] ¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene 7 unidades de negocio: Manu
+  [assistant] ¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene aproximadamente 7.971 colab
+  [assistant] ¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: En 2023 Manuelita tuvo ingresos por 1.043.5
+  [assistant] ¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Las metas de sostenibilidad de Manuelita so
+  [assistant] ¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita produce cerca de 487.000 tonelada
+  [assistant] ¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita beneficia a mas de 4.000 familias
+  [assistant] ¡Guardado!
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita cuenta con certificaciones de sos
+  [assistant] ¡Guardado!
+  [user] Segun tu memoria, cuantas familias beneficia la empresa y a cuantos paises le vende sus productos al exterior?
+  [assistant] Según mi memoria, Manuelita beneficia a más de 4.000 familias de empleados y comunidades vecinas.
+
+También, Manuelita exporta y vende sus pr
+  [user] ¿Cuanto facturo Manuelita en 2022? ¿Esa cifra es individual o consolidada del grupo?
+  [assistant] No tengo ese dato confirmado en mis fuentes. Sin embargo, sí tengo información sobre los ingresos de Manuelita S.A. en 2023, que fueron de 1
+
+
+COSTOS (usage_events)
+======================================================================
+  llamadas=14 | input_tokens=106103 | output_tokens=408 | costo_estimado_usd=0.1073

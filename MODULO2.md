@@ -444,7 +444,7 @@ Salida esperada con LangSmith activo:
 | Archivo | Descripción |
 |---------|-------------|
 | `scripts/test_modulo2_completo.py` | Suite integrada: Bloques 2, 3 y 4 en secuencia |
-| `reports/informe_modulo2.pdf` | Informe académico del Módulo 2 (11 páginas, ReportLab) |
+| `reports/modulo2/informe_entrega2_modulo2.pdf` | Informe académico del Módulo 2 (entrega 2) |
 
 ### Cómo correr la suite completa
 ```powershell
@@ -470,7 +470,7 @@ El script genera automáticamente un reporte JSON en `reports/modulo2_test_{prov
 | 4 — Memoria | Detección follow-up | ✓ ≥85% | ✓ ≥85% |
 
 ### Informe académico
-- **Documento:** `reports/informe_modulo2.pdf`
+- **Documento:** `reports/modulo2/informe_entrega2_modulo2.pdf`
 - **Páginas:** 11 páginas
 - **Secciones:** Introducción · Arquitectura · Bloques 1–5 · Evaluación comparativa · Estructura de archivos · Conclusiones
 

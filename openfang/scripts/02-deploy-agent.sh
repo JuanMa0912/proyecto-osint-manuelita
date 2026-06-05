@@ -25,6 +25,8 @@ fi
 
 # 3) Dejar SOLO este agente (mover los demas) y limpiar la DB para forzar recarga
 #    (los 30 templates viven en openfang.db; sin borrarla reviven al reiniciar)
+#    ⚠️ OJO: borrar openfang.db TAMBIEN borra la memoria KV/semantica del agente.
+#       => Tras arrancar, hay que RE-CARGARLA con 04-cargar-memoria-semantica.sh
 mkdir -p "$OF/agents_disabled"
 for d in "$OF/agents"/*/; do
   n=$(basename "$d")
@@ -34,11 +36,24 @@ rm -f "$OF/data/openfang.db" "$OF/data/openfang.db-shm" "$OF/data/openfang.db-wa
 echo ">> agentes plantilla desactivados + DB limpiada"
 
 # 4) Workspace: corpus del Modulo 1 + MEMORY.md curado
+#    OJO: NO copiar archivos OSINT VACIOS (word_count: 0). Un archivo vacio en data/
+#    invita a la alucinacion: el modelo lo abre, no encuentra el dato e inventa uno.
+#    Mejor que el agente no tenga el archivo -> responde "No tengo ese dato".
 mkdir -p "$OF/workspaces/$AGENT/data"
-cp "$REPO/data_processed/markdown/"*.md "$OF/workspaces/$AGENT/data/" 2>/dev/null || true
+rm -f "$OF/workspaces/$AGENT/data/"*.md 2>/dev/null || true
+for f in "$REPO/data_processed/markdown/"*.md; do
+  if grep -qE "^word_count: 0$" "$f" 2>/dev/null; then
+    echo ">> SKIP (archivo OSINT vacio): $(basename "$f")"
+    continue
+  fi
+  cp "$f" "$OF/workspaces/$AGENT/data/"
+done
 cp "$REPO/openfang/agents/$AGENT/MEMORY.md" "$OF/workspaces/$AGENT/MEMORY.md"
-echo ">> corpus ($(ls "$OF/workspaces/$AGENT/data" | wc -l) archivos) + MEMORY.md desplegados"
+echo ">> corpus ($(ls "$OF/workspaces/$AGENT/data" | wc -l) archivos no vacios) + MEMORY.md desplegados"
 
 echo ""
-echo "Listo. Ahora arranca el daemon:  bash 01-start-daemon.sh"
+echo "Listo. Pasos siguientes (EN ORDEN):"
+echo "  1) Arranca el daemon:            bash 01-start-daemon.sh"
+echo "  2) RE-CARGA la memoria semantica: bash 04-cargar-memoria-semantica.sh"
+echo "     (este deploy borro openfang.db -> la memoria KV/semantica quedo vacia)"
 echo "(Si es la primera vez y el workspace se regenera, vuelve a correr este script tras el primer arranque.)"

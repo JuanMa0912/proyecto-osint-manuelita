@@ -103,11 +103,22 @@ openfang hand config sostenibilidad-manuelita --set update_frequency=weekly
 openfang hand pause sostenibilidad-manuelita
 ```
 
-## 6. Estado
+## 6. Estado (actualizado jun 2026 — Ollama Cloud / gemma3:27b)
 
-Las 3 Hands quedaron **activadas, configuradas y pausadas** (quota-safe). Para la demo se
-reanudan con `openfang hand resume <instance_uuid>` y se observan en el dashboard
-`http://127.0.0.1:4200`.
+Las 3 Hands corren en **Ollama Cloud `gemma3:27b`** (consistente con el agente): los 2 built-in
+(`collector`, `lead`) heredan el `default_model` de `config.toml`; el Custom lo fija en su
+`HAND.toml`. Quedan **activadas y configuradas**; para reposo se pausan (`openfang hand pause
+<instance_uuid>`) y para la demo se reanudan, observándose en el dashboard `http://127.0.0.1:4200`.
+
+> **En OpenFang cada Hand ES un agente especializado** (system_prompt + tools + schedule). Por eso
+> en la vista de Agentes/Chat aparecen como agentes: `lead-hand`, `collector-hand`, `sostenibilidad-hand`,
+> junto al conversacional `manuelita-bot`. Es lo esperado, no un error.
+>
+> ⚠️ **El Hand Custom NO sobrevive ni a un `02-deploy` (wipe) ni a un simple REINICIO del daemon**
+> (los built-in reviven solos; el Custom no). Como `04-cargar-memoria` reinicia el daemon, hay que
+> dejar [`scripts/05-setup-hands.sh`](../scripts/05-setup-hands.sh) **AL FINAL**. Orden correcto:
+> `02-deploy` → `01-start` → `04-cargar-memoria` → `05-setup-hands` → probar. Si reinicias el daemon
+> luego por cualquier motivo, **vuelve a correr `05-setup-hands`**.
 
 ## 7. Spike de ejecución del Custom Hand (jun 2026) — evidencia
 

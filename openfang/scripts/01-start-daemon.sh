@@ -12,6 +12,12 @@ if [ -f "$OF/manuelita.env" ]; then
   source "$OF/manuelita.env"
 fi
 
+# Los Hands built-in (collector, lead) heredan provider=openai de [default_model]
+# pero NO su api_key_env -> buscan OPENAI_API_KEY (bug OpenFang v0.6.9). Lo aliasamos
+# al de Ollama Cloud (mismo valor) para que booteen sin tocar la DB.
+export OPENAI_API_KEY="${OPENAI_API_KEY:-$OLLAMA_API_KEY}"
+export OPENAI_BASE_URL="${OPENAI_BASE_URL:-https://ollama.com/v1}"
+
 if [ -z "${GEMINI_API_KEY:-}" ]; then
   echo "AVISO: GEMINI_API_KEY no definida."
   echo "  Crea $OF/manuelita.env con:  export GEMINI_API_KEY=tu_key"
