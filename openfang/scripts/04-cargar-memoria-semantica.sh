@@ -39,6 +39,9 @@ echo "=== (re)arranque idempotente del daemon ==="
 pkill -9 -x openfang 2>/dev/null || true
 sleep 1
 source ~/.openfang/manuelita.env
+# Alias para los Hands built-in (heredan provider=openai sin api_key_env -> OPENAI_API_KEY).
+export OPENAI_API_KEY="${OPENAI_API_KEY:-$OLLAMA_API_KEY}"
+export OPENAI_BASE_URL="${OPENAI_BASE_URL:-https://ollama.com/v1}"
 nohup "$OF" start > ~/.openfang/daemon.log 2>&1 < /dev/null & disown
 sleep 6
 echo -n "daemon_procs="; pgrep -x openfang | wc -l

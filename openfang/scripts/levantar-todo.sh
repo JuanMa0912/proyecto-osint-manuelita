@@ -22,6 +22,11 @@ pkill -9 -x openfang 2>/dev/null || true
 sleep 1
 [ -f ~/.openfang/manuelita.env ] && source ~/.openfang/manuelita.env || \
   echo "   AVISO: no encontre ~/.openfang/manuelita.env (faltarian las API keys)"
+# Los Hands built-in (collector, lead) heredan provider=openai de [default_model]
+# pero NO su api_key_env -> buscan OPENAI_API_KEY. Lo aliasamos al de Ollama Cloud
+# (mismo valor) para que booteen. (Bug verificado en OpenFang v0.6.9, jun 2026.)
+export OPENAI_API_KEY="${OPENAI_API_KEY:-$OLLAMA_API_KEY}"
+export OPENAI_BASE_URL="${OPENAI_BASE_URL:-https://ollama.com/v1}"
 nohup "$OF" start > ~/.openfang/daemon.log 2>&1 < /dev/null & disown
 sleep 7
 echo -n "   daemon_procs (debe ser 1) = "; pgrep -x openfang | wc -l
