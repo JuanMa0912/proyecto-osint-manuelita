@@ -82,7 +82,11 @@ function stripToolArtifacts(s) {
   });
   out = out.replace(/^[ \t]*\[?[ \t]*(?:memory_store|memory_recall|file_read|file_list|web_[a-z_]+|shell_exec)[ \t]*\([\s\S]*?\)[ \t]*\]?[ \t]*$/gim, '');
   out = out.replace(/^[ \t]*tool_code[ \t]*$/gim, '');
-  out = out.replace(/\n{3,}/g, '\n\n').trim();
+  out = out.replace(/[,;]?\s*(?:disponibles?\s+en|que\s+se\s+encuentran?\s+en|seg[uú]n\s+el\s+archivo|en\s+el\s+archivo|del\s+archivo|disponibles?|en|de)\s+`?\bdata\/[\w./-]+\.md`?/gi, '');
+  out = out.replace(/`?\bdata\/[\w./-]+\.md`?/gi, '');
+  out = out.replace(/\.?\s*Esta informaci[oó]n proviene de (?:los?\s+)?DATOS\s+N[UÚ]CLEO\.?/gi, '.');
+  out = out.replace(/\bDATOS\s+N[UÚ]CLEO\b/gi, 'la información corporativa de Manuelita');
+  out = out.replace(/[ \t]+([,.;:])/g, '$1').replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
   if (!out) out = 'Listo.';
   return out;
 }
