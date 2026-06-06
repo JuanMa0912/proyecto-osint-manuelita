@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-# Arranca el daemon de OpenFang con la API key de Gemini cargada.
+# Arranca el daemon de OpenFang con las API keys cargadas.
+# Motor primario: Ollama Cloud gemma3:27b (OLLAMA_API_KEY). Fallback: Gemini (GEMINI_API_KEY).
 # Ejecutar dentro de WSL (Ubuntu) como root:  wsl -d Ubuntu -u root -- bash 01-start-daemon.sh
 #
 # Requisito previo (una sola vez, NO se commitea la key):
-#   echo 'export GEMINI_API_KEY=TU_KEY' > ~/.openfang/manuelita.env && chmod 600 ~/.openfang/manuelita.env
+#   echo 'export OLLAMA_API_KEY=TU_KEY_OLLAMA' > ~/.openfang/manuelita.env
+#   echo 'export GEMINI_API_KEY=TU_KEY_GEMINI' >> ~/.openfang/manuelita.env
+#   chmod 600 ~/.openfang/manuelita.env
 
 OF="${OPENFANG_HOME:-/root/.openfang}"
 
@@ -18,10 +21,14 @@ fi
 export OPENAI_API_KEY="${OPENAI_API_KEY:-$OLLAMA_API_KEY}"
 export OPENAI_BASE_URL="${OPENAI_BASE_URL:-https://ollama.com/v1}"
 
+if [ -z "${OLLAMA_API_KEY:-}" ]; then
+  echo "AVISO: OLLAMA_API_KEY no definida (motor primario Ollama Cloud gemma3:27b)."
+  echo "  Crea $OF/manuelita.env con:  export OLLAMA_API_KEY=tu_key_ollama"
+  echo "  (Sin ella, el agente y los Hands fallaran. Obtener en ollama.com/settings/keys)"
+fi
 if [ -z "${GEMINI_API_KEY:-}" ]; then
-  echo "AVISO: GEMINI_API_KEY no definida."
-  echo "  Crea $OF/manuelita.env con:  export GEMINI_API_KEY=tu_key"
-  echo "  (Sin key, el agente Gemini devolvera errores.)"
+  echo "AVISO: GEMINI_API_KEY no definida (fallback Gemini)."
+  echo "  Agrega a $OF/manuelita.env:  export GEMINI_API_KEY=tu_key_gemini"
 fi
 
 # Idempotencia: mata cualquier daemon previo para evitar DOBLE polling de Telegram

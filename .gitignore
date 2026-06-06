@@ -69,6 +69,8 @@ hello.py
 # ----- Jupyter -----
 .ipynb_checkpoints/
 *.ipynb
+# Excepcion: el notebook del bonus t-SNE/UMAP 3D SI es entregable (se versiona)
+!reports/modulo3/tsne_3d_manuelita.ipynb
 
 # ----- Tests y coverage -----
 .pytest_cache/

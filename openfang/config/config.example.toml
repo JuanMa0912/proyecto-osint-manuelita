@@ -1,5 +1,6 @@
 # ~/.openfang/config.toml — Ejemplo para el proyecto Manuelita (Modulo 3)
 # Copiar a /root/.openfang/config.toml dentro de WSL (Ubuntu) y elegir UN proveedor.
+# Motor activo (jun 2026): OPCION A (Ollama Cloud gemma3:27b). OPCION B (Gemini) es fallback.
 
 api_listen = "127.0.0.1:4200"
 
@@ -9,12 +10,31 @@ api_listen = "127.0.0.1:4200"
 bot_token_env = "TELEGRAM_BOT_TOKEN"
 default_agent = "manuelita-bot"
 
+
+# Canal WhatsApp en modo WEB (QR vía WhatsApp Web / Baileys, SIN Meta Business API).
+# Requisitos: Node.js >= 18 en WSL. Al arrancar con este bloque, el binario auto-extrae el
+# gateway a ~/.openfang/whatsapp-gateway y lo lanza en el puerto 3009; el QR se escanea desde
+# el dashboard (Channels -> WhatsApp). (Los avisos de WHATSAPP_ACCESS_TOKEN son del modo
+# Business API; se ignoran.)
+#
+# ⚠️ Para que RESPONDA hay que correr 'openfang/scripts/06-whatsapp-gateway.sh', que aplica
+#    lo verificado en jun 2026 (v0.6.9): baileys 7.0.0-rc13 (baileys 6 cuelga el handshake),
+#    install --omit=optional, y un parche LID en index.js (responder al numero real).
+#
+# ⚠️ default_agent DEBE ser el UUID del agente, NO el nombre: el gateway postea a
+#    /api/agents/<default_agent>/message y la API rechaza el nombre con 400 "Invalid agent ID".
+#    El script 06 lo pone automaticamente; aqui queda el nombre como placeholder.
+[channels.whatsapp]
+mode = "web"
+default_agent = "manuelita-bot"  # <- el script 06 lo reemplaza por el UUID de manuelita-bot
+
 # ───────────────────────────────────────────────────────────────
-# OPCION A (ACTIVA) — Ollama Cloud gpt-oss:20b (RECOMENDADO jun-2026)
+# OPCION A (ACTIVA) — Ollama Cloud gemma3:27b (RECOMENDADO jun-2026)
 # ───────────────────────────────────────────────────────────────
 # GPU remota -> sin GPU local y cuota INDEPENDIENTE de Gemini. VERIFICADO end-to-end con
-# OpenFang: gpt-oss:20b respondio ~1.6s, uso file_read y no alucino. Usa el proveedor
-# generico "openai" (endpoint OpenAI-compatible). Key gratis en ollama.com/settings/keys
+# OpenFang: gemma3:27b respondio ~4.2s, limpio en espanol y sin fuga de razonamiento (a
+# diferencia de gpt-oss:20b). Usa el proveedor generico "openai" (endpoint OpenAI-compatible).
+# Key gratis en ollama.com/settings/keys
 # -> env OLLAMA_API_KEY (NO se commitea). base_url DEBE terminar en /v1. Free tier por
 # tiempo de GPU (reset por sesion de 5h + limite semanal).
 # NOTA: los Hands built-in (collector, lead) HEREDAN este default_model. El agente

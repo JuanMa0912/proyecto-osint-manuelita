@@ -146,7 +146,7 @@ tras reinicio) como prueba contundente del "RAG interno del OS". ~3 llamadas Gem
 ## 6. Pendiente de actualizar cuando se resuelva
 
 - [x] `reports/informe_final.md` — reescrito con el modelo de 6 capas y la vía elegida.
-- [ ] `docs/F1-agente-manuelita.md` §2 — suavizar "No hay RAG por embeddings".
+- [x] `docs/F1-agente-manuelita.md` §2 — "No hay RAG" suavizado; §6 tools actualizadas; motor migrado a gemma3:27b.
 - [x] Este doc — resultado del spike (A/B/C) registrado.
 
 ## 7. Actualización 4 jun 2026 — motor Ollama Cloud + hallazgos de carga

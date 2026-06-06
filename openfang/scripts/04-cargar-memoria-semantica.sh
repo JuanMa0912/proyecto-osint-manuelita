@@ -50,9 +50,9 @@ UUID=$("$OF" agent list 2>/dev/null | grep -i manuelita-bot | awk '{print $1}')
 if [ -z "$UUID" ]; then echo "ERROR: no se encontro manuelita-bot"; exit 4; fi
 echo "agente UUID=$UUID"
 
-# ⚠️ CUOTA: cada mensaje dispara 2-3 iteraciones del modelo. Sin pausa entre hechos se
-#    revienta el limite POR MINUTO (RPM) de Gemini free tier -> 429 y el agente se atasca.
-#    SLEEP_BETWEEN espacia las llamadas para mantenerse bajo el RPM. Subelo si ves 429.
+# ⚠️ CUOTA: cada mensaje dispara 2-3 iteraciones del modelo. Motor: Ollama Cloud gemma3:27b
+#    (cuota por tiempo de GPU: sesion 5h + limite semanal; sin limite RPM como Gemini).
+#    SLEEP_BETWEEN espacia las llamadas para no saturar el daemon. Reducelo si no hay error.
 SLEEP_BETWEEN="${SLEEP_BETWEEN:-10}"
 echo "=== cargando ${#FACTS[@]} hechos a memoria semantica (memory_store), pausa ${SLEEP_BETWEEN}s entre cada uno ==="
 i=0
