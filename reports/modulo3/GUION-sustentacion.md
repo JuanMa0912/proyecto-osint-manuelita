@@ -139,15 +139,20 @@ t-SNE/UMAP 3D**:
 ## 5. Los Hands (operaciones autónomas)
 
 > *"Un **Hand** es un agente especializado que corre solo, en un horario. En OpenFang
-> **cada Hand ES un agente**."* Tienes **3 activos**:
+> **cada Hand ES un agente**."* Tienes **4 activos** (2 built-in + **2 Custom propios**):
 
 - **lead** (built-in) — generación de leads.
 - **collector** (built-in) — colector de inteligencia OSINT (monitorea objetivos).
-- **sostenibilidad-manuelita** (**Custom, propio**) — monitor OSINT de la sostenibilidad/carbono
-  de Manuelita. **Este es el "toque auténtico"** que el enunciado premia: lo escribimos nosotros.
+- **sostenibilidad-manuelita** (**Custom, propio**) — monitor OSINT de la sostenibilidad/carbono.
+- **investigador-corpus-manuelita** (**Custom, propio**) — investiga la web (sitio oficial de
+  Manuelita) y **enriquece el corpus**: escribe una nota con fuentes que un *sync* lleva al
+  workspace del bot → el bot la lee y la cita. *Demostrado:* el bot respondió "según una
+  investigación web reciente (fuente: manuelita.com)…".
 
-En el dashboard: **Hands → 3 Active**. Explica que corren en *schedule* (no en cada mensaje)
-para no gastar cuota.
+**Los 2 Custom son el "toque auténtico"** que premia el enunciado: los escribimos nosotros.
+En el dashboard: **Hands → 4 Active**. Corren en *schedule* (no en cada mensaje) para no gastar
+cuota. **Seguridad:** el bot NO tiene tools de web; el Hand investiga y el bot solo lee el
+resultado → se enriquece el conocimiento sin abrir la superficie de ataque del asistente.
 
 ---
 
@@ -176,7 +181,7 @@ responde *"Soy un asistente de información sobre Manuelita S.A.; no ejecuto acc
 | Min | Qué muestras | Qué dices (idea) |
 |----:|---|---|
 | 0–2 | **Pitch** (sección 0) + abrir dashboard `127.0.0.1:4200` | "Esto es un Agent OS, no un script." |
-| 2–4 | **Dashboard:** 4 agentes Running + **Hands → 3 Active** | "Cada Hand es un agente autónomo; el de sostenibilidad lo hicimos nosotros." |
+| 2–4 | **Dashboard:** 5 agentes Running + **Hands → 4 Active** | "Cada Hand es un agente autónomo; 2 los hicimos nosotros (sostenibilidad e investigador de corpus)." |
 | 4–6 | **Memoria:** `openfang memory list manuelita-bot` + abrir notebook **t-SNE 3D** y rotar | "La memoria es semántica; aquí está la prueba de que clusteriza por tema." |
 | 6–10 | **PRUEBA DE FUEGO:** el evaluador escribe al bot desde **su** teléfono (Telegram `@Cortana_Juanito0312_bot` o WhatsApp). Preguntas: NIT, presidente, países, metas de carbono. | "De dónde sale cada dato" (sección 3). |
 | 10–12 | **Anti-alucinación:** que pregunte algo que no está (ej. salario del presidente) → "No tengo ese dato confirmado". | "No inventa; admite el hueco." |
@@ -213,7 +218,7 @@ responde *"Soy un asistente de información sobre Manuelita S.A.; no ejecuto acc
 ## 9. Checklist 10 minutos antes (no falles el día D)
 
 - [ ] WSL arriba: `wsl -d Ubuntu -u root`.
-- [ ] `tr -d '\r' < openfang/scripts/levantar-todo.sh | bash` → ver **daemon=1 · 3 Hands Active · Telegram Ready**.
+- [ ] `tr -d '\r' < openfang/scripts/levantar-todo.sh | bash` → ver **daemon=1 · 4 Hands Active · Telegram Ready**.
 - [ ] Ollama de Windows corriendo (para los embeddings) — el icono en la bandeja.
 - [ ] Dashboard abre en `http://127.0.0.1:4200`.
 - [ ] WhatsApp: si el gateway no conecta, el QR está en el dashboard → Channels → WhatsApp.

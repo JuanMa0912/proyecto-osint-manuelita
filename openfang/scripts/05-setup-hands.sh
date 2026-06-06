@@ -2,8 +2,8 @@
 #
 # 05-setup-hands.sh
 # -----------------------------------------------------------------------------
-# Deja los 3 Hands listos para la demo: reinstala el Hand Custom, activa los 3
-# (2 built-in + 1 Custom) y configura el collector quota-safe.
+# Deja los 4 Hands listos para la demo: reinstala los 2 Hands Custom, activa los 4
+# (2 built-in + 2 Custom) y configura el collector quota-safe.
 #
 # ⚠️ POR QUE ESTE SCRIPT: el Hand Custom (sostenibilidad-manuelita) NO sobrevive ni a un
 #    wipe de openfang.db (02-deploy) NI a un simple REINICIO del daemon. Los built-in
@@ -26,13 +26,15 @@ set -e
 REPO="${MANUELITA_REPO:-/mnt/c/Users/PROYECTOS/Desktop/Claude_Multi_Agents_Projects/proyecto_manuelita}"
 OF=/root/.openfang/bin/openfang
 
-echo ">> reinstalar el Hand Custom (idempotente; si ya esta registrado, no pasa nada)"
+echo ">> reinstalar los 2 Hands Custom (idempotente; si ya estan registrados, no pasa nada)"
 "$OF" hand install "$REPO/openfang/hands/sostenibilidad-manuelita" 2>&1 | tail -2 || true
+"$OF" hand install "$REPO/openfang/hands/investigador-corpus-manuelita" 2>&1 | tail -2 || true
 
-echo ">> activar los 3 Hands"
+echo ">> activar los 4 Hands (2 built-in + 2 Custom)"
 "$OF" hand activate collector 2>&1 | tail -1 || true
 "$OF" hand activate lead 2>&1 | tail -1 || true
 "$OF" hand activate sostenibilidad-manuelita 2>&1 | tail -1 || true
+"$OF" hand activate investigador-corpus-manuelita 2>&1 | tail -1 || true
 
 echo ">> configurar collector (quota-safe: barrido superficial, semanal)"
 "$OF" hand config collector \
@@ -41,9 +43,9 @@ echo ">> configurar collector (quota-safe: barrido superficial, semanal)"
   --set update_frequency=weekly --set max_sources_per_cycle=10 2>&1 | tail -3 || true
 
 echo ""
-echo ">> estado final (deben aparecer 3 Hands activos en gemma3:27b)"
+echo ">> estado final (deben aparecer 4 Hands activos en gemma3:27b)"
 "$OF" hand active 2>&1 | tail -8
 echo ""
-echo "Listo. Para la demo: muestra el dashboard (Hands -> Active 3). Los Hands corren en"
+echo "Listo. Para la demo: muestra el dashboard (Hands -> Active 4). Los Hands corren en"
 echo "schedule SEMANAL; para verlos trabajar en vivo, dispara el Custom por mensaje a su agente."
 echo "Para no consumir cuota en reposo, puedes pausarlos: openfang hand pause <INSTANCE_UUID>."
