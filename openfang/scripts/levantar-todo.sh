@@ -19,6 +19,11 @@ OF=/root/.openfang/bin/openfang
 
 echo "== 1) Arrancando el daemon (mata cualquier previo para evitar el 409) =="
 pkill -9 -x openfang 2>/dev/null || true
+# Libera el puerto 3009 del gateway WhatsApp huerfano: si un node viejo sigue
+# ocupandolo, el daemon no puede re-lanzar el gateway (EADDRINUSE -> "gave up").
+# El proceso real es 'node index.js'; lo mas robusto es liberar el puerto.
+fuser -k 3009/tcp 2>/dev/null || true
+pkill -9 -f 'node index.js' 2>/dev/null || true
 sleep 1
 [ -f ~/.openfang/manuelita.env ] && source ~/.openfang/manuelita.env || \
   echo "   AVISO: no encontre ~/.openfang/manuelita.env (faltarian las API keys)"
