@@ -139,15 +139,20 @@ t-SNE/UMAP 3D**:
 ## 5. Los Hands (operaciones autónomas)
 
 > *"Un **Hand** es un agente especializado que corre solo, en un horario. En OpenFang
-> **cada Hand ES un agente**."* Tienes **3 activos**:
+> **cada Hand ES un agente**."* Tienes **4 activos** (2 built-in + **2 Custom propios**):
 
 - **lead** (built-in) — generación de leads.
 - **collector** (built-in) — colector de inteligencia OSINT (monitorea objetivos).
-- **sostenibilidad-manuelita** (**Custom, propio**) — monitor OSINT de la sostenibilidad/carbono
-  de Manuelita. **Este es el "toque auténtico"** que el enunciado premia: lo escribimos nosotros.
+- **sostenibilidad-manuelita** (**Custom, propio**) — monitor OSINT de la sostenibilidad/carbono.
+- **investigador-corpus-manuelita** (**Custom, propio**) — investiga la web (sitio oficial de
+  Manuelita) y **enriquece el corpus**: escribe una nota con fuentes que un *sync* lleva al
+  workspace del bot → el bot la lee y la cita. *Demostrado:* el bot respondió "según una
+  investigación web reciente (fuente: manuelita.com)…".
 
-En el dashboard: **Hands → 3 Active**. Explica que corren en *schedule* (no en cada mensaje)
-para no gastar cuota.
+**Los 2 Custom son el "toque auténtico"** que premia el enunciado: los escribimos nosotros.
+En el dashboard: **Hands → 4 Active**. Corren en *schedule* (no en cada mensaje) para no gastar
+cuota. **Seguridad:** el bot NO tiene tools de web; el Hand investiga y el bot solo lee el
+resultado → se enriquece el conocimiento sin abrir la superficie de ataque del asistente.
 
 ---
 
