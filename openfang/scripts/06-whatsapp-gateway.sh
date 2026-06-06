@@ -1,44 +1,81 @@
 #!/usr/bin/env bash
 # =============================================================================
-# 06-whatsapp-gateway.sh — Prepara el gateway de WhatsApp (modo QR / WhatsApp Web).
+# 06-whatsapp-gateway.sh — Setup COMPLETO y reproducible del gateway WhatsApp (QR/web).
 # =============================================================================
-# Contexto: con [channels.whatsapp] mode="web" en config.toml y Node>=18, el binario
-# auto-extrae el gateway a ~/.openfang/whatsapp-gateway y corre 'npm install' al arrancar.
-# PERO ese install se cuelga/corrompe por dos motivos (verificado jun 2026, v0.6.9):
-#   1) Deps OPCIONALES nativas (sharp/jimp...) que necesitan compilador (make/gcc ausentes).
-#   2) Doble 'npm install' simultaneo (el del daemon + uno manual) que se pisan -> baileys
-#      queda a medias y el gateway crashea con "Cannot find package baileys".
-# Solucion: con el daemon APAGADO, un UNICO install con --omit=optional (sin nativas).
+# Aplica TODO lo que costo descubrir (jun 2026, OpenFang v0.6.9) para que WhatsApp
+# RESPONDA de verdad. Con [channels.whatsapp] mode="web" en config.toml y Node>=18, el
+# binario auto-extrae el gateway a ~/.openfang/whatsapp-gateway al arrancar; este script
+# lo deja FUNCIONAL resolviendo los 4 problemas que encontramos:
 #
-# Requisito: Node.js >=18. Instalar (una vez) con NodeSource:
-#   curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs
+#   1) npm install SE CUELGA: por deps OPCIONALES nativas (sin compilador make/gcc) y por
+#      DOBLE install simultaneo (el del daemon + uno manual) -> baileys queda a medias.
+#      Fix: daemon apagado + UN install --omit=optional (termina en ~10s).
+#   2) HANDSHAKE nunca completa (fetchProps -> "Timed Out" 408) con baileys 6.x: el socket
+#      conecta pero no inicializa, no descifra ni responde.
+#      Fix: subir a baileys 7.0.0-rc13 (alineado al protocolo actual de WhatsApp).
+#   3) RUTEO: el gateway postea POST /api/agents/<default_agent>/message; la API EXIGE el
+#      UUID, no el nombre (con el nombre da 400 "Invalid agent ID").
+#      Fix: poner el UUID del agente en default_agent del canal whatsapp.
+#   4) ENTREGA: con direccionamiento LID, el gateway respondia a <lid>@s.whatsapp.net
+#      (numero inexistente) -> "Replied" pero no llega. Fix: parche en index.js para
+#      responder al numero real (msg.key.remoteJidAlt) cuando el msg viene en @lid.
 #
-# Uso (WSL root):  tr -d '\r' < .../openfang/scripts/06-whatsapp-gateway.sh | bash
-# Luego: reinicia el daemon (levantar-todo.sh) y abre el dashboard -> Channels -> WhatsApp
-#        para ver el QR; escanealo con el telefono (WhatsApp -> Dispositivos vinculados).
+# Uso (WSL root, daemon idealmente apagado):
+#   tr -d '\r' < .../openfang/scripts/06-whatsapp-gateway.sh | bash
+# Luego: reinicia (levantar-todo.sh) y abre el dashboard -> Channels -> WhatsApp para el QR.
+#
+# NOTA multi-dispositivo (importante): el QR vincula el gateway a TU cuenta de WhatsApp
+# (es un device mas, como WhatsApp Web). El "bot" vive en TU numero; la prueba real es
+# que OTRA persona escriba a tu numero y el gateway responda como Manuelita-Bot.
 # =============================================================================
 set -e
-GW="${OPENFANG_HOME:-/root/.openfang}/whatsapp-gateway"
+OF="${OPENFANG_HOME:-/root/.openfang}"
+GW="$OF/whatsapp-gateway"
+BIN="$OF/bin/openfang"
+CFG="$OF/config.toml"
 
-command -v node >/dev/null 2>&1 || { echo "ERROR: Node no instalado. Instala Node>=18 (NodeSource)."; exit 2; }
+command -v node >/dev/null 2>&1 || { echo "ERROR: instala Node>=18 (NodeSource)."; exit 2; }
 echo "Node $(node --version) | npm $(npm --version)"
+[ -d "$GW" ] || { echo "Gateway no existe en $GW. Arranca el daemon UNA vez con [channels.whatsapp] en config y re-corre esto."; exit 3; }
 
-if [ ! -d "$GW" ]; then
-  echo "El gateway aun no existe en $GW."
-  echo "-> Arranca el daemon UNA vez con [channels.whatsapp] en config.toml para que lo extraiga,"
-  echo "   luego re-corre este script."
-  exit 3
-fi
-
-# Mata cualquier install en curso para evitar el doble-install que corrompe baileys.
+# (1)+(2) deps limpias con baileys 7
 pkill -9 -f 'npm install' 2>/dev/null || true
-sleep 1
+sed -i 's#"@whiskeysockets/baileys": *"[^"]*"#"@whiskeysockets/baileys": "7.0.0-rc13"#' "$GW/package.json"
+echo ">> baileys fijado a:$(grep baileys "$GW/package.json")"
 cd "$GW"
 rm -rf node_modules package-lock.json
-echo ">> Instalando deps del gateway (--omit=optional para saltar nativas pesadas)..."
+echo ">> npm install --omit=optional (evita nativas que se cuelgan)..."
 npm install --omit=optional --no-audit --no-fund --no-progress
-echo ">> Deps OK. Verificando baileys:"
-ls node_modules/@whiskeysockets/baileys/ | head -3
+echo ">> instalado: $(grep '"version"' node_modules/@whiskeysockets/baileys/package.json | head -1)"
+
+# (4) parche LID: responder al numero real (remoteJidAlt) cuando el msg viene en @lid
+python3 - "$GW/index.js" <<'PY'
+import sys
+p = sys.argv[1]; s = open(p, encoding="utf-8").read()
+old = "senderJid.replace(/@.*$/, '') + '@s.whatsapp.net'"
+new = "(remoteJid.endsWith('@lid') ? (msg.key.remoteJidAlt || remoteJid) : senderJid.replace(/@.*$/, '') + '@s.whatsapp.net')"
+if new in s:
+    print(">> LID patch: ya estaba aplicado")
+elif old in s:
+    open(p + ".bak.lid", "w", encoding="utf-8").write(s)
+    open(p, "w", encoding="utf-8").write(s.replace(old, new))
+    print(">> LID patch aplicado (backup en index.js.bak.lid)")
+else:
+    print(">> OJO: patron LID no encontrado — revisar index.js a mano (linea del replyJid)")
+PY
+
+# (3) default_agent del canal whatsapp = UUID (la API exige UUID, no nombre).
+#     'agent list' lee la DB y funciona aunque el daemon este abajo.
+UUID=$("$BIN" agent list 2>/dev/null | grep -i 'manuelita-bot' | awk '{print $1}' | head -1)
+if [ -n "$UUID" ]; then
+  # Solo dentro del bloque [channels.whatsapp] (asumido ULTIMO en el config -> rango a EOF).
+  sed -i "/\[channels.whatsapp\]/,\$s|^default_agent = \"manuelita-bot\"|default_agent = \"$UUID\"|" "$CFG"
+  echo ">> default_agent (whatsapp) = $UUID"
+else
+  echo ">> AVISO: no pude leer el UUID de manuelita-bot. Pon a mano en [channels.whatsapp]: default_agent = \"<UUID>\""
+fi
+
 echo ""
-echo "LISTO. Ahora: reinicia el daemon (levantar-todo.sh) y abre el dashboard"
+echo "LISTO. Reinicia el daemon (levantar-todo.sh) y abre el dashboard"
 echo "(http://127.0.0.1:4200) -> Channels -> WhatsApp para escanear el QR."
+echo "Prueba real: que OTRA persona escriba a tu numero -> el gateway responde como Manuelita-Bot."
