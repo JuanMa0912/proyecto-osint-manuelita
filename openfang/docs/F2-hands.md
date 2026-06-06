@@ -73,8 +73,10 @@ requirements = []
 [hand.agent]
 name = "..."
 description = "..."
-provider = "gemini"
-model = "gemini-2.5-flash-lite"
+provider = "openai"          # Ollama Cloud gemma3:27b (consistente con el agente)
+model = "gemma3:27b"
+api_key_env = "OLLAMA_API_KEY"
+base_url = "https://ollama.com/v1"
 system_prompt = """<playbook multi-fase, inline>"""
 
 [[hand.settings]]
@@ -131,7 +133,8 @@ activar no dispara el ciclo: eso corre en el `schedule` semanal). Resultados ver
   no pudo acceder al PDF completo — sin alucinar. ~15 s.
 - **Pero `flash-lite` no completó el `file_write`** del reporte nombrado (mismo patrón que el
   agente conversacional: el modelo pequeño no cierra de forma fiable todas las fases con tool).
-  → El `HAND.toml` se fijó a **`gemini-2.5-flash`** para que cierre el ciclo (incluye el reporte).
+  → El `HAND.toml` se fijó inicialmente a `gemini-2.5-flash`; luego migrado a **`gemma3:27b`**
+  (Ollama Cloud) junto con el resto del sistema (4 jun 2026).
 
 ### Gotcha verificado — una Hand registrada NO se puede actualizar en caliente
 
@@ -145,6 +148,10 @@ instancia (no la des-registra). Para cambiarle el modelo/definición hay que **r
   completa el `file_write`.
 - En un entorno **ya poblado**, la Hand queda con el modelo con que se registró por primera vez.
 
-## 8. Próximo paso
+## 8. Estado final (jun 2026)
 
-F3 — canales (Telegram ✅ probado) y luego F4 — informe unificado.
+- **F3 — canales:** ✅ Telegram funcionando y ensayado en vivo. ✅ WhatsApp QR FUNCIONAL
+  (baileys 7.0.0-rc13, parche LID, responde de verdad). Ver `docs/F3-canales.md`.
+- **F4 — informe:** Markdown completo (`reports/informe_final.md`, `0 POR VERIFICAR`),
+  falta solo exportar a PDF.
+- **F5 — t-SNE:** ✅ HECHO (`scripts/tsne_sesiones_m3.py` + `reports/modulo3/`).

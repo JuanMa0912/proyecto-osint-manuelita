@@ -375,10 +375,14 @@ El score de keywords con modo `local` es bajo (~60%) por las limitaciones de `ll
 
 ## Módulo 3 — Productización (Ruta B: OpenFang Agent OS)
 
-> **Estado (jun 2026):** F0–F3 implementadas y versionadas en la carpeta
-> [`openfang/`](openfang/) (config del agente, Hands, canales, scripts y docs por fase).
-> F4 (informe) con el markdown completo y depurado en
-> [`reports/informe_final.md`](reports/informe_final.md) — falta solo exportarlo a PDF.
+> **Estado (jun 2026):** F0–F5 implementadas y versionadas.
+> Motor: **Ollama Cloud `gemma3:27b`** + fallback `gemini-2.5-flash`. 3 Hands activos.
+> Telegram funcionando · WhatsApp QR FUNCIONAL (baileys 7, parche LID).
+> Seguridad anti-jailbreak: 4 capas (privilegio mínimo + system_prompt endurecido).
+> t-SNE (F5): `scripts/tsne_sesiones_m3.py` + `reports/modulo3/`.
+> Conflicto financiero resuelto: serie individual Supersociedades es la canónica.
+> F4 (informe): markdown completo en
+> [`reports/informe_final.md`](reports/informe_final.md) — falta solo exportar a PDF.
 > Resumen de estado por fase en [`openfang/README.md`](openfang/README.md). La tabla
 > de "Plan por fases" más abajo es la guía original; el estado real vive en ese README.
 > Sigue verificando contra el repo antes de asumir que algo está implementado.
@@ -408,10 +412,10 @@ queda en el informe como "evolución arquitectónica", no como software vivo.
 | Tema | Decisión | Nota |
 |------|----------|------|
 | **Entorno** | WSL2 (Ubuntu) sobre Windows 11 | Más estable para Rust+Node pre-1.0. |
-| **Motor LLM** | Intercambiable: **Ollama local** (soberanía de datos, rubric) o **Gemini** (velocidad, sin GPU). Se decide por demo. | OpenFang permite override de proveedor por canal. |
+| **Motor LLM** | **Ollama Cloud `gemma3:27b`** (primario, ~4.2 s, sin GPU local, cuota independiente). Fallback: `gemini-2.5-flash`. Se descartaron Gemini free tier (cascada 429 RPM) y `gpt-oss:20b` (filtra razonamiento). Modo soberanía local sigue cableado pero lento sin GPU. | OpenFang permite override de proveedor por canal. |
 | **Canales** | **Telegram + WhatsApp** (ambos). Telegram = principal por estabilidad. | Telegram: token de BotFather. WhatsApp: gateway Node QR en puerto 3009 (enlaza WhatsApp personal). |
 | **Hands** | **2 built-in** (sugeridos: Lead + Collector) **+ 1 Custom** propio de Manuelita | El Custom es el "toque auténtico" que el enunciado premia. |
-| **t-SNE ("picante")** | **Diferido** (opcional avanzado). Se evalúa al final. | Extraer sesiones (JSONL/SQLite FTS5) → embeddings → t-SNE/UMAP → clústeres. |
+| **t-SNE ("picante")** | ✅ **HECHO** (F5, 4 jun 2026). `scripts/tsne_sesiones_m3.py` + `reports/modulo3/`. Datos reales del daemon (memorias 768-dim + sesiones MessagePack). Pureza KMeans 60%; clúster Redes/YouTube puro. | Extraer sesiones (SQLite) → embeddings → t-SNE/UMAP → clústeres. |
 
 ### Comandos base (verificados del README)
 
@@ -475,18 +479,21 @@ Spike ejecutado en Ubuntu/WSL2. **No inventar sobre esto.**
      literalmente *"Access knowledge base"*). Es recuperación **agéntica por archivos**.
   3. **KV** (`memory_store`/`memory_recall`) → datos estructurados (NIT, cifras).
   4. `MEMORY.md` del workspace → *"Long-Term Memory: curated knowledge across sessions"*.
-- **Conclusión:** OpenFang hace **recuperación agéntica por archivos + KV**, NO RAG por
-  embeddings. En el informe se describe así (honesto), no como "vector store". Afinar
-  chunking/embeddings del M2 es irrelevante aquí; lo que importa es la **calidad/estructura
-  del corpus** (Markdown limpio, formato Q&A tipo `key_facts_manuelita.md`).
+- **Conclusión (actualizada 4 jun 2026):** OpenFang hace **recuperación agéntica por
+  archivos + KV + memoria semántica** (capa 2, embeddings 768-dim). La ingesta bulk no está
+  expuesta (no hay CLI `ingest` ni REST); la capa semántica se puebla agent-driven vía
+  `memory_store` (12 hechos, recall por similitud verificado). La clave sigue siendo la
+  **calidad del corpus** (Markdown limpio, formato Q&A tipo `key_facts_manuelita.md`).
 - **Base recomendada:** clonar el template `customer-support` o `sales-assistant`
   (manifiesto en `agent.toml`, tools ya incluyen `file_read`+`memory_*`).
 - **Daemon:** `openfang start` → API/dashboard en `127.0.0.1:4200`. Provider por defecto
   `groq` (pide `GROQ_API_KEY`); cambiar a Ollama local o Gemini en `~/.openfang/config.toml`.
 
-### Receta funcional verificada (2 jun 2026) — `manuelita-bot` responde ✅
+### Receta funcional verificada (2 jun 2026, motor actual 4 jun) — `manuelita-bot` responde ✅
 
-Spike F0 cerrado: un agente respondiendo de verdad (~3 s vía Gemini). Reproducible:
+Spike F0 cerrado (~3 s vía Gemini). Motor migrado a **Ollama Cloud `gemma3:27b`** el 4 jun
+(~4.2 s, sin cuota RPM). Para arranque rápido usar `openfang/scripts/levantar-todo.sh`.
+Detalle completo en `openfang/docs/RUNBOOK-demo.md`. Reproducible (spike histórico):
 
 1. **Entorno:** Ubuntu en WSL2 (`wsl --install -d Ubuntu`). OpenFang vive bajo `/root`
    → operar como root: `wsl -d Ubuntu -u root`. Binario en `/root/.openfang/bin/openfang`.
@@ -517,7 +524,7 @@ Spike F0 cerrado: un agente respondiendo de verdad (~3 s vía Gemini). Reproduci
 | **F2** | Configurar `HAND.toml` + `SKILL.md` de los 3 Hands (2 built-in + 1 Custom) | Operaciones autónomas activas |
 | **F3** | Conectar Telegram (BotFather) y WhatsApp (gateway 3009); prueba en vivo | Bot respondiendo desde un teléfono real |
 | **F4** | Informe técnico **unificado** (M1+M2+M3) en PDF: problema, evolución arquitectónica, diagrama end-to-end | `reports/informe_final.pdf` |
-| **F5** | (Opcional "picante") t-SNE/UMAP sobre el historial de sesiones | Notebook + análisis de clústeres |
+| **F5** | (Opcional "picante") t-SNE/UMAP sobre el historial de sesiones | ✅ **Hecho** — `scripts/tsne_sesiones_m3.py` + `reports/modulo3/` (figura `tsne_clusters.png`, análisis `tsne_analisis.md`, sesiones/costos `tsne_sesiones.txt`) |
 
 ### Entregables del módulo (del enunciado)
 

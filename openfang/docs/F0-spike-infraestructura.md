@@ -113,7 +113,11 @@ Devolvió **HTTP 200** (alcanza el Ollama de Windows).
 
 La configuración del modelo vive en `~/.openfang/config.toml`, sección `[default_model]`. Se documentan dos modos.
 
-### 5.1 Gemini (modo demo, recomendado)
+### 5.1 Gemini (modo demo — validado en F0; motor actual: Ollama Cloud)
+
+> **Nota (4 jun 2026):** el motor en producción es **Ollama Cloud `gemma3:27b`**
+> (proveedor `openai`, endpoint `https://ollama.com/v1`). Gemini se mantiene como
+> fallback. Ver `config/config.example.toml` para la config actual.
 
 ```toml
 [default_model]
@@ -198,7 +202,14 @@ openfang message <UUID> "texto"
 
 ## 8. Hallazgo arquitectónico clave
 
-**OpenFang v0.6.9 NO expone ingesta de corpus a un vector store semántico.**
+> **Corrección posterior (3-4 jun 2026):** la afirmación "no hay vector store" era
+> demasiado fuerte. La doc oficial describe una **memoria de 6 capas** que incluye
+> **Semantic Search (embeddings, 768-dim)**. Lo que NO existe es ingesta documental
+> bulk (sin CLI `ingest` ni REST). La capa semántica se puebla vía `memory_store`
+> agent-driven — verificado y funcionando. Ver `docs/F1b-memoria-semantica.md`.
+
+**OpenFang v0.6.9 NO expone ingesta documental bulk** (CLI `ingest` ni REST para documentos).
+Lo verificado en este spike sigue siendo correcto:
 
 - No hay comando `ingest`. El comando `memory` es **solo KV** (`list` / `get` / `set` / `delete`).
 - La API REST devuelve **404** en todas estas rutas: `/api/memory`, `/api/knowledge`, `/api/documents`, `/api/rag`, `/api/embeddings`, `/api/vector`, `/api/ingest`.

@@ -173,19 +173,22 @@ nuevos**; el estado `Paused` **no persiste** entre reinicios. → Pausar los Han
 
 ## 5. Cuota — disciplina para la demo
 
-- Los Hands se dejan **`Paused`** para no quemar cuota Gemini en segundo plano, y
+- Los Hands se dejan **`Paused`** para no quemar cuota en segundo plano, y
   **se re-pausan tras el último reinicio** (ver 4.3). Se reanudan solo para mostrarlos.
-- Telegram + WhatsApp comparten el mismo `gemini-2.5-flash-lite`. Ensayar el flujo
-  completo **días antes**, no el mismo día, para no agotar el free tier en pruebas.
+- Motor actual: **Ollama Cloud `gemma3:27b`** (cuota por tiempo de GPU: sesión 5 h +
+  límite semanal). Telegram + WhatsApp usan el mismo motor. Ensayar el flujo completo
+  **días antes**, no el mismo día, para no agotar el tiempo de GPU libre.
 
 ## 6. Estado
 
 | Canal | Estado |
 |-------|--------|
 | Telegram (nativo) | ✅ **Funcionando y ensayado en vivo desde un teléfono real** — bot `@Cortana_Juanito0312_bot` conectado, ruteando a `manuelita-bot`. Prueba de fuego validada en ensayo. |
-| WhatsApp (gateway QR) | Gateway versionado y listo; **pendiente escanear QR** en vivo |
+| WhatsApp (gateway QR) | ✅ **FUNCIONAL** (4 jun 2026) — baileys 7.0.0-rc13, `--omit=optional`, parche LID (responder al número real), `default_agent` = UUID. Gateway versionado en `openfang/scripts/06-whatsapp-gateway.sh`. Verificado en vivo: POST al UUID → 200, bot responde. |
 
-## 7. Próximo paso
+## 7. Estado
 
-F4 — informe técnico unificado (M1+M2+M3). El markdown ya está completo y depurado
-en `reports/informe_final.md` (`0 POR VERIFICAR`); falta solo exportarlo a PDF.
+- **F4 — informe:** `reports/informe_final.md` completo (`0 POR VERIFICAR`); falta exportar a PDF.
+- **F5 — t-SNE:** ✅ Hecho (`scripts/tsne_sesiones_m3.py` + `reports/modulo3/`).
+- **Seguridad:** 4 capas anti-jailbreak verificadas (privilegio mínimo + jerarquía de instrucciones
+  + anti-autoridad + anti-acción de sistema). Ver `docs/F1-agente-manuelita.md` §7b.
