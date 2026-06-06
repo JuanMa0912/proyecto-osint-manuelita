@@ -161,20 +161,80 @@ async function startConnection() {
         console.log(`[gateway] Incoming from ${pushName} (${phone}): ${text.substring(0, 80)}`);
       }
 
-      // Forward to OpenFang agent
-      try {
-        const response = await forwardToOpenFang(text, phone, pushName, metadata);
-        if (response && sock) {
-          // Reply in the same context: group → group, DM → DM
-          const replyJid = isGroup ? remoteJid : senderJid.replace(/@.*$/, '') + '@s.whatsapp.net';
-          await sock.sendMessage(replyJid, { text: response });
-          console.log(`[gateway] Replied to ${pushName}${isGroup ? ' in group ' + remoteJid : ''}`);
-        }
-      } catch (err) {
-        console.error(`[gateway] Forward/reply failed:`, err.message);
-      }
+      // Coalescing anti-quema de tokens: bufferiza ráfagas del mismo remitente y
+      // responde UNA sola vez (ver enqueueMessage/processQueue). Incluye el fix LID:
+      // cuando el msg viene en @lid, responder al número real (remoteJidAlt).
+      const replyJid = isGroup
+        ? remoteJid
+        : (remoteJid.endsWith('@lid') ? (msg.key.remoteJidAlt || remoteJid) : senderJid.replace(/@.*$/, '') + '@s.whatsapp.net');
+      enqueueMessage(replyJid, text, { phone, pushName, metadata, isGroup, remoteJid });
     }
   });
+}
+
+// ---------------------------------------------------------------------------
+// Higiene de salida: quita artefactos de tool-calls que el LLM (gemma3) a veces
+// filtra como texto: bloques ```tool_code```, [memory_store(...)], nombres de
+// archivos data/*.md y la etiqueta interna "DATOS NÚCLEO". Determinista, no LLM.
+// ---------------------------------------------------------------------------
+function stripToolArtifacts(s) {
+  if (typeof s !== 'string') return s;
+  let out = s;
+  out = out.replace(/```[^\n`]*\n?[\s\S]*?```/g, function (m) {
+    return /(memory_store|memory_recall|file_read|file_list|web_[a-z_]+|shell_exec|tool_code)/i.test(m) ? '' : m;
+  });
+  out = out.replace(/^[ \t]*\[?[ \t]*(?:memory_store|memory_recall|file_read|file_list|web_[a-z_]+|shell_exec)[ \t]*\([\s\S]*?\)[ \t]*\]?[ \t]*$/gim, '');
+  out = out.replace(/^[ \t]*tool_code[ \t]*$/gim, '');
+  out = out.replace(/[,;]?\s*(?:disponibles?\s+en|que\s+se\s+encuentran?\s+en|seg[uú]n\s+el\s+archivo|en\s+el\s+archivo|del\s+archivo|disponibles?|en|de)\s+`?\bdata\/[\w./-]+\.md`?/gi, '');
+  out = out.replace(/`?\bdata\/[\w./-]+\.md`?/gi, '');
+  out = out.replace(/\.?\s*Esta informaci[oó]n proviene de (?:los?\s+)?DATOS\s+N[UÚ]CLEO\.?/gi, '.');
+  out = out.replace(/\bDATOS\s+N[UÚ]CLEO\b/gi, 'la información corporativa de Manuelita');
+  out = out.replace(/[ \t]+([,.;:])/g, '$1').replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+  if (!out) out = 'Listo.';
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Coalescing anti-quema de tokens: agrupa mensajes rápidos del MISMO remitente
+// en UNA sola llamada al LLM. Mientras hay una respuesta en curso para ese
+// remitente, los mensajes nuevos se acumulan y se contestan juntos. Una ráfaga
+// de 5 mensajes = 1 invocación, no 5. Ventana corta (COALESCE_MS) → latencia
+// casi nula para un mensaje suelto.
+// ---------------------------------------------------------------------------
+const COALESCE_MS = parseInt(process.env.WHATSAPP_COALESCE_MS || '1200', 10);
+const pendingMsgs = new Map(); // replyJid -> { queue:[], busy:false, ctx }
+
+function enqueueMessage(replyJid, text, ctx) {
+  let st = pendingMsgs.get(replyJid);
+  if (!st) { st = { queue: [], busy: false, ctx }; pendingMsgs.set(replyJid, st); }
+  st.queue.push(text);
+  st.ctx = ctx;
+  console.log(`[gateway] Buffered from ${ctx.pushName} (${st.queue.length} en cola)`);
+  if (!st.busy) processQueue(replyJid);
+}
+
+async function processQueue(replyJid) {
+  const st = pendingMsgs.get(replyJid);
+  if (!st || st.busy) return;
+  if (st.queue.length === 0) { pendingMsgs.delete(replyJid); return; }
+  st.busy = true;
+  await new Promise((r) => setTimeout(r, COALESCE_MS)); // ventana de coalescing
+  const batch = st.queue.splice(0);
+  const combined = batch.join('\n');
+  const { phone, pushName, metadata, isGroup, remoteJid } = st.ctx;
+  try {
+    const response = await forwardToOpenFang(combined, phone, pushName, metadata);
+    if (response && sock) {
+      await sock.sendMessage(replyJid, { text: stripToolArtifacts(response) });
+      console.log(`[gateway] Replied to ${pushName}${isGroup ? ' in group ' + remoteJid : ''} (lote de ${batch.length})`);
+    }
+  } catch (err) {
+    console.error(`[gateway] Forward/reply failed:`, err.message);
+  } finally {
+    st.busy = false;
+    if (st.queue.length > 0) processQueue(replyJid); // llegaron más durante la llamada
+    else pendingMsgs.delete(replyJid);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -241,7 +301,7 @@ async function sendMessage(to, text) {
   // If already a full JID (group or user), use as-is; otherwise normalize phone → JID
   const jid = to.includes('@') ? to : to.replace(/^\+/, '') + '@s.whatsapp.net';
 
-  await sock.sendMessage(jid, { text });
+  await sock.sendMessage(jid, { text: stripToolArtifacts(text) });
 }
 
 // ---------------------------------------------------------------------------

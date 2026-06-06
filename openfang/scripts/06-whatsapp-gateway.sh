@@ -104,6 +104,78 @@ function stripToolArtifacts(s) {
         print(">> OJO: anchor sendMessage no encontrado para toolstrip")
 PY
 
+# (6) anti-quema de tokens: COALESCING con guardia in-flight. El gateway postea
+#     directo a /api/agents/<uuid>/message -> NO pasa por el rate-limit del bridge,
+#     asi que el control va aqui. Mientras hay una respuesta EN CURSO para un
+#     remitente, los mensajes nuevos se ACUMULAN y se contestan en UNA sola llamada
+#     al LLM (una rafaga de 5 mensajes = 1 invocacion, no 5). Latencia casi nula
+#     para un mensaje suelto (ventana corta COALESCE_MS, def. 1200ms).
+python3 - "$GW/index.js" <<'PY'
+import sys, re
+p = sys.argv[1]; s = open(p, encoding="utf-8").read()
+if "enqueueMessage" in s:
+    print(">> coalesce: ya estaba aplicado")
+else:
+    INFRA = r'''// ---------------------------------------------------------------------------
+// Coalescing anti-quema de tokens: agrupa mensajes rapidos del MISMO remitente
+// en UNA sola llamada al LLM. Mientras hay una respuesta en curso para ese
+// remitente, los mensajes nuevos se acumulan y se contestan juntos.
+// ---------------------------------------------------------------------------
+const COALESCE_MS = parseInt(process.env.WHATSAPP_COALESCE_MS || '1200', 10);
+const pendingMsgs = new Map(); // replyJid -> { queue:[], busy:false, ctx }
+
+function enqueueMessage(replyJid, text, ctx) {
+  let st = pendingMsgs.get(replyJid);
+  if (!st) { st = { queue: [], busy: false, ctx }; pendingMsgs.set(replyJid, st); }
+  st.queue.push(text);
+  st.ctx = ctx;
+  console.log(`[gateway] Buffered from ${ctx.pushName} (${st.queue.length} en cola)`);
+  if (!st.busy) processQueue(replyJid);
+}
+
+async function processQueue(replyJid) {
+  const st = pendingMsgs.get(replyJid);
+  if (!st || st.busy) return;
+  if (st.queue.length === 0) { pendingMsgs.delete(replyJid); return; }
+  st.busy = true;
+  await new Promise((r) => setTimeout(r, COALESCE_MS)); // ventana de coalescing
+  const batch = st.queue.splice(0);
+  const combined = batch.join('\n');
+  const { phone, pushName, metadata, isGroup, remoteJid } = st.ctx;
+  try {
+    const response = await forwardToOpenFang(combined, phone, pushName, metadata);
+    if (response && sock) {
+      await sock.sendMessage(replyJid, { text: stripToolArtifacts(response) });
+      console.log(`[gateway] Replied to ${pushName}${isGroup ? ' in group ' + remoteJid : ''} (lote de ${batch.length})`);
+    }
+  } catch (err) {
+    console.error(`[gateway] Forward/reply failed:`, err.message);
+  } finally {
+    st.busy = false;
+    if (st.queue.length > 0) processQueue(replyJid); // llegaron mas durante la llamada
+    else pendingMsgs.delete(replyJid);
+  }
+}
+
+'''
+    anchor = "function forwardToOpenFang("
+    pat = re.compile(r"// Forward to OpenFang agent.*?Forward/reply failed:`, err\.message\);\s*\n\s*\}", re.DOTALL)
+    repl = ("// Coalescing anti-quema: bufferiza rafagas del mismo remitente; responde una vez.\n"
+            "      const replyJid = isGroup ? remoteJid : (remoteJid.endsWith('@lid') ? (msg.key.remoteJidAlt || remoteJid) : senderJid.replace(/@.*$/, '') + '@s.whatsapp.net');\n"
+            "      enqueueMessage(replyJid, text, { phone, pushName, metadata, isGroup, remoteJid });")
+    if anchor not in s:
+        print(">> OJO: anchor forwardToOpenFang no encontrado — coalesce NO aplicado")
+    else:
+        s2, n = pat.subn(repl, s, count=1)
+        if n != 1:
+            print(">> OJO: bloque forward+reply no encontrado — coalesce NO aplicado")
+        else:
+            s2 = s2.replace(anchor, INFRA + anchor, 1)
+            open(p + ".bak.coalesce", "w", encoding="utf-8").write(s)
+            open(p, "w", encoding="utf-8").write(s2)
+            print(">> coalesce aplicado (backup en index.js.bak.coalesce)")
+PY
+
 # (3) default_agent del canal whatsapp = UUID (la API exige UUID, no nombre).
 #     'agent list' lee la DB y funciona aunque el daemon este abajo.
 UUID=$("$BIN" agent list 2>/dev/null | grep -i 'manuelita-bot' | awk '{print $1}' | head -1)
