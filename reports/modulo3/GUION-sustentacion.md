@@ -181,7 +181,7 @@ responde *"Soy un asistente de información sobre Manuelita S.A.; no ejecuto acc
 | Min | Qué muestras | Qué dices (idea) |
 |----:|---|---|
 | 0–2 | **Pitch** (sección 0) + abrir dashboard `127.0.0.1:4200` | "Esto es un Agent OS, no un script." |
-| 2–4 | **Dashboard:** 4 agentes Running + **Hands → 3 Active** | "Cada Hand es un agente autónomo; el de sostenibilidad lo hicimos nosotros." |
+| 2–4 | **Dashboard:** 5 agentes Running + **Hands → 4 Active** | "Cada Hand es un agente autónomo; 2 los hicimos nosotros (sostenibilidad e investigador de corpus)." |
 | 4–6 | **Memoria:** `openfang memory list manuelita-bot` + abrir notebook **t-SNE 3D** y rotar | "La memoria es semántica; aquí está la prueba de que clusteriza por tema." |
 | 6–10 | **PRUEBA DE FUEGO:** el evaluador escribe al bot desde **su** teléfono (Telegram `@Cortana_Juanito0312_bot` o WhatsApp). Preguntas: NIT, presidente, países, metas de carbono. | "De dónde sale cada dato" (sección 3). |
 | 10–12 | **Anti-alucinación:** que pregunte algo que no está (ej. salario del presidente) → "No tengo ese dato confirmado". | "No inventa; admite el hueco." |
@@ -218,7 +218,7 @@ responde *"Soy un asistente de información sobre Manuelita S.A.; no ejecuto acc
 ## 9. Checklist 10 minutos antes (no falles el día D)
 
 - [ ] WSL arriba: `wsl -d Ubuntu -u root`.
-- [ ] `tr -d '\r' < openfang/scripts/levantar-todo.sh | bash` → ver **daemon=1 · 3 Hands Active · Telegram Ready**.
+- [ ] `tr -d '\r' < openfang/scripts/levantar-todo.sh | bash` → ver **daemon=1 · 4 Hands Active · Telegram Ready**.
 - [ ] Ollama de Windows corriendo (para los embeddings) — el icono en la bandeja.
 - [ ] Dashboard abre en `http://127.0.0.1:4200`.
 - [ ] WhatsApp: si el gateway no conecta, el QR está en el dashboard → Channels → WhatsApp.
