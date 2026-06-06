@@ -64,6 +64,42 @@ else:
     print(">> OJO: patron LID no encontrado — revisar index.js a mano (linea del replyJid)")
 PY
 
+# (5) parche anti-fuga de tool calls: gemma3 a veces escribe ```tool_code
+#     [memory_store(...)]``` como TEXTO visible en su respuesta. Este parche inserta
+#     stripToolArtifacts() y lo aplica en los 2 envios -> WhatsApp nunca ve esos bloques.
+python3 - "$GW/index.js" <<'PY'
+import sys
+p = sys.argv[1]; s = open(p, encoding="utf-8").read()
+if "stripToolArtifacts" in s:
+    print(">> toolstrip: ya estaba aplicado")
+else:
+    FUNC = r'''
+function stripToolArtifacts(s) {
+  if (typeof s !== 'string') return s;
+  let out = s;
+  out = out.replace(/```[^\n`]*\n?[\s\S]*?```/g, function (m) {
+    return /(memory_store|memory_recall|file_read|file_list|web_[a-z_]+|shell_exec|tool_code)/i.test(m) ? '' : m;
+  });
+  out = out.replace(/^[ \t]*\[?[ \t]*(?:memory_store|memory_recall|file_read|file_list|web_[a-z_]+|shell_exec)[ \t]*\([\s\S]*?\)[ \t]*\]?[ \t]*$/gim, '');
+  out = out.replace(/^[ \t]*tool_code[ \t]*$/gim, '');
+  out = out.replace(/\n{3,}/g, '\n\n').trim();
+  if (!out) out = 'Listo.';
+  return out;
+}
+'''
+    anchor = "async function sendMessage(to, text) {"
+    if anchor in s:
+        orig = s
+        s = s.replace(anchor, FUNC.strip() + "\n\n" + anchor, 1)
+        s = s.replace("{ text: response }", "{ text: stripToolArtifacts(response) }")
+        s = s.replace("await sock.sendMessage(jid, { text });", "await sock.sendMessage(jid, { text: stripToolArtifacts(text) });")
+        open(p + ".bak.toolstrip", "w", encoding="utf-8").write(orig)
+        open(p, "w", encoding="utf-8").write(s)
+        print(">> toolstrip aplicado (backup en index.js.bak.toolstrip)")
+    else:
+        print(">> OJO: anchor sendMessage no encontrado para toolstrip")
+PY
+
 # (3) default_agent del canal whatsapp = UUID (la API exige UUID, no nombre).
 #     'agent list' lee la DB y funciona aunque el daemon este abajo.
 UUID=$("$BIN" agent list 2>/dev/null | grep -i 'manuelita-bot' | awk '{print $1}' | head -1)
