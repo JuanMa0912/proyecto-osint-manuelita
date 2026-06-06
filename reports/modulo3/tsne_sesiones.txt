@@ -1,43 +1,64 @@
 HISTORIAL DE SESIONES REALES (decodificado de openfang.db / MessagePack)
 ======================================================================
 
-Sesión agente=c248dd6d-df28-4011-8572-be001dd3ec12 creada=2026-06-04T21:50:17.814893276+00:00 (28 turnos)
-  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita S.A. tiene NIT 891.300.241, fue f
-  [assistant] ¡Hola! Soy Manuelita-Bot, tu asistente corporativo de Manuelita S.A. ¿Cómo te llamas y cómo prefieres que me dirija a ti?
-
-Por cierto, Manue
-  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: El presidente de Manuelita S.A. es Harold E
-  [assistant] El presidente de Manuelita S.A. es Harold Eder.
-
-¡Guardado!
-  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene operaciones en 3 paises: Co
-  [assistant] ¡Guardado!
-  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita exporta y vende sus productos al
-  [assistant] ¡Guardado!
-  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene 4 plataformas de negocio: a
-  [assistant] ¡Guardado!
-  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene 7 unidades de negocio: Manu
-  [assistant] ¡Guardado!
-  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene aproximadamente 7.971 colab
-  [assistant] ¡Guardado!
-  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: En 2023 Manuelita tuvo ingresos por 1.043.5
-  [assistant] ¡Guardado!
+Sesión agente=f8734bbd-e3f9-404d-a225-ffd6711774a6 creada=2026-06-06T04:21:57.558857330+00:00 (20 turnos)
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: En 2021 los ingresos individuales de Manuel
+  [assistant] ```tool_code
+[memory_store(key="ingresos_2021", value="En 2021 los ingresos individuales de Manuelita S.A. fueron 648.942 millones de pesos
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Las cifras individuales corresponden solo a
+  [assistant] ```tool_code
+[memory_store(key="cifras_individuales_vs_consolidado", value="Las cifras individuales corresponden solo a Manuelita S.A.; las
   [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Las metas de sostenibilidad de Manuelita so
-  [assistant] ¡Guardado!
-  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita produce cerca de 487.000 tonelada
-  [assistant] ¡Guardado!
+  [assistant] ```tool_code
+[memory_store(key="metas_sostenibilidad", value="Las metas de sostenibilidad de Manuelita son reducir 70% de emisiones de Alcan
   [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita beneficia a mas de 4.000 familias
-  [assistant] ¡Guardado!
+  [assistant] ```tool_code
+[memory_store(key="beneficio_comunidades", value="Manuelita beneficia a mas de 4.000 familias de empleados y comunidades vecina
   [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita cuenta con certificaciones de sos
-  [assistant] ¡Guardado!
-  [user] Segun tu memoria, cuantas familias beneficia la empresa y a cuantos paises le vende sus productos al exterior?
-  [assistant] Según mi memoria, Manuelita beneficia a más de 4.000 familias de empleados y comunidades vecinas.
+  [assistant] ```tool_code
+[memory_store(key="certificaciones_sostenibilidad", value="Manuelita cuenta con certificaciones de sostenibilidad RSPO, HACCP,
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita genera energia limpia a partir de
+  [assistant] ```tool_code
+[memory_store(key="energia_limpia_gri", value="Manuelita genera energia limpia a partir del bagazo de la cana y reporta su dese
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene 4 plataformas de negocio: a
+  [assistant] ```tool_code
+[memory_store(key="plataformas_negocio", value="Manuelita tiene 4 plataformas de negocio: azucar de cana, palma de aceite, acui
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita tiene 7 unidades de negocio: Azuc
+  [assistant] ```tool_code
+[memory_store(key="unidades_negocio", value="Manuelita tiene 7 unidades de negocio: Azucar y Energia, Laredo, Aceites y Energia
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: Manuelita produce cerca de 487.000 tonelada
+  [assistant] ```tool_code
+[memory_store(key="produccion_azucar_bioetanol", value="Manuelita produce cerca de 487.000 toneladas de azucar al ano y unos 27
+  [user] Usa la herramienta memory_store para guardar EXACTAMENTE este hecho de Manuelita, sin alterarlo: En su plataforma de frutas y hortalizas Man
+  [assistant] ```tool_code
+[memory_store(key="frutas_hortalizas_exportacion", value="En su plataforma de frutas y hortalizas Manuelita cultiva uva, aguaca
 
-También, Manuelita exporta y vende sus pr
-  [user] ¿Cuanto facturo Manuelita en 2022? ¿Esa cifra es individual o consolidada del grupo?
-  [assistant] No tengo ese dato confirmado en mis fuentes. Sin embargo, sí tengo información sobre los ingresos de Manuelita S.A. en 2023, que fueron de 1
+
+MEMORIAS (content limpio + tema verdad-de-terreno)
+======================================================================
+  [Conversacional] Hola, listo para registrar datos.
+  [Identidad/Corporativo] Manuelita S.A. tiene NIT 891.300.241, fue fundada en 1864 por Santiago Eder, con sede principal en Palmira, Valle del Ca
+  [Identidad/Corporativo] El presidente de Manuelita S.A. es Harold Eder, y la empresa es dirigida por la familia Eder desde hace seis generacione
+  [Identidad/Corporativo] Manuelita tiene aproximadamente 7.971 colaboradores y mas de 160 anos de trayectoria como empresa familiar agroindustria
+  [Identidad/Corporativo] El centro corporativo de Manuelita esta en Cali; su actividad principal CIIU C1071 es la elaboracion y refinacion de azu
+  [Geografía/Operación] Manuelita tiene operaciones agroindustriales en tres paises: Colombia, Peru y Chile.
+  [Geografía/Operación] Manuelita exporta y vende sus productos al exterior a 49 paises en los cinco continentes.
+  [Geografía/Operación] El ingenio azucarero principal de Manuelita esta en Palmira, Valle del Cauca, y en Peru opera la unidad Agroindustrial L
+  [Geografía/Operación] La operacion de palma de aceite de Manuelita se desarrolla en los Llanos Orientales de Colombia.
+  [Financiero] En 2023 Manuelita tuvo ingresos individuales por 1.043.562 millones de COP, EBITDA de 369.380 millones (margen 35,4%) y
+  [Financiero] En 2022 los ingresos individuales de Manuelita S.A. fueron 966.169 millones de pesos colombianos.
+  [Financiero] En 2021 los ingresos individuales de Manuelita S.A. fueron 648.942 millones de pesos colombianos.
+  [Financiero] Las cifras individuales corresponden solo a Manuelita S.A.; las consolidadas del Grupo (cerca de 2,7 billones de COP en
+  [Sostenibilidad] Las metas de sostenibilidad de Manuelita son reducir 70% de emisiones de Alcances 1 y 2 al 2030 y alcanzar neutralidad d
+  [Sostenibilidad] Manuelita beneficia a mas de 4.000 familias de empleados y comunidades vecinas con sus programas sociales.
+  [Sostenibilidad] Manuelita cuenta con certificaciones de sostenibilidad RSPO, HACCP, ASC y GRI.
+  [Sostenibilidad] Manuelita genera energia limpia a partir del bagazo de la cana y reporta su desempeno ambiental bajo el estandar GRI.
+  [Productos/Producción] Manuelita tiene 4 plataformas de negocio: azucar de cana, palma de aceite, acuicultura, y frutas y hortalizas.
+  [Productos/Producción] Manuelita tiene 7 unidades de negocio: Azucar y Energia, Laredo, Aceites y Energia, Palmar de Altamira, Acuicultura, Oce
+  [Productos/Producción] Manuelita produce cerca de 487.000 toneladas de azucar al ano y unos 275 millones de litros de bioetanol.
+  [Productos/Producción] En su plataforma de frutas y hortalizas Manuelita cultiva uva, aguacate y otros productos para exportacion.
 
 
 COSTOS (usage_events)
 ======================================================================
-  llamadas=14 | input_tokens=106103 | output_tokens=408 | costo_estimado_usd=0.1073
+  llamadas=21 | input_tokens=181770 | output_tokens=1228 | costo_estimado_usd=0.1855
