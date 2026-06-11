@@ -1,0 +1,2 @@
+# Carpeta de logs de ejecucion del pipeline.
+# Los .log se generan en runtime y estan en .gitignore; este .gitkeep conserva la carpeta en el repo.

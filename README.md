@@ -1,25 +1,24 @@
 <div align="center">
 
-# 🌱 Proyecto OSINT Manuelita
+# 🌱 Proyecto OSINT + Agente Conversacional — Manuelita S.A.
 
-### Pipeline de recolección, estructuración y almacenamiento de información pública  
-### para el Sistema Q&A del chatbot de Manuelita Agroindustrial S.A.
+### De un pipeline OSINT con base de conocimiento (MLOps)
+### a un asistente conversacional productizado sobre un Agent OS (AgentOps)
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![spaCy](https://img.shields.io/badge/NLP-spaCy%20es__core__news__lg-09A3D5?style=for-the-badge&logo=spacy&logoColor=white)](https://spacy.io)
-[![LangChain](https://img.shields.io/badge/LangChain-Framework-1C3C3C?style=for-the-badge)](https://langchain.com)
+[![LangChain](https://img.shields.io/badge/LangChain-0.3-1C3C3C?style=for-the-badge)](https://langchain.com)
+[![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-FF6F61?style=for-the-badge)](https://www.trychroma.com/)
+[![OpenFang](https://img.shields.io/badge/Agent_OS-OpenFang_v0.6.9-orange?style=for-the-badge)](https://github.com/RightNow-AI/openfang)
+[![LangSmith](https://img.shields.io/badge/Observabilidad-LangSmith-purple?style=for-the-badge)](https://smith.langchain.com)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[![Estado](https://img.shields.io/badge/Estado-Activo-brightgreen?style=for-the-badge)]()
 
-[📋 Ver Corpus](#corpus-generado) · [🚀 Inicio rápido](#instalación) · [📊 Resultados](#resultados) · [🗂️ Estructura](#estructura-del-proyecto)
+[🧭 Ciclo de vida](#-ciclo-de-vida-mlops--agentops) · [🚀 Inicio rápido](#-inicio-rápido) · [🗂️ Estructura](#️-estructura-del-repositorio) · [📊 Corpus](#-corpus-generado) · [📚 Documentación](#-documentación)
 
 </div>
 
 ---
 
-## Actividad Módulo 1 — Creación de la Base de Conocimiento Semántico y Sistema Q&A
-
-**Universidad Autónoma de Occidente — Maestria En IA y Ciencia de Datos**
+**Universidad Autónoma de Occidente — Maestría en IA y Ciencia de Datos**
 
 | Estudiante | Código |
 |-----------|--------|
@@ -30,333 +29,259 @@
 
 ---
 
-## 🧭 Estado del proyecto por módulos (jun 2026)
+## ¿Qué es este repositorio?
 
-Este repositorio recorre tres módulos. **El Módulo 3 es la etapa que culmina el proyecto.**
+Sistema que captura información **pública** de **Manuelita S.A.** —una de las
+agroindustrias más grandes e históricas de América Latina (fundada en **1864**, opera
+en **3 países**, exporta a **+65**)— y la convierte primero en una **base de
+conocimiento semántica**, luego en un **agente conversacional con RAG y memoria**, y
+finalmente la **productiza sobre un Sistema Operativo Agéntico** que responde desde
+Telegram y WhatsApp.
+
+El repo no es un único entregable: es la **evolución completa de un sistema de IA**
+recorrida en tres módulos, donde cada etapa del ciclo de vida tiene un lugar claro en
+el árbol de carpetas (ver [§ Ciclo de vida](#-ciclo-de-vida-mlops--agentops)).
+
+---
+
+## 🧭 Estado del proyecto por módulos
 
 | Módulo | Tema | Stack | Estado | Documentación |
 |--------|------|-------|--------|---------------|
-| **M1** | Base de conocimiento semántica + Q&A | Python · spaCy · LangChain | ✅ Entregado | Este README + [`reports/`](reports/) |
-| **M2** | Agente RAG conversacional + memoria | LangChain · ChromaDB · Streamlit | ✅ Entregado | [`MODULO2.md`](MODULO2.md) |
-| **M3** | Productización sobre Agent OS (**Ruta B — OpenFang**) | OpenFang (Rust) · WSL2 · Gemini/Ollama · Telegram/WhatsApp | 🟡 En curso (F0–F3 ✅ · F4 informe en markdown, falta PDF) | [`openfang/README.md`](openfang/README.md) |
+| **M1** | Base de conocimiento semántica + Q&A | Python · spaCy · LangChain | ✅ Entregado | Este README + [`reports/modulo1/`](reports/modulo1/) |
+| **M2** | Agente RAG conversacional + memoria | LangChain · ChromaDB · Streamlit | ✅ Entregado | [`docs/MODULO2.md`](docs/MODULO2.md) |
+| **M3** | Productización sobre Agent OS (**Ruta B — OpenFang**) | OpenFang (Rust) · WSL2 · Ollama/Gemini · Telegram + WhatsApp | 🟢 Demo-ready (F0–F3 ✅ · F5 t-SNE ✅ · F4 informe en markdown, PDF generado) | [`openfang/README.md`](openfang/README.md) |
 
-> **Nota de arquitectura (M2 → M3):** en la Ruta B, el código del Módulo 2 (LangChain/ChromaDB/Streamlit)
-> **no se reusa como software vivo**; solo se migra el **corpus limpio del Módulo 1** a la memoria de OpenFang.
-> El M2 queda en el informe como "evolución arquitectónica". Detalle en [`openfang/README.md`](openfang/README.md)
-> y en el informe unificado [`reports/informe_final.md`](reports/informe_final.md).
-
----
-
-## Descripción del problema
-
-La gestión de la información dentro del Ingenio Manuelita enfrenta el desafío de optimizar sus flujos de comunicación interna y externa. Existe una dependencia de canales manuales o semi-automatizados que, ante el gran volumen de datos generados en la cadena de valor, incrementan el riesgo de asimetrías informativas, tiempos de respuesta prolongados y posibles errores humanos en la interpretación de reportes críticos.
-
-Esta ausencia de un canal de comunicación centralizado y automatizado limita la capacidad de los colaboradores para tomar decisiones basadas en datos en tiempo real, generando la necesidad de implementar una solución tecnológica que garantice la precisión, trazabilidad y entrega oportuna de la información.
-
-## Planteamiento de la solución
-
-Se propone el diseño e implementación de un **Sistema de Preguntas y Respuestas (Q&A)** que actúa como núcleo de conocimiento para un futuro chatbot corporativo. El sistema consolida toda la información pública de Manuelita S.A. en un corpus semántico estructurado, y utiliza un LLM con **Prompt Engineering** para responder preguntas basándose únicamente en ese contexto.
-
-> **Nota técnica:** Este sistema **NO es un RAG** (Retrieval-Augmented Generation). Todo el texto limpio del corpus se consolida directamente en el system prompt del LLM, siguiendo las instrucciones del Módulo 1.
-
-La arquitectura opera en dos capas: (1) un **pipeline OSINT** que extrae, limpia y estructura información pública de múltiples fuentes, y (2) una **aplicación LangChain** con interfaz Streamlit que expone tres funcionalidades: Resumen ejecutivo, Generación de FAQ y Q&A libre.
+> **Nota de arquitectura (M2 → M3).** En la Ruta B, el código del Módulo 2
+> (LangChain/ChromaDB/Streamlit) **no se reutiliza como software vivo**: solo se migra
+> el **corpus limpio del Módulo 1** a la memoria de OpenFang. El M2 permanece en el
+> repo y en el informe como **evolución arquitectónica**, no como el binario en
+> producción. El sistema "vivo" en M3 es el agente sobre OpenFang.
+> Informe unificado: [`reports/informe_final.md`](reports/informe_final.md) ·
+> [`reports/informe_final.pdf`](reports/informe_final.pdf).
 
 ---
 
-## ¿Qué es este proyecto?
+## 🧭 Ciclo de vida MLOps → AgentOps
 
-Pipeline completo de **OSINT corporativo** que captura información pública de **Manuelita S.A.** — una de las organizaciones agroindustriales más grandes e históricas de América Latina — y la convierte en una **base documental semántica** lista para:
-
-- 💬 **Sistema Q&A** con LangChain — texto del corpus en el system prompt del LLM
-- 📝 **Resumen ejecutivo** automático de la empresa
-- ❓ **Generación de FAQs** sobre productos, historia y operaciones
-- 📊 **Análisis empresarial** y minería de texto
-
-### ¿Por qué Manuelita?
-
-> Fundada en **1864** en el Valle del Cauca, Colombia. Opera en **4 plataformas de negocio**  
-> en **3 países** (Colombia, Perú, Chile), exporta a **+65 países** y tiene **161 años** de historia.
+El proyecto se lee como un ciclo de vida de IA donde **M1+M2 ponen el fundamento MLOps**
+(ingesta y procesamiento de datos, indexado, servicio, observabilidad) y **M3 lo
+evoluciona a AgentOps** (productización del agente, operaciones autónomas, canales,
+análisis del comportamiento del agente).
 
 ```
-GRUPO MANUELITA S.A.
-├── 🍬 Caña de Azúcar y Energía    → Manuelita Azúcar y Energía (CO) + Agroindustrial Laredo (PE)
-├── 🌴 Aceite de Palma y Energía   → Manuelita Aceites y Energía (Meta + Casanare, CO)
-├── 🦐 Acuicultura                 → Mejillones América (CL) + Océanos (CO)
-└── 🍇 Frutas y Hortalizas         → Uvas de mesa y vegetales de exportación
+   ┌──────────────────── FUNDAMENTO MLOps (M1 + M2) ─────────────────────┐   ┌──── AgentOps (M3) ────┐
+   │                                                                     │   │                       │
+   ▼                                                                     ▼   ▼                       ▼
+[1] Ingesta OSINT → [2] Procesado/NLP → [3] Base de conocimiento → [4] Servicio → [5] Observabilidad → [6] Productización agéntica
+   (scrapers)         (cleaners,          (markdown + ChromaDB)     (RAG + chat)   (LangSmith, t-SNE)   (OpenFang: Hands + canales)
 ```
+
+| # | Etapa del ciclo de vida | Qué ocurre | Dónde vive en el repo | Módulo |
+|---|-------------------------|-----------|------------------------|--------|
+| 1 | **Ingesta de datos (OSINT)** | Descubrir fuentes, scrapear web/PDFs/redes/YouTube respetando `robots.txt` | [`src/discover/`](src/discover/) · [`src/scrapers/`](src/scrapers/) · [`src/parsers/`](src/parsers/) → [`data_raw/`](data_raw/) | M1 |
+| 2 | **Procesamiento / *features*** | NER con spaCy, normalización de entidades, dedup MinHash, construcción de SMART MARKDOWN | [`src/cleaners/`](src/cleaners/) · [`src/markdown_builders/`](src/markdown_builders/) → [`data_processed/`](data_processed/) | M1 |
+| 3 | **Base de conocimiento / indexado** | Corpus Markdown + datos estructurados (NIT, cifras) + índice vectorial ChromaDB | [`data_processed/markdown/`](data_processed/markdown/) · [`data/structured/`](data/structured/) · `data/vectorstore/` (regenerable) | M1 → M2 |
+| 4 | **Servicio / inferencia** | Router híbrido (datos exactos vs RAG), memoria conversacional, UI de chat | [`src/langchain_app/`](src/langchain_app/) · [`app.py`](app.py) | M2 |
+| 5 | **Observabilidad** | Trazas de cada llamada (LLM, embeddings, retriever) + análisis t-SNE de las sesiones del agente | [`src/langchain_app/langsmith_setup.py`](src/langchain_app/langsmith_setup.py) · [`scripts/tsne_sesiones_m3.py`](scripts/tsne_sesiones_m3.py) · [`reports/modulo3/`](reports/modulo3/) | M2 → M3 |
+| 6 | **Productización agéntica (AgentOps)** | Agent OS con persona, memoria semántica, *Hands* (operaciones autónomas) y canales reales (Telegram/WhatsApp) | [`openfang/`](openfang/) | M3 |
+| — | **Reproducibilidad y entrega** | Entorno fijado (`uv.lock`), tests por bloque, runbook de demo, informes versionados | [`pyproject.toml`](pyproject.toml) · [`uv.lock`](uv.lock) · [`scripts/`](scripts/) · [`reports/`](reports/) | M1–M3 |
+
+> **Qué hace de esto "AgentOps" y no solo MLOps:** el artefacto final no es un modelo
+> que sirve predicciones, sino un **agente** con persona, herramientas, memoria
+> persistente y autonomía operativa, **monitoreado en producción** (trazas LangSmith +
+> análisis t-SNE del historial real de conversaciones). El M3 es donde el ciclo de vida
+> cruza de "operar un modelo" a "operar un agente".
 
 ---
 
-## Resultados
-
-El corpus generado:
-
-| Métrica | Valor |
-|---------|-------|
-| 📄 Documentos SMART MARKDOWN | **6** |
-| 📝 Palabras totales | **~56,800** |
-| 📊 Tablas extraídas (PDFs) | **139** |
-| 🏢 Organizaciones detectadas | **7** |
-| 📍 Geografías mapeadas | **6** |
-| 🌱 Temas clasificados | **11** |
-| ⏱️ Tiempo de ejecución pipeline | **~48 segundos** |
-
-### Corpus generado
-
-| Documento | Fuente | Palabras | Tablas | Confianza |
-|-----------|--------|----------|--------|-----------|
-| [Perfil Corporativo](data_processed/markdown/oficial_perfil_manuelit.md) | manuelita.com | 2,840 | — | 0.95 |
-| [Informe Sostenibilidad 2023-2024](data_processed/markdown/oficial_doc_manuelit.md) | PDF oficial | 17,687 | 21 | 0.97 |
-| [Informe Sostenibilidad 2021-2022](data_processed/markdown/oficial_pdf_sostenibilidad_manuelit.md) | PDF oficial | 17,078 | 118 | 0.97 |
-| [Datos Financieros Supersociedades](data_processed/markdown/financiero_supersociedades_manuelit.md) | Supersociedades 2019–2024 | 1,200 | 6 | 0.98 |
-| [LinkedIn Empresa](data_processed/markdown/red_social_linkedin_manuelit.md) | LinkedIn | — | — | 0.65 |
-| [Canal YouTube](data_processed/markdown/red_social_youtube_manuelit.md) | YouTube API v3 | — | — | 0.75 |
-
----
-
-## Arquitectura del sistema
-
-```
-MÓDULO 1 — BASE DE CONOCIMIENTO + SISTEMA Q&A
-══════════════════════════════════════════════════════════════════
-
-  CAPA 1: PIPELINE OSINT (Knowledge Base)
-  ─────────────────────────────────────────
-  manuelita.com  ──┐
-  PDFs públicos ──┤                        ┌─ SMART MARKDOWN
-  Supersocied.  ──┤ → NLP (spaCy) ──────→ ├─ YAML frontmatter
-  LinkedIn      ──┤   Entidades           └─ Índice maestro
-  YouTube API   ──┘   Temas · Cifras
-
-  CAPA 2: APLICACIÓN Q&A (LangChain + Streamlit)
-  ──────────────────────────────────────────────
-  Corpus texto  ──→ System Prompt ──→ LLM ──→ [ Resumen ]
-                                          ──→ [ FAQ     ]
-                                          ──→ [ Q&A     ]
-```
-
-### Flujo ETL del pipeline — 8 fases
-
-```
-1. DISCOVER    → sitemap.xml + crawl + detección de PDFs
-2. SCRAPE WEB  → requests + BeautifulSoup + robots.txt
-3. SCRAPE NEWS → Google News RSS + newspaper3k
-4. SOCIAL      → OG metadata + APIs oficiales (YouTube Data API v3)
-5. PDFs        → pdfplumber → PyMuPDF → OCR Tesseract (fallback)
-6. NORMALIZE   → spaCy NER + regex + taxonomía corporativa + MinHash dedup
-7. BUILD MD    → YAML frontmatter semántico + 9 secciones estructuradas
-8. INDEX       → Índice maestro JSON + Markdown
-```
-
----
-
-## Instalación
-
-### Prerrequisitos
-
-- Python **3.11+**
-- `uv` (recomendado) o `pip`
-- (Opcional) YouTube Data API Key — [obtener gratis en Google Cloud](https://console.cloud.google.com)
-- (Opcional) Tesseract OCR — para PDFs escaneados
-
-### Con uv (recomendado)
-
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/JuanMa0912/proyecto-osint-manuelita.git
-cd proyecto-osint-manuelita
-
-# 2. Instalar dependencias con uv
-uv sync
-
-# 3. Instalar modelo NLP en español
-uv run python -m spacy download es_core_news_lg
-
-# 4. Configurar credenciales
-cp .env.example .env
-# Editar .env con tu YOUTUBE_API_KEY (opcional)
-```
-
-### Con pip (alternativa)
-
-```bash
-python -m venv venv
-source venv/bin/activate      # Linux/Mac
-# venv\Scripts\activate       # Windows
-
-pip install -r requirements.txt
-python -m spacy download es_core_news_lg
-```
-
----
-
-## Uso
-
-### Pipeline de Knowledge Base
-
-```bash
-uv run python src/main.py --quick      # ~10-15 min · fuentes prioritarias
-uv run python src/main.py --full       # ~30-60 min · todas las fuentes
-```
-
-### Aplicación Q&A (Streamlit)
-
-```bash
-uv run streamlit run app.py
-```
-
-### Por fase individual
-
-```bash
-uv run python src/main.py --phase discover    # Mapeo de fuentes
-uv run python src/main.py --phase scrape      # Sitio web oficial
-uv run python src/main.py --phase pdfs        # Informes PDF
-uv run python src/main.py --phase normalize   # NLP y entidades
-uv run python src/main.py --phase markdown    # Generar SMART MARKDOWN
-```
-
----
-
-## Formato SMART MARKDOWN
-
-Cada documento del corpus incluye **YAML frontmatter semántico** que estructura la información para el sistema Q&A:
-
-```yaml
----
-id: manuelita_web_f2a1c3b8_20260418
-company: Manuelita S.A.
-source_type: oficial
-source_url: https://www.manuelita.com/perfil-corporativo/
-confidence_score: 0.95
-tags: [manuelita, oficial, perfil, azucar_bioetanol, palma_biodiesel]
-entities:
-  organizations: [Manuelita S.A., Manuelita Azúcar y Energía, Agroindustrial Laredo S.A.]
-  people: [Harold Eder (Presidente — Manuelita S.A.)]
-  locations: [Cali, Valle del Cauca (Colombia), Trujillo (Perú), Puerto Montt (Chile)]
-  products: [Azúcar refinada, Bioetanol combustible, Aceite de palma crudo, Biodiesel]
-key_figures:
-  ingresos_2023_cop_millones: '1043562'
-  ebitda_2023_cop_millones: '369380'
-  produccion_azucar_ton: '487000'
-  paises_exportacion: '65'
----
-```
-
----
-
-## Estructura del proyecto
+## 🗂️ Estructura del repositorio
 
 ```
 proyecto_manuelita/
 │
-├── 📋 README.md                      ← Este archivo
-├── 📦 pyproject.toml                 ← Dependencias (uv)
-├── 🔑 .env.example                   ← Plantilla de configuración
-├── 🌐 app.py                         ← Interfaz Streamlit Q&A
+├── README.md                 ← este archivo (portada + ciclo de vida)
+├── LICENSE                   ← MIT
+├── CLAUDE.md                 ← guía para el agente de IA que trabaja el repo
+├── app.py                    ← UI Streamlit (chat RAG, Módulo 2)
+├── pyproject.toml · uv.lock  ← dependencias y lockfile reproducible (uv)
 │
-├── src/                              ← Código fuente pipeline
-│   ├── main.py                       ← Orquestador del pipeline
-│   ├── langchain_app/                ← Aplicación Q&A LangChain
-│   │   ├── qa_system.py              ← Motor Q&A (Resumen, FAQ, Q&A)
-│   │   └── prompts.py                ← Prompt Engineering documentado
-│   ├── utils/
-│   ├── discover/
-│   ├── scrapers/
-│   ├── parsers/
-│   ├── cleaners/
-│   └── markdown_builders/
+├── docs/                     ← documentación de apoyo
+│   ├── MODULO2.md            ← documentación técnica completa del Módulo 2
+│   ├── PROVIDERS.md          ← los tres modos de proveedor (gemini / local / ollama)
+│   └── NOTAS_INTERNAS_M3.md  ← notas internas del equipo (privado, no versionado)
 │
-├── data_processed/                   ← 📤 Corpus (en repo)
-│   └── markdown/
-│       ├── _INDICE_MAESTRO.md
-│       ├── oficial_perfil_manuelit.md
-│       ├── oficial_doc_manuelit.md
-│       ├── oficial_pdf_sostenibilidad_manuelit.md
-│       ├── financiero_supersociedades_manuelit.md
-│       ├── red_social_linkedin_manuelit.md
-│       └── red_social_youtube_manuelit.md
+├── src/                      ← código del pipeline + app (M1 + M2)
+│   ├── main.py               ← orquestador del pipeline OSINT (8 fases)
+│   ├── discover/ scrapers/ parsers/ cleaners/ markdown_builders/   ← ETL OSINT (M1)
+│   ├── langchain_app/        ← RAG, router híbrido, memoria, observabilidad (M2)
+│   │   ├── rag_engine.py · agent.py · memory.py
+│   │   ├── tools/structured_tool.py · langsmith_setup.py
+│   │   └── qa_system.py · prompts.py · corpus_loader.py
+│   └── utils/
 │
-├── data_raw/                         ← 📥 Datos crudos (.gitignore)
-├── reports/                          ← Reportes de sesión y Q&A tests
-├── templates/
-└── logs/                             ← Logs de ejecución (.gitignore)
+├── data_raw/                 ← datos crudos OSINT (mayormente .gitignore)
+├── data_processed/           ← 📤 corpus limpio (en repo)
+│   ├── markdown/             ← SMART MARKDOWN + key_facts (formato Q&A)
+│   └── json/                 ← datos normalizados
+├── data/structured/          ← JSON de datos exactos (NIT, cifras, directivos)
+│
+├── openfang/                 ← 🤖 Módulo 3 — agente productizado sobre Agent OS
+│   ├── README.md             ← estado por fases + quick start del agente
+│   ├── agents/manuelita-bot/ ← manifiesto (persona, system_prompt, tools) + MEMORY.md
+│   ├── hands/                ← operaciones autónomas (Hands: 2 built-in + 1 Custom)
+│   ├── whatsapp-gateway/     ← gateway QR (Baileys) → manuelita-bot
+│   ├── config/ · scripts/    ← config de proveedores + scripts de despliegue
+│   └── docs/                 ← F0–F3 + RUNBOOK de la sustentación
+│
+├── scripts/                  ← tests por bloque (M2) + análisis t-SNE (M3)
+├── reports/                  ← entregables: informes (md/pdf), t-SNE, guion
+│   ├── modulo1/ · modulo2/ · modulo3/ · informe_final.{md,pdf}
+├── templates/ · logs/        ← plantilla de markdown · logs de ejecución (.gitignore)
+└── .env.example              ← plantilla de configuración
 ```
 
 ---
 
-## Consideraciones éticas y legales
+## 🚀 Inicio rápido
 
-✅ **Lo que hace este proyecto:**
-- Solo accede a información pública y abierta
-- Respeta `robots.txt` de cada sitio automáticamente
-- Implementa delays corteses (2-4s) entre requests
-- Usa APIs oficiales (YouTube Data API v3)
-- No almacena datos personales de individuos
+### Prerrequisitos
 
-❌ **Lo que NO hace:**
-- No accede a áreas privadas ni evade autenticación
-- No scrapea LinkedIn/Instagram/Facebook directamente (ToS)
-- No descarga videos de YouTube — solo metadatos
-- No publica ni redistribuye los datos capturados
+- Python **3.11+** y [`uv`](https://docs.astral.sh/uv/)
+- (Opcional) `GEMINI_API_KEY` para el mejor modo RAG, o [Ollama](https://ollama.com) para modo local offline
+- (Solo M3) WSL2 + Ubuntu para OpenFang — ver [`openfang/README.md`](openfang/README.md)
+
+### Vía A — App conversacional RAG (Módulo 2)
+
+```bash
+# 1. Clonar e instalar
+git clone <repo-url> && cd proyecto_manuelita
+uv sync
+uv run python -m spacy download es_core_news_lg     # solo si vas a correr el pipeline OSINT
+
+# 2. Configurar credenciales
+cp .env.example .env        # editar LLM_PROVIDER (local | gemini | ollama)
+
+# 3. Levantar el chat (PowerShell)
+$env:LLM_PROVIDER="local"; uv run streamlit run app.py
+```
+
+> Modo recomendado: `local` para desarrollo offline; `gemini` para mejor calidad
+> (~95% RAG). Detalle de los tres modos en [`docs/PROVIDERS.md`](docs/PROVIDERS.md).
+
+### Vía B — Pipeline OSINT (regenerar el corpus, Módulo 1)
+
+```bash
+uv run python src/main.py --quick     # ~10-15 min · fuentes prioritarias
+uv run python src/main.py --full      # ~30-60 min · todas las fuentes
+```
+
+### Vía C — Agente productizado sobre Agent OS (Módulo 3)
+
+El agente vive sobre **OpenFang** en WSL2 y responde desde Telegram/WhatsApp.
+Despliegue paso a paso (keys, daemon, memoria semántica, Hands, canales) en
+**[`openfang/README.md`](openfang/README.md)** y el runbook de demo en
+[`openfang/docs/RUNBOOK-demo.md`](openfang/docs/RUNBOOK-demo.md).
 
 ---
 
-## Stack tecnológico
+## 🧪 Tests
 
-| Componente | Tecnología |
-|------------|-----------|
-| Scraping web | `requests` + `BeautifulSoup4` |
-| Extracción PDF | `pdfplumber` → `PyMuPDF` → `pytesseract` |
-| NLP / NER | `spaCy` (es_core_news_lg) |
-| Noticias | `newspaper3k` + `feedparser` |
-| YouTube | YouTube Data API v3 |
-| Deduplicación | SHA256 + `MinHash LSH` (datasketch) |
-| Framework LLM | `LangChain` |
-| Interfaz | `Streamlit` |
-| Gestor paquetes | `uv` |
-| Logging | `loguru` |
+```bash
+# Sin LLM (rápido)
+uv run python scripts/test_structured_tool.py
+
+# Con LLM local (PowerShell)
+$env:LLM_PROVIDER="local"; uv run python scripts/test_agente_bloque3.py     # routing 10/10
+$env:LLM_PROVIDER="local"; uv run python scripts/test_memoria_bloque4.py    # memoria conversacional
+$env:LLM_PROVIDER="local"; uv run python scripts/test_modulo2_completo.py   # suite integrada
+
+# Regenerar el índice vectorial si está vacío/corrupto
+$env:LLM_PROVIDER="local"; uv run python scripts/test_rag_bloque1.py --reindex
+```
+
+Resultados esperados por script en [`CLAUDE.md`](CLAUDE.md#tests-y-resultados-esperados).
 
 ---
 
-## Fuentes de información
+## 📊 Corpus generado
 
-### 🏢 Corporativo
-- [Perfil Corporativo](https://www.manuelita.com/perfil-corporativo/)
-- [Historia de la empresa](https://www.manuelita.com/historia/)
-- [Gobierno Corporativo](https://www.manuelita.com/gobierno-corporativo/)
-- [Línea Ética](https://www.manuelita.com/linea-etica/)
-- [Ubicación espacial — Google Maps](https://www.google.com/maps/place/Ingenio+Manuelita/@3.5866869,-76.3348015,7868m/data=!3m1!1e3!4m10!1m2!2m1!1sfundaci%C3%B3n+manuelita+cali!3m6!1s0x8e3a031047e59b9d:0x9cb27379c1be0d59!8m2!3d3.5866877!4d-76.3053523!15sChlmdW5kYWNpw7NuIG1hbnVlbGl0YSBjYWxpgOIAQGSAR1pbmR1c3RyaWFsX2VxdWlwbWVudF9zdXBwbGllcuABAA!16s%2Fg%2F11c0qyq237?hl=es&entry=ttu&g_ep=EgoyMDI2MDQyMi4wIKXMDSoASAFQAw%3D%3D)
+| Métrica | Valor |
+|---------|-------|
+| 📄 Documentos SMART MARKDOWN | **6** |
+| 📝 Palabras totales | **~56.800** |
+| 📊 Tablas extraídas (PDFs) | **139** |
+| 🏢 Organizaciones detectadas | **7** |
+| 🌱 Temas clasificados | **11** |
 
-### 🌱 Sostenibilidad
-- [Informe Sostenibilidad 2023-2024 (PDF)](https://www.manuelita.com/wp-content/uploads/2025/09/Informe-Manuelita-gobierno-corporativo.pdf)
-- [Sostenibilidad Ambiental](https://www.manuelita.com/sostenib/ambiental/)
-- [Sostenibilidad Económica](https://www.manuelita.com/economico/)
-- [Noticias Ingenio](https://www.manuelita.com/manuelita-noticias/)
+| Documento | Fuente | Palabras | Tablas | Confianza |
+|-----------|--------|----------|--------|-----------|
+| [Perfil Corporativo](data_processed/markdown/oficial_perfil_manuelit.md) | manuelita.com | 2.840 | — | 0.95 |
+| [Informe Sostenibilidad 2023-2024](data_processed/markdown/oficial_doc_manuelit.md) | PDF oficial | 17.687 | 21 | 0.97 |
+| [Informe Sostenibilidad 2021-2022](data_processed/markdown/oficial_pdf_sostenibilidad_manuelit.md) | PDF oficial | 17.078 | 118 | 0.97 |
+| [Datos Financieros Supersociedades](data_processed/markdown/financiero_supersociedades_manuelit.md) | Supersociedades 2019–2024 | 1.200 | 6 | 0.98 |
+| [LinkedIn Empresa](data_processed/markdown/red_social_linkedin_manuelit.md) | LinkedIn | — | — | 0.65 |
+| [Canal YouTube](data_processed/markdown/red_social_youtube_manuelit.md) | YouTube API v3 | — | — | 0.75 |
 
-### 🛒 Productos
-- [Azúcar](https://www.manuelita.com/azucar/)
-- [Azúcar Industrial](https://www.manuelitaindustria.com/)
-- [Energías Renovables](https://www.manuelita.com/manuelita-productos/energias-renovables/)
-- [Derivados de la Caña](https://www.manuelita.com/manuelita-productos/derivados-de-la-cana/)
-- [Derivados de la Palma](https://www.manuelita.com/manuelita-productos/derivados-de-la-palma/)
-- [Frutas y Hortalizas](https://www.manuelita.com/manuelita-productos/frutas-y-hortalizas/)
-- [Mejillones](https://www.manuelita.com/manuelita-productos/mejillones/)
+El archivo clave para retrieval es [`key_facts_manuelita.md`](data_processed/markdown/key_facts_manuelita.md) (formato Q&A).
 
-### 🤝 Comunidad y Talento
-- [Fundación Manuelita](https://fundacionmanuelita.org/)
-- [Donaciones Fundación](https://fundacionmanuelita.org/donaciones/)
-- [Vacantes disponibles](https://www.manuelita.com/talento/)
-- [Portal Proveedores Caña](https://proveedores-cana.manuelita.com/static/index.html#/)
+---
 
-### 💰 Financiero
-- [Datos Financieros Supersociedades](https://www.estrategiaenaccion.com/es/reportes)
-- [Publicaciones / Valle Online](https://www.valleonline.org/)
+## 🔭 Observabilidad
+
+- **Trazas (M2):** con `LANGCHAIN_TRACING_V2=true`, LangSmith registra automáticamente
+  cada llamada (LLM, embeddings, retriever, memoria, herramientas). Proyecto
+  `manuelita-osint-ia`. API en [`langsmith_setup.py`](src/langchain_app/langsmith_setup.py).
+- **Análisis del agente (M3, "picante"):** t-SNE/UMAP sobre el historial real de
+  sesiones del daemon (embeddings 768-dim). Script
+  [`tsne_sesiones_m3.py`](scripts/tsne_sesiones_m3.py); figuras y análisis en
+  [`reports/modulo3/`](reports/modulo3/) (`tsne_clusters.png`, `tsne_analisis.md`).
+
+---
+
+## 🛠️ Stack tecnológico
+
+| Capa | Tecnología |
+|------|-----------|
+| Scraping / OSINT | `requests` · `BeautifulSoup4` · `newspaper3k` · YouTube Data API v3 |
+| Extracción PDF | `pdfplumber` → `PyMuPDF` → `pytesseract` (OCR fallback) |
+| NLP / NER | `spaCy` (es_core_news_lg) · dedup `MinHash LSH` (datasketch) |
+| RAG / Agente (M2) | `LangChain 0.3` · `ChromaDB` · `sentence-transformers` |
+| UI | `Streamlit` |
+| Observabilidad | `LangSmith` · `t-SNE`/`UMAP` (`scikit-learn`/`umap-learn`) |
+| Agent OS (M3) | `OpenFang` v0.6.9 (Rust) · WSL2 · Ollama Cloud `gemma3:27b` / Gemini · Telegram · WhatsApp (Baileys) |
+| Entorno | `uv` (lockfile reproducible) · `loguru` |
+
+---
+
+## ⚖️ Consideraciones éticas y legales
+
+✅ Solo información **pública**; respeta `robots.txt`; delays corteses (2–4 s); usa APIs
+oficiales (YouTube Data API v3); no almacena datos personales de individuos.
+
+❌ No accede a áreas privadas ni evade autenticación; no scrapea
+LinkedIn/Instagram/Facebook directamente (ToS); no descarga videos (solo metadatos); no
+redistribuye los datos capturados.
+
+---
+
+## 📚 Documentación
+
+| Documento | Para qué |
+|-----------|----------|
+| [`docs/MODULO2.md`](docs/MODULO2.md) | Documentación técnica completa del Módulo 2 (RAG, router, memoria, observabilidad) |
+| [`docs/PROVIDERS.md`](docs/PROVIDERS.md) | Guía de los tres modos de proveedor LLM |
+| [`openfang/README.md`](openfang/README.md) | Módulo 3: estado por fases, quick start y despliegue del agente |
+| [`openfang/docs/RUNBOOK-demo.md`](openfang/docs/RUNBOOK-demo.md) | Guion operativo de la sustentación en vivo |
+| [`reports/informe_final.md`](reports/informe_final.md) · [`.pdf`](reports/informe_final.pdf) | Informe técnico unificado M1+M2+M3 |
+| [`CLAUDE.md`](CLAUDE.md) | Contexto de arquitectura y reglas para trabajar el repo |
 
 ---
 
 <div align="center">
 
-**Módulo 1 — Base de Conocimiento Semántico y Sistema Q&A**  
-Universidad Autónoma de Occidente · 2026
+**Proyecto OSINT + Agente Conversacional — Manuelita S.A.**
+Universidad Autónoma de Occidente · Maestría en IA y Ciencia de Datos · 2026
 
 </div>
+</content>

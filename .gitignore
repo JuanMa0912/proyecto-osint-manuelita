@@ -108,7 +108,7 @@ reports/resultados_20_preguntas_*.txt
 # reports/informe_tecnico_proyecto_ia_agroindustrial.md
 # reports/fase1_mapa_fuentes.md
 
-# Notas internas del equipo (privado, no subir)
+# Notas internas del equipo (privado, no subir). Patron sin slash → ignora en cualquier carpeta (raiz o docs/).
 NOTAS_INTERNAS_M3.md
 
 # t-SNE (M3): carpeta de trabajo con copia del openfang.db (no versionar binarios del OS).
