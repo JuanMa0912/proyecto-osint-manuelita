@@ -15,7 +15,7 @@ Lee este archivo antes de hacer cualquier cambio de código.
 **Nombre:** Sistema OSINT + Agente Conversacional — Manuelita S.A.  
 **Universidad:** Universidad Autónoma de Occidente — Maestría en IA y Ciencia de Datos  
 **Módulo actual:** Módulo 3 — Productización y Sistemas Agénticos (**Ruta B: OpenFang Agent OS**). Ver [§ Módulo 3](#módulo-3--productización-ruta-b-openfang-agent-os).  
-**Módulos previos:** M1 (OSINT + corpus) · M2 (agente RAG + memoria, ver [MODULO2.md](MODULO2.md))  
+**Módulos previos:** M1 (OSINT + corpus) · M2 (agente RAG + memoria, ver [docs/MODULO2.md](docs/MODULO2.md))  
 **Rama activa:** `development`  
 **Stack M2:** Python 3.11 · LangChain 0.3 · ChromaDB · Streamlit · uv  
 **Stack M3:** OpenFang (Agent OS, Rust) · WSL2 · Ollama/Gemini · Telegram + WhatsApp
@@ -27,9 +27,14 @@ Lee este archivo antes de hacer cualquier cambio de código.
 ```
 proyecto_manuelita/
 ├── app.py                          # Interfaz Streamlit — chat conversacional (Módulo 2)
-├── MODULO2.md                      # Documentación técnica completa del Módulo 2
-├── PROVIDERS.md                    # Guía de los tres modos: gemini / local / ollama
+├── README.md                       # Portada del repo (ciclo de vida MLOps → AgentOps)
 ├── CLAUDE.md                       # Este archivo
+├── LICENSE                         # MIT
+│
+├── docs/                           # Documentación de apoyo
+│   ├── MODULO2.md                  # Documentación técnica completa del Módulo 2
+│   ├── PROVIDERS.md                # Guía de los tres modos: gemini / local / ollama
+│   └── NOTAS_INTERNAS_M3.md        # Notas internas del equipo (privado, no en git)
 │
 ├── src/langchain_app/
 │   ├── rag_engine.py               # Motor RAG con ChromaDB (Bloque 1)

@@ -52,7 +52,7 @@ Un único enfoque no resuelve bien ambos casos: un motor puramente generativo (L
 El trabajo se enmarca en la **Maestría en IA y Ciencia de Datos de la Universidad Autónoma de Occidente (UAO)**, desarrollado por el equipo conformado por Juan Manuel Velázquez, Julián Herrera, Juan Sebastián Plazas y Juliana Lozano. El proyecto está estructurado en módulos:
 
 - **Módulo 1 (M1):** OSINT y construcción del corpus.
-- **Módulo 2 (M2):** agente conversacional RAG con memoria y herramientas (Python 3.11, LangChain 0.3, ChromaDB, Streamlit, uv), documentado en MODULO2.md.
+- **Módulo 2 (M2):** agente conversacional RAG con memoria y herramientas (Python 3.11, LangChain 0.3, ChromaDB, Streamlit, uv), documentado en docs/MODULO2.md.
 - **Módulo 3 (M3), módulo actual:** **Productización y Sistemas Agénticos**, para el cual el equipo eligió la **Ruta B — Sistema Operativo Agéntico con OpenFang** (en lugar de la Ruta A: FastAPI + Function Calling + N8N).
 
 Una consecuencia explícita y deliberada de la Ruta B es que el código del Módulo 2 (LangChain, ChromaDB, Streamlit) **no se reutiliza como base ejecutable**: solo se migra el **corpus limpio del Módulo 1** a la memoria de OpenFang, y el M2 queda en el informe como "evolución arquitectónica" más que como software vivo. El objetivo final del M3 incluye un **informe técnico unificado (M1+M2+M3) en PDF** y una **sustentación en vivo (15 min, sin diapositivas)** cuya prueba de fuego es que el profesor escriba al bot desde su propio teléfono.
